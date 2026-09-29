@@ -31,13 +31,23 @@ exists, and both the jobs and the admin UI call them.
 6. Keep every function side-effect free. Config is passed in. Nothing reads the clock.
 
 ## Acceptance criteria
-- [ ] E1–E10 pass by name (`it('E3: lock doubles base…')`)
-- [ ] Pot conservation holds for n = 1..20 with random ties
-- [ ] 100% branch coverage on `scoring.ts` and `payouts.ts`
-- [ ] Definition of Done passes
+- [x] E1–E10 pass by name (`it('E3: lock doubles base…')`)
+- [x] Pot conservation holds for n = 1..20 with random ties
+- [x] 100% branch coverage on `scoring.ts` and `payouts.ts`
+- [x] Definition of Done passes
 
 ## Out of scope
 Firestore reads/writes, UI.
 
 ## Completion notes
-_(agent fills in)_
+Four pure modules, 103 new tests, 100% branch coverage across all of `shared/` (not just the two
+required files). Every bout/event parameter is generic in `Ts`, so nothing needs a firebase Timestamp.
+- `rankEntries` is generic (`<T extends ScoredEntry>`), so T09 gets its own entry objects back with
+  `rank` added rather than a stripped-down shape.
+- Pot conservation is structural, not arithmetic luck: place amounts sum to the pot after the flooring
+  leftover goes to 1st, and competition ranking makes the tied groups cover places 1..n exactly once.
+- `validateEntry` rejects a lock on a cancelled bout, but `scoreEntry` still pushes one — §3's
+  "cancelled after submission doesn't invalidate the entry" only binds the pre-submit check.
+- A cancelled bout is a push, so it never counts toward `correctWinners`/`correctMethods`.
+- Follow-up: `DEFAULT_AMERICAN_ODDS` (100) and `UPSET_AMERICAN_ODDS` (200) had to live in
+  `scoring.ts`/`standings.ts` because `constants.ts` was outside this task's allowed files.
