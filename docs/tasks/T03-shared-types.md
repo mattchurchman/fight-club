@@ -30,12 +30,17 @@ GAME_RULES.md, and small pure helpers (odds math, name normalization, IDs). Ever
 6. Tests for every helper, including edge cases (odds of ±100, huge underdogs, accented names, "Jr.").
 
 ## Acceptance criteria
-- [ ] Types compile and cover every field in DATA_MODEL.md (a reviewer can diff them side by side)
-- [ ] ≥95% line coverage on `shared/` helpers (`vitest --coverage` scoped to `shared`)
-- [ ] Definition of Done passes
+- [x] Types compile and cover every field in DATA_MODEL.md (a reviewer can diff them side by side)
+- [x] ≥95% line coverage on `shared/` helpers (`vitest --coverage` scoped to `shared`)
+- [x] Definition of Done passes
 
 ## Out of scope
 Scoring, payouts and validation (T04).
 
 ## Completion notes
-_(agent fills in)_
+Built `types.ts` (one interface per DATA_MODEL.md doc, generic `Ts` for Timestamp), `constants.ts`
+(RULES_VERSION, DEFAULTS, PAYOUT_TABLE, NUMBERED_EVENT_RE), `odds.ts`, `names.ts` (normalize + match with
+Jr/Sr/II + diacritics), `ids.ts`. 100% line coverage on the four helper files (types.ts has no runtime code).
+`bouts.odds.source` and `events.kind` kept as currently specified in DATA_MODEL.md — the two proposals in
+DECISIONS.md are still unapproved. Added `@vitest/coverage-v8` dev dep to run the coverage check (see
+DECISIONS.md); kept `APP_NAME` in `shared/index.ts` since `jobs/hello.ts` (T01) imports it.

@@ -33,3 +33,9 @@ regex must match `shortName`, not `name`). Dana White's Contender Series is also
 excluded from import outright. **Proposal for the owner:** add `kind: 'special'` to `DATA_MODEL.md` and treat it
 like `fightnight` for scoring but never auto-enable it. Until that's approved, T07 ingests these as
 `kind: 'fightnight'`, `number: null`, `enabled: false`. `DATA_MODEL.md` is unchanged.
+
+## 2026-09-29 — Added `@vitest/coverage-v8` dev dependency (T03)
+T03's acceptance criteria require `vitest --coverage` scoped to `shared/`, but no coverage provider was
+installed. Added `@vitest/coverage-v8@5.0.2` (pinned to the installed `vitest` version) as a dev-only
+dependency — it's Vitest's own official coverage provider, not a new tool. Not in AGENTS.md §5; adding it
+here since removing it would make the stated acceptance check impossible to run.
