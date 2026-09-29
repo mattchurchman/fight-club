@@ -1,0 +1,55 @@
+# Progress board
+
+Agents: update **only your task's row** (status, date, commit) and the Backlog section when told to.
+Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
+"Next task" = the first `todo` row, top to bottom, whose dependencies are all `done`.
+
+## Milestone 1 — Foundation
+| ID | Task | Tier | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T01 | Project scaffold & tooling 👤 | B | — | todo | | |
+| T02 | Data-source spike & fixtures 👤 | A | T01 | todo | | |
+| T03 | Shared domain types, constants & helpers | B | T01, T02 | todo | | |
+| T04 | Scoring, validation & payout engine | A | T03 | todo | | |
+| T05 | Firebase wiring & emulators 👤 | B | T01, T03 | todo | | |
+| T06 | Firestore security rules + tests | A | T03, T05 | todo | | |
+
+## Milestone 2 — Data pipeline
+| ID | Task | Tier | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T07 | Job: ESPN events/bouts/fighters | B | T02, T03, T05 | todo | | |
+| T08 | Job: moneyline odds 👤 | B | T07 | todo | | |
+| T09 | Job: lifecycle (lock/results/score/finalize) | A | T04, T06, T07 | todo | | |
+| T10 | GitHub Actions: CI, schedules, deploy 👤 | C | T06–T09 | todo | | |
+
+## Milestone 3 — App MVP
+| ID | Task | Tier | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T11 | Design system, app shell, PWA | B | T01 | todo | | |
+| T12 | Auth, invite gate, onboarding 👤 | B | T05, T06, T11 | todo | | |
+| T13 | Fights tab: event page & bout cards | B | T07, T11, T12 | todo | | |
+| T14 | Pick builder & submission | B | T04, T13 | todo | | |
+| T15 | Pick reveal & live leaderboard | B | T09, T14 | todo | | |
+| T16 | Wallet & token requests | C | T12 | todo | | |
+| T17 | Admin: invites, people, tokens | B | T06, T09, T16 | todo | | |
+| T18 | Admin: event controls & manual results | B | T09, T13, T17 | todo | | |
+
+## Milestone 4 — Launch 🚀 (invite friends after T20)
+| ID | Task | Tier | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T19 | End-to-end smoke tests & polish | B | T14–T18 | todo | | |
+| T20 | Security & launch review 👤 | A | T19 | todo | | |
+
+## Milestone 5 — Fun
+| ID | Task | Tier | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T21 | Season standings, profiles, head-to-head | B | T09, T15 | todo | | |
+| T22 | Shareable results card | B | T15 | todo | | |
+| T23 | Badges | C | T09, T21 | todo | | |
+| T24 | Push notifications 👤 | B | T10, T11, T12 | todo | | |
+| T25 | Fight-night trash talk | C | T15 | todo | | |
+
+👤 = has a USER ACTION REQUIRED step (see the task file / docs/SETUP.md).
+
+## Backlog (follow-ups discovered along the way)
+- _(empty)_
