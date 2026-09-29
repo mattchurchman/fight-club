@@ -38,12 +38,26 @@ Turn `docs/DATA_SOURCES.md` from leads into a verified field map, and capture tr
 7. If anything materially contradicts DATA_MODEL.md, log a proposal in DECISIONS.md and tell the user. Don't change DATA_MODEL.md yourself.
 
 ## Acceptance criteria
-- [ ] Every ☐ is resolved or explicitly marked "unresolved: <why>, fallback: <what>"
-- [ ] Fixtures exist, are valid JSON and total under 300 KB. `fixtures/README.md` lists their sources.
-- [ ] Definition of Done passes (no live network calls in tests)
+- [x] Every ☐ is resolved or explicitly marked "unresolved: <why>, fallback: <what>"
+- [x] Fixtures exist, are valid JSON and total under 300 KB. `fixtures/README.md` lists their sources.
+- [x] Definition of Done passes (no live network calls in tests)
 
 ## Out of scope
 Writing production ingestion code (T07/T08).
 
 ## Completion notes
-_(agent fills in)_
+Rewrote `docs/DATA_SOURCES.md` as a verified field map (154 lines) and captured 231 KB of fixtures.
+Every ☐ resolved except The Odds API (no key — see below). Probed 389 completed bouts across 31 events.
+- ESPN needs **two** APIs: site `scoreboard` for names/records/winner flags, core `events/{id}` for
+  `matchNumber` + `cardSegment`, and one core `.../status` call per bout for the method.
+- **Surprise 1:** core `.../odds` serves DraftKings moneylines keyed by **athlete id**, free and unquotaed.
+  That makes The Odds API and its name matching unnecessary. Proposal in DECISIONS.md — needs the owner's OK
+  (`bouts.odds.source` needs `'espn'`). Availability, not quota, is the limit: 14/14 priced 4 days out, 1/9 at 25 days.
+- **Surprise 2:** `matchNumber` is not unique on scheduled cards (UFC 332 had two `13`s). Order by array
+  position instead: `order = competitions.length - index`.
+- **Surprise 3:** `dates=` filters on the event's UTC date, so a Saturday-night US card answers to the
+  *previous* day. Dana White's Contender Series shares the UFC calendar and must be excluded from import.
+- `status.displayClock` is **elapsed**, not remaining. Method vocabulary is 8 values, mapped in §4.
+- Follow-ups: (a) two DATA_MODEL proposals in DECISIONS.md await the owner; (b) no first-blood data exists
+  anywhere in ESPN — T18 manual entry is the only path; (c) headshots are 200–310 KB full-size, so T11/T13
+  should use the `combiner/i?...&w=160` URL (30 KB) with an initials fallback for the ~10% that 404.

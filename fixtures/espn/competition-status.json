@@ -1,0 +1,388 @@
+{
+  "401864573": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600058517/competitions/401864573/status?lang=en&region=us",
+    "clock": 105,
+    "displayClock": "1:45",
+    "period": 2,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 277,
+      "name": "no-contest",
+      "displayName": "No Contest",
+      "shortDisplayName": "No Contest"
+    },
+    "featured": false
+  },
+  "401867662": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600058745/competitions/401867662/status?lang=en&region=us",
+    "clock": 300,
+    "displayClock": "5:00",
+    "period": 3,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 269,
+      "name": "draw",
+      "displayName": "Draw",
+      "shortDisplayName": "Draw"
+    },
+    "featured": false
+  },
+  "401903509": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401903509/status?lang=en&region=us",
+    "clock": 300,
+    "displayClock": "5:00",
+    "period": 5,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 263,
+      "name": "decision---unanimous",
+      "displayName": "Decision - Unanimous",
+      "shortDisplayName": "U Dec"
+    },
+    "featured": true
+  },
+  "401903510": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401903510/status?lang=en&region=us",
+    "clock": 12,
+    "displayClock": "0:12",
+    "period": 1,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 356,
+      "name": "kotko",
+      "displayName": "KO/TKO",
+      "description": "Punch",
+      "displayDescription": "Punch",
+      "shortDisplayName": "KO/TKO",
+      "target": {
+        "id": 122,
+        "name": "head",
+        "description": "Head",
+        "displayDescription": "Head"
+      }
+    },
+    "featured": false
+  },
+  "401903511": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401903511/status?lang=en&region=us",
+    "clock": 202,
+    "displayClock": "3:22",
+    "period": 1,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 284,
+      "name": "submission",
+      "displayName": "Submission",
+      "description": "Armbar",
+      "displayDescription": "Armbar",
+      "shortDisplayName": "Sub",
+      "target": {
+        "id": 123,
+        "name": "body",
+        "description": "Body",
+        "displayDescription": "Body"
+      }
+    },
+    "featured": false
+  },
+  "401905375": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905375/status?lang=en&region=us",
+    "clock": 296,
+    "displayClock": "4:56",
+    "period": 1,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 356,
+      "name": "kotko",
+      "displayName": "KO/TKO",
+      "description": "Elbow",
+      "displayDescription": "Elbow",
+      "shortDisplayName": "KO/TKO",
+      "target": {
+        "id": 122,
+        "name": "head",
+        "description": "Head",
+        "displayDescription": "Head"
+      }
+    },
+    "featured": false
+  },
+  "401905376": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905376/status?lang=en&region=us",
+    "clock": 208,
+    "displayClock": "3:28",
+    "period": 1,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 356,
+      "name": "kotko",
+      "displayName": "KO/TKO",
+      "description": "Punches",
+      "displayDescription": "Punches",
+      "shortDisplayName": "KO/TKO",
+      "target": {
+        "id": 122,
+        "name": "head",
+        "description": "Head",
+        "displayDescription": "Head"
+      }
+    },
+    "featured": false
+  },
+  "401905378": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905378/status?lang=en&region=us",
+    "clock": 300,
+    "displayClock": "5:00",
+    "period": 3,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 262,
+      "name": "decision---split",
+      "displayName": "Decision - Split",
+      "shortDisplayName": "S Dec"
+    },
+    "featured": false
+  },
+  "401905379": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905379/status?lang=en&region=us",
+    "clock": 122,
+    "displayClock": "2:02",
+    "period": 3,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 356,
+      "name": "kotko",
+      "displayName": "KO/TKO",
+      "description": "Punch",
+      "displayDescription": "Punch",
+      "shortDisplayName": "KO/TKO",
+      "target": {
+        "id": 122,
+        "name": "head",
+        "description": "Head",
+        "displayDescription": "Head"
+      }
+    },
+    "featured": false
+  },
+  "401905380": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905380/status?lang=en&region=us",
+    "clock": 300,
+    "displayClock": "5:00",
+    "period": 3,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 262,
+      "name": "decision---split",
+      "displayName": "Decision - Split",
+      "shortDisplayName": "S Dec"
+    },
+    "featured": false
+  },
+  "401905381": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905381/status?lang=en&region=us",
+    "clock": 300,
+    "displayClock": "5:00",
+    "period": 3,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 263,
+      "name": "decision---unanimous",
+      "displayName": "Decision - Unanimous",
+      "shortDisplayName": "U Dec"
+    },
+    "featured": false
+  },
+  "401905382": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905382/status?lang=en&region=us",
+    "clock": 117,
+    "displayClock": "1:57",
+    "period": 1,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 356,
+      "name": "kotko",
+      "displayName": "KO/TKO",
+      "description": "Punches",
+      "displayDescription": "Punches",
+      "shortDisplayName": "KO/TKO",
+      "target": {
+        "id": 122,
+        "name": "head",
+        "description": "Head",
+        "displayDescription": "Head"
+      }
+    },
+    "featured": false
+  },
+  "401905385": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905385/status?lang=en&region=us",
+    "clock": 124,
+    "displayClock": "2:04",
+    "period": 1,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 356,
+      "name": "kotko",
+      "displayName": "KO/TKO",
+      "description": "Punch",
+      "displayDescription": "Punch",
+      "shortDisplayName": "KO/TKO",
+      "target": {
+        "id": 122,
+        "name": "head",
+        "description": "Head",
+        "displayDescription": "Head"
+      }
+    },
+    "featured": false
+  },
+  "401905386": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060963/competitions/401905386/status?lang=en&region=us",
+    "clock": 300,
+    "displayClock": "5:00",
+    "period": 3,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 262,
+      "name": "decision---split",
+      "displayName": "Decision - Split",
+      "shortDisplayName": "S Dec"
+    },
+    "featured": false
+  },
+  "401914465": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600061266/competitions/401914465/status?lang=en&region=us",
+    "clock": 139,
+    "displayClock": "2:19",
+    "period": 1,
+    "type": {
+      "id": "3",
+      "name": "STATUS_FINAL",
+      "state": "post",
+      "completed": true,
+      "description": "Final",
+      "detail": "Final",
+      "shortDetail": "Final"
+    },
+    "result": {
+      "id": 264,
+      "name": "dq",
+      "displayName": "DQ",
+      "shortDisplayName": "DQ"
+    },
+    "featured": false
+  }
+}

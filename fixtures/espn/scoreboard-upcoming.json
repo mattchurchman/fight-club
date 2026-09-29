@@ -1,0 +1,1460 @@
+{
+  "events": [
+    {
+      "id": "600061182",
+      "uid": "s:3301~l:3321~e:600061182",
+      "date": "2026-10-03T20:00Z",
+      "name": "UFC 332: Silva vs. Wang",
+      "shortName": "UFC 332",
+      "season": {
+        "year": 2026,
+        "type": 2,
+        "slug": "regular-season"
+      },
+      "competitions": [
+        {
+          "id": "401907089",
+          "uid": "s:3301~l:3321~e:600061182~c:401907089",
+          "date": "2026-10-03T20:00Z",
+          "endDate": "2026-10-03T20:00Z",
+          "type": {
+            "id": "969",
+            "abbreviation": "Welterweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "2504639",
+              "uid": "s:3301~a:2504639",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Court McGee",
+                "displayName": "Court McGee",
+                "shortName": "C. McGee",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "23-14-0"
+                }
+              ]
+            },
+            {
+              "id": "5290958",
+              "uid": "s:3301~a:5290958",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Eric Nolan",
+                "displayName": "Eric Nolan",
+                "shortName": "E. Nolan",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "8-5-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 4:00 PM EDT",
+              "shortDetail": "10/3 - 4:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T20:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401912275",
+          "uid": "s:3301~l:3321~e:600061182~c:401912275",
+          "date": "2026-10-03T20:00Z",
+          "endDate": "2026-10-03T20:00Z",
+          "type": {
+            "id": "972",
+            "abbreviation": "Middleweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "4001851",
+              "uid": "s:3301~a:4001851",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Marvin Vettori",
+                "displayName": "Marvin Vettori",
+                "shortName": "M. Vettori",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/ita.png",
+                  "alt": "Italy",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "19-10-1"
+                }
+              ]
+            },
+            {
+              "id": "4412813",
+              "uid": "s:3301~a:4412813",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Ismail Naurdiev",
+                "displayName": "Ismail Naurdiev",
+                "shortName": "I. Naurdiev",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/mar.png",
+                  "alt": "Morocco",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "25-8-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 4:00 PM EDT",
+              "shortDetail": "10/3 - 4:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T20:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401926808",
+          "uid": "s:3301~l:3321~e:600061182~c:401926808",
+          "date": "2026-10-03T20:00Z",
+          "endDate": "2026-10-03T20:00Z",
+          "type": {
+            "id": "969",
+            "abbreviation": "Welterweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "5149961",
+              "uid": "s:3301~a:5149961",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Jacobe Smith",
+                "displayName": "Jacobe Smith",
+                "shortName": "J. Smith",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "12-0-0"
+                }
+              ]
+            },
+            {
+              "id": "5311402",
+              "uid": "s:3301~a:5311402",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Bruce Whitehead",
+                "displayName": "Bruce Whitehead",
+                "shortName": "B. Whitehead",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "8-2-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 4:00 PM EDT",
+              "shortDetail": "10/3 - 4:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T20:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401917346",
+          "uid": "s:3301~l:3321~e:600061182~c:401917346",
+          "date": "2026-10-03T20:00Z",
+          "endDate": "2026-10-03T20:00Z",
+          "type": {
+            "id": "986",
+            "abbreviation": "Lightweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "2335687",
+              "uid": "s:3301~a:2335687",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Rafael Dos Anjos",
+                "displayName": "Rafael Dos Anjos",
+                "shortName": "R. Dos Anjos",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png",
+                  "alt": "Brazil",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "32-17-0"
+                }
+              ]
+            },
+            {
+              "id": "4018757",
+              "uid": "s:3301~a:4018757",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Alexander Hernandez",
+                "displayName": "Alexander Hernandez",
+                "shortName": "A. Hernandez",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "18-9-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 4:00 PM EDT",
+              "shortDetail": "10/3 - 4:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T20:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401912274",
+          "uid": "s:3301~l:3321~e:600061182~c:401912274",
+          "date": "2026-10-03T20:00Z",
+          "endDate": "2026-10-03T20:00Z",
+          "type": {
+            "id": "982",
+            "abbreviation": "Heavyweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "3146944",
+              "uid": "s:3301~a:3146944",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Johnny Walker",
+                "displayName": "Johnny Walker",
+                "shortName": "J. Walker",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png",
+                  "alt": "Brazil",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "22-10-0"
+                }
+              ]
+            },
+            {
+              "id": "5060505",
+              "uid": "s:3301~a:5060505",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Mick Parkin",
+                "displayName": "Mick Parkin",
+                "shortName": "M. Parkin",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/eng.png",
+                  "alt": "England",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "10-1-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 4:00 PM EDT",
+              "shortDetail": "10/3 - 4:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T20:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401922306",
+          "uid": "s:3301~l:3321~e:600061182~c:401922306",
+          "date": "2026-10-03T22:00Z",
+          "endDate": "2026-10-03T22:00Z",
+          "type": {
+            "id": "982",
+            "abbreviation": "Heavyweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "3128853",
+              "uid": "s:3301~a:3128853",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Anthony Wint",
+                "displayName": "Anthony Wint",
+                "shortName": "A. Wint",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "8-0-0"
+                }
+              ]
+            },
+            {
+              "id": "5450121",
+              "uid": "s:3301~a:5450121",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Lucas Armand",
+                "displayName": "Lucas Armand",
+                "shortName": "L. Armand",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "6-0-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 6:00 PM EDT",
+              "shortDetail": "10/3 - 6:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T22:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401917348",
+          "uid": "s:3301~l:3321~e:600061182~c:401917348",
+          "date": "2026-10-03T22:00Z",
+          "endDate": "2026-10-03T22:00Z",
+          "type": {
+            "id": "970",
+            "abbreviation": "Bantamweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "4895760",
+              "uid": "s:3301~a:4895760",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Marcus McGhee",
+                "displayName": "Marcus McGhee",
+                "shortName": "M. McGhee",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "11-2-0"
+                }
+              ]
+            },
+            {
+              "id": "5080883",
+              "uid": "s:3301~a:5080883",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Bernardo Sopaj",
+                "displayName": "Bernardo Sopaj",
+                "shortName": "B. Sopaj",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/alb.png",
+                  "alt": "Albania",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "13-3-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 6:00 PM EDT",
+              "shortDetail": "10/3 - 6:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T22:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401912277",
+          "uid": "s:3301~l:3321~e:600061182~c:401912277",
+          "date": "2026-10-03T22:00Z",
+          "endDate": "2026-10-03T22:00Z",
+          "type": {
+            "id": "972",
+            "abbreviation": "Middleweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "5211225",
+              "uid": "s:3301~a:5211225",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Andrey Pulyaev",
+                "displayName": "Andrey Pulyaev",
+                "shortName": "A. Pulyaev",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/rus.png",
+                  "alt": "Russia",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "10-5-0"
+                }
+              ]
+            },
+            {
+              "id": "5292022",
+              "uid": "s:3301~a:5292022",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Damian Pinas",
+                "displayName": "Damian Pinas",
+                "shortName": "D. Pinas",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/aru.png",
+                  "alt": "Aruba",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "10-1-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 6:00 PM EDT",
+              "shortDetail": "10/3 - 6:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T22:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401912276",
+          "uid": "s:3301~l:3321~e:600061182~c:401912276",
+          "date": "2026-10-03T22:00Z",
+          "endDate": "2026-10-03T22:00Z",
+          "type": {
+            "id": "956",
+            "abbreviation": "Flyweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "5099732",
+              "uid": "s:3301~a:5099732",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Alden Coria",
+                "displayName": "Alden Coria",
+                "shortName": "A. Coria",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "13-3-0"
+                }
+              ]
+            },
+            {
+              "id": "5289578",
+              "uid": "s:3301~a:5289578",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Imanol Rodriguez",
+                "displayName": "Imanol Rodriguez",
+                "shortName": "I. Rodriguez",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png",
+                  "alt": "Mexico",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "7-1-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 6:00 PM EDT",
+              "shortDetail": "10/3 - 6:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-03T22:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401907088",
+          "uid": "s:3301~l:3321~e:600061182~c:401907088",
+          "date": "2026-10-04T00:00Z",
+          "endDate": "2026-10-04T00:00Z",
+          "type": {
+            "id": "972",
+            "abbreviation": "Middleweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "4300149",
+              "uid": "s:3301~a:4300149",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Roman Kopylov",
+                "displayName": "Roman Kopylov",
+                "shortName": "R. Kopylov",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/rus.png",
+                  "alt": "Russia",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "15-5-0"
+                }
+              ]
+            },
+            {
+              "id": "5218421",
+              "uid": "s:3301~a:5218421",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Ateba Gautier",
+                "displayName": "Ateba Gautier",
+                "shortName": "A. Gautier",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/cmr.png",
+                  "alt": "Cameroon",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "11-1-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 8:00 PM EDT",
+              "shortDetail": "10/3 - 8:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-04T00:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401917345",
+          "uid": "s:3301~l:3321~e:600061182~c:401917345",
+          "date": "2026-10-04T00:00Z",
+          "endDate": "2026-10-04T00:00Z",
+          "type": {
+            "id": "969",
+            "abbreviation": "Welterweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "4274796",
+              "uid": "s:3301~a:4274796",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Roberto Soldić",
+                "displayName": "Roberto Soldić",
+                "shortName": "R. Soldić",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/cro.png",
+                  "alt": "Croatia",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "21-4-0"
+                }
+              ]
+            },
+            {
+              "id": "4612580",
+              "uid": "s:3301~a:4612580",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Khaos Williams",
+                "displayName": "Khaos Williams",
+                "shortName": "K. Williams",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "16-5-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 8:00 PM EDT",
+              "shortDetail": "10/3 - 8:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-04T00:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401917347",
+          "uid": "s:3301~l:3321~e:600061182~c:401917347",
+          "date": "2026-10-04T00:00Z",
+          "endDate": "2026-10-04T00:00Z",
+          "type": {
+            "id": "986",
+            "abbreviation": "Lightweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "2502364",
+              "uid": "s:3301~a:2502364",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "King Green",
+                "displayName": "King Green",
+                "shortName": "K. Green",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "36-17-1"
+                }
+              ]
+            },
+            {
+              "id": "5074131",
+              "uid": "s:3301~a:5074131",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Esteban Ribovics",
+                "displayName": "Esteban Ribovics",
+                "shortName": "E. Ribovics",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/arg.png",
+                  "alt": "Argentina",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "16-3-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 8:00 PM EDT",
+              "shortDetail": "10/3 - 8:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-04T00:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401907087",
+          "uid": "s:3301~l:3321~e:600061182~c:401907087",
+          "date": "2026-10-04T00:00Z",
+          "endDate": "2026-10-04T00:00Z",
+          "type": {
+            "id": "970",
+            "abbreviation": "Bantamweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "4189320",
+              "uid": "s:3301~a:4189320",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Deiveson Figueiredo",
+                "displayName": "Deiveson Figueiredo",
+                "shortName": "D. Figueiredo",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png",
+                  "alt": "Brazil",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "25-7-1"
+                }
+              ]
+            },
+            {
+              "id": "5144008",
+              "uid": "s:3301~a:5144008",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Payton Talbott",
+                "displayName": "Payton Talbott",
+                "shortName": "P. Talbott",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+                  "alt": "USA",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "11-1-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 8:00 PM EDT",
+              "shortDetail": "10/3 - 8:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 3
+            }
+          },
+          "startDate": "2026-10-04T00:00Z",
+          "broadcast": "Paramount+"
+        },
+        {
+          "id": "401912278",
+          "uid": "s:3301~l:3321~e:600061182~c:401912278",
+          "date": "2026-10-04T00:00Z",
+          "endDate": "2026-10-04T00:00Z",
+          "type": {
+            "id": "1007",
+            "abbreviation": "W Flyweight"
+          },
+          "timeValid": true,
+          "neutralSite": false,
+          "playByPlayAvailable": false,
+          "recent": false,
+          "venue": {
+            "id": "3093",
+            "fullName": "Delta Center",
+            "address": {
+              "city": "Salt Lake City",
+              "state": "UT",
+              "country": "USA"
+            },
+            "indoor": true
+          },
+          "competitors": [
+            {
+              "id": "4054605",
+              "uid": "s:3301~a:4054605",
+              "type": "athlete",
+              "order": 1,
+              "winner": false,
+              "athlete": {
+                "fullName": "Natalia Silva",
+                "displayName": "Natalia Silva",
+                "shortName": "N. Silva",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png",
+                  "alt": "Brazil",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "20-5-1"
+                }
+              ]
+            },
+            {
+              "id": "4215200",
+              "uid": "s:3301~a:4215200",
+              "type": "athlete",
+              "order": 2,
+              "winner": false,
+              "athlete": {
+                "fullName": "Wang Cong",
+                "displayName": "Wang Cong",
+                "shortName": "W. Cong",
+                "flag": {
+                  "href": "https://a.espncdn.com/i/teamlogos/countries/500/chn.png",
+                  "alt": "China",
+                  "rel": [
+                    "country-flag"
+                  ]
+                }
+              },
+              "records": [
+                {
+                  "name": "overall",
+                  "abbreviation": "TOT",
+                  "type": "total",
+                  "summary": "10-1-0"
+                }
+              ]
+            }
+          ],
+          "status": {
+            "clock": 0,
+            "displayClock": "-",
+            "period": 0,
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 3rd at 8:00 PM EDT",
+              "shortDetail": "10/3 - 8:00 PM EDT"
+            }
+          },
+          "format": {
+            "regulation": {
+              "periods": 5
+            }
+          },
+          "startDate": "2026-10-04T00:00Z",
+          "broadcast": "Paramount+"
+        }
+      ],
+      "venues": [
+        {
+          "id": "3093",
+          "fullName": "Delta Center",
+          "address": {
+            "city": "Salt Lake City",
+            "state": "UT",
+            "country": "USA"
+          }
+        }
+      ],
+      "status": {
+        "type": {
+          "id": "1",
+          "name": "STATUS_SCHEDULED",
+          "state": "pre",
+          "completed": false,
+          "description": "Scheduled",
+          "detail": "Scheduled",
+          "shortDetail": "Scheduled"
+        }
+      }
+    }
+  ],
+  "provider": {
+    "id": "100",
+    "name": "Draft Kings",
+    "displayName": "Draft Kings",
+    "priority": 1
+  }
+}

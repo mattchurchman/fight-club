@@ -1,0 +1,129 @@
+{
+  "2560746": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/athletes/ufc?lang=en&region=us",
+    "id": "2560746",
+    "uid": "s:3301~a:2560746",
+    "guid": "a6844ce1-f0cf-9105-d80f-c42cf722889c",
+    "firstName": "Alexandre",
+    "lastName": "Pantoja",
+    "fullName": "Alexandre Pantoja",
+    "displayName": "Alexandre Pantoja",
+    "nickname": "The Cannibal",
+    "shortName": "A. Pantoja",
+    "weight": 125,
+    "displayWeight": "125 lbs",
+    "height": 65,
+    "displayHeight": "5' 5\"",
+    "age": 36,
+    "dateOfBirth": "1990-04-16T07:00Z",
+    "gender": "MALE",
+    "citizenship": "Brazil",
+    "citizenshipCountry": {
+      "alternateId": "147",
+      "abbreviation": "BRA",
+      "color": "#FFDF00",
+      "alternateColor": "#002776"
+    },
+    "slug": "alexandre-pantoja",
+    "headshot": {
+      "href": "https://a.espncdn.com/i/headshots/mma/players/full/2560746.png",
+      "alt": "Alexandre Pantoja"
+    },
+    "flag": {
+      "href": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png",
+      "alt": "Brazil",
+      "rel": [
+        "country-flag"
+      ]
+    },
+    "records": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/athletes/2560746/records?lang=en&region=us"
+    },
+    "active": true,
+    "status": {
+      "id": "1",
+      "name": "Active",
+      "type": "active",
+      "abbreviation": "Active"
+    },
+    "reach": 67.5,
+    "displayReach": "67.5\"",
+    "weightClass": {
+      "id": "956",
+      "text": "Flyweight",
+      "shortName": "Flyweight",
+      "slug": "flyweight"
+    },
+    "stance": {
+      "id": "75",
+      "text": "Orthodox"
+    }
+  },
+  "5120301": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/mma/athletes/ufc?lang=en&region=us",
+    "id": "5120301",
+    "uid": "s:3301~a:5120301",
+    "guid": "a04722cf-f3ca-33b5-ba39-7ea64211de1e",
+    "firstName": "Joshua",
+    "lastName": "Van",
+    "fullName": "Joshua Van",
+    "displayName": "Joshua Van",
+    "nickname": "The Fearless",
+    "shortName": "J. Van",
+    "weight": 125,
+    "displayWeight": "125 lbs",
+    "height": 65,
+    "displayHeight": "5' 5\"",
+    "age": 24,
+    "dateOfBirth": "2001-10-10T07:00Z",
+    "gender": "MALE",
+    "citizenship": "Myanmar",
+    "citizenshipCountry": {
+      "alternateId": "664",
+      "abbreviation": "MYA",
+      "color": "#EA2839",
+      "alternateColor": "#34B233"
+    },
+    "slug": "joshua-van",
+    "headshot": {
+      "href": "https://a.espncdn.com/i/headshots/mma/players/full/5120301.png",
+      "alt": "Joshua Van"
+    },
+    "flag": {
+      "href": "https://a.espncdn.com/i/teamlogos/countries/500/mya.png",
+      "alt": "Myanmar",
+      "rel": [
+        "country-flag"
+      ]
+    },
+    "records": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/athletes/5120301/records?lang=en&region=us"
+    },
+    "active": true,
+    "status": {
+      "id": "1",
+      "name": "Active",
+      "type": "active",
+      "abbreviation": "Active"
+    },
+    "reach": 65,
+    "displayReach": "65\"",
+    "weightClass": {
+      "id": "956",
+      "text": "Flyweight",
+      "shortName": "Flyweight",
+      "slug": "flyweight"
+    },
+    "stance": {
+      "id": "75",
+      "text": "Orthodox"
+    },
+    "accolades": [
+      {
+        "id": "711",
+        "name": "UFC Flyweight Title",
+        "type": "Belt"
+      }
+    ]
+  }
+}

@@ -17,3 +17,19 @@ First Blood stays as an optional manual prop.
 
 ## 2026-09-29 — Auth methods (planning)
 Google + email/password, gated by an admin-managed allowlist. We don't use email-link sign-in (Spark caps it at 5 emails/day).
+
+## 2026-09-29 — Odds come from ESPN, not The Odds API (T02)
+T02 found `core/events/{id}/competitions/{id}/odds`: DraftKings moneylines keyed by **athlete id**, no key, no
+quota (`docs/DATA_SOURCES.md` §6; 14/14 bouts priced 4 days before UFC 332). That removes the 500-credit/month
+budget *and* the fighter-name matching `shared/names.ts` existed for. Decided: ESPN is the primary odds source;
+The Odds API is demoted to an unverified documented fallback. **Needs the owner's OK** because it changes T08's
+scope and `DATA_MODEL.md`: `bouts.odds.source` must gain `'espn'` (proposed: `'espn'|'oddsapi'|'manual'|'default'`).
+Name matching is still worth keeping for manual admin entry, but no longer blocks the odds pipeline.
+
+## 2026-09-29 — Event `kind` needs a third value (T02)
+The UFC calendar carries cards that are neither numbered nor Fight Night: `Noche UFC: Silva vs. Delgado` and
+`UFC Freedom 250: Topuria vs. Gaethje` (a special PPV whose "250" is not a UFC sequence number, so the numbered
+regex must match `shortName`, not `name`). Dana White's Contender Series is also on the same calendar and is
+excluded from import outright. **Proposal for the owner:** add `kind: 'special'` to `DATA_MODEL.md` and treat it
+like `fightnight` for scoring but never auto-enable it. Until that's approved, T07 ingests these as
+`kind: 'fightnight'`, `number: null`, `enabled: false`. `DATA_MODEL.md` is unchanged.

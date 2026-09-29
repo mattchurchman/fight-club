@@ -8,7 +8,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
 | T01 | Project scaffold & tooling 👤 | B | — | done | 2026-09-29 | 55ee09f |
-| T02 | Data-source spike & fixtures 👤 | A | T01 | todo | | |
+| T02 | Data-source spike & fixtures 👤 | A | T01 | in-progress | | |
 | T03 | Shared domain types, constants & helpers | B | T01, T02 | todo | | |
 | T04 | Scoring, validation & payout engine | A | T03 | todo | | |
 | T05 | Firebase wiring & emulators 👤 | B | T01, T03 | todo | | |
@@ -54,3 +54,11 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Backlog (follow-ups discovered along the way)
 - T11: scaffold has no favicon/app icons (demo assets were removed in T01) — add real ones via
   `@vite-pwa/assets-generator` when PWA/design-system work happens.
+- T02: two `DATA_MODEL.md` proposals await the owner's OK — `bouts.odds.source` needs `'espn'`, and
+  `events.kind` needs a third value for `Noche UFC` / `UFC Freedom 250`. See DECISIONS.md (2026-09-29).
+- T08: rescope to ESPN odds (no key, no quota, matched by athlete id) if the proposal above is accepted;
+  The Odds API half of T02 stays ☐ because no `ODDS_API_KEY` was available.
+- T11/T13: hotlink headshots through `a.espncdn.com/combiner/i?img=...&w=160` (30 KB, not 220 KB) and add an
+  initials fallback — ~10% of athletes 404 (debutants).
+- Tooling: add `fixtures` to `.prettierignore` so `npm run format` stops rewriting captured JSON
+  (outside T02's allowed files).
