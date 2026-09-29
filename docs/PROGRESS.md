@@ -8,7 +8,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
 | T01 | Project scaffold & tooling 👤 | B | — | done | 2026-09-29 | 55ee09f |
-| T02 | Data-source spike & fixtures 👤 | A | T01 | in-progress | | |
+| T02 | Data-source spike & fixtures 👤 | A | T01 | done | 2026-09-29 | e2cbed1 |
 | T03 | Shared domain types, constants & helpers | B | T01, T02 | todo | | |
 | T04 | Scoring, validation & payout engine | A | T03 | todo | | |
 | T05 | Firebase wiring & emulators 👤 | B | T01, T03 | todo | | |
