@@ -34,12 +34,23 @@ scripts folder `jobs/`, lint/format/typecheck/test scripts, and a "Hello Fight C
 9. README: add a "Commands" section (one line per script).
 
 ## Acceptance criteria
-- [ ] `npm run lint && npm run typecheck && npm test && npm run build` all pass
-- [ ] `npm run jobs:hello` prints "hello from jobs" and a value imported from `@shared`
-- [ ] `git status` shows no secrets or build output
+- [x] `npm run lint && npm run typecheck && npm test && npm run build` all pass
+- [x] `npm run jobs:hello` prints "hello from jobs" and a value imported from `@shared`
+- [x] `git status` shows no secrets or build output
 
 ## Out of scope
 Firebase, routing, UI design, PWA.
 
 ## Completion notes
-_(agent fills in)_
+Versions: React 19.3.0, Vite 8.3.1, TypeScript 6.0.3, Vitest 5.0.2, Tailwind 4.3.3, ESLint 10.11.0.
+Four TS project references (app/node/shared/jobs) instead of the usual two, so `shared/` and `jobs/`
+typecheck under their own Node-appropriate configs. `paths` has no `baseUrl` (TS 6 deprecated it) —
+values are `./shared/*`-relative to each config's own location instead.
+Vitest 5 removed `environmentMatchGlobs`; used the `// @vitest-environment jsdom` per-file docblock
+on `src/App.test.tsx` instead, with `node` as the global default (covers `shared/**`, `jobs/**`).
+Local Node was v26, not the pinned LTS 22 — added `.mise.toml` (`node = "22"`) scoped to this repo;
+commands in this repo should run via `mise exec -- <cmd>` until the environment's shell activates
+mise automatically. Java 17 (needed from T05 for emulators) is not yet installed on this machine —
+flagged for later, not blocking.
+Follow-up for a later task: PWA icons/favicon removed from `index.html`/`public/` along with the
+demo assets; T11 will need to add real icons via `@vite-pwa/assets-generator`.

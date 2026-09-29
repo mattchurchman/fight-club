@@ -7,7 +7,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Milestone 1 — Foundation
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T01 | Project scaffold & tooling 👤 | B | — | todo | | |
+| T01 | Project scaffold & tooling 👤 | B | — | done | 2026-09-29 | pending |
 | T02 | Data-source spike & fixtures 👤 | A | T01 | todo | | |
 | T03 | Shared domain types, constants & helpers | B | T01, T02 | todo | | |
 | T04 | Scoring, validation & payout engine | A | T03 | todo | | |
@@ -52,4 +52,5 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 👤 = has a USER ACTION REQUIRED step (see the task file / docs/SETUP.md).
 
 ## Backlog (follow-ups discovered along the way)
-- _(empty)_
+- T11: scaffold has no favicon/app icons (demo assets were removed in T01) — add real ones via
+  `@vite-pwa/assets-generator` when PWA/design-system work happens.

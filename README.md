@@ -24,4 +24,15 @@ Tips: if an agent fails the checks twice, rerun the task one tier up. If a task 
 and add rows to PROGRESS.md. Don't run two tasks in one session.
 
 ## Commands
-_(T01 fills this in.)_
+- `npm run dev` — start the Vite dev server
+- `npm run build` — typecheck and build for production
+- `npm run preview` — preview the production build locally
+- `npm run lint` — run ESLint
+- `npm run format` — format the repo with Prettier
+- `npm run typecheck` — typecheck all projects (app, node, shared, jobs)
+- `npm test` — run the test suite once
+- `npm run test:watch` — run the test suite in watch mode
+- `npm run test:rules` — run Firestore rules tests (placeholder until T06)
+- `npm run emulators` — start the Firebase Emulator Suite (placeholder until T05)
+- `npm run job -- <path>` — run a job script with `tsx`, loading `.env.local` if present
+- `npm run jobs:hello` — run the sample `jobs/hello.ts` script
