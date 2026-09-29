@@ -34,6 +34,14 @@ excluded from import outright. **Proposal for the owner:** add `kind: 'special'`
 like `fightnight` for scoring but never auto-enable it. Until that's approved, T07 ingests these as
 `kind: 'fightnight'`, `number: null`, `enabled: false`. `DATA_MODEL.md` is unchanged.
 
+## 2026-09-29 — Owner approved both T02 spec proposals (planning)
+The owner approved the two proposals left open by T02. `DATA_MODEL.md` and `shared/types.ts` now read
+`odds.source: 'espn'|'oddsapi'|'manual'|'default'` and `events.kind: 'numbered'|'fightnight'|'special'`.
+Rationale: both fields record what something *is*, and the alternative was storing a value we know is false
+(ESPN odds labelled `oddsapi`, Noche UFC labelled `fightnight`). Consequences: T08 is rescoped to ESPN odds
+with The Odds API as a documented fallback; T07 ingests non-numbered, non-Fight-Night cards as
+`kind: 'special'`, `number: null`, `enabled: false` — scored like `fightnight`, never auto-enabled.
+
 ## 2026-09-29 — Added `@vitest/coverage-v8` dev dependency (T03)
 T03's acceptance criteria require `vitest --coverage` scoped to `shared/`, but no coverage provider was
 installed. Added `@vitest/coverage-v8@5.0.2` (pinned to the installed `vitest` version) as a dev-only

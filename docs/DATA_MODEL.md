@@ -34,7 +34,9 @@ badges?: string[]
 ## `events/{evt_id}`  (W: J, Adm; read: signed-in)
 ```
 name: "UFC 320", subtitle: "Ankalaev vs. Pereira 2", number: 320|null,
-kind: 'numbered'|'fightnight', enabled: boolean,
+kind: 'numbered'|'fightnight'|'special', enabled: boolean,   // 'special' = neither numbered nor Fight Night
+                                                            // (Noche UFC, UFC Freedom 250). Scored as
+                                                            // fightnight; never auto-enabled.
 startsAt, lockAt,                     // lockAt = main-card start (see DATA_SOURCES.md)
 status: 'scheduled'|'open'|'locked'|'live'|'final'|'cancelled',
 buyIn: number, budget: number, firstBloodEnabled: boolean,
@@ -49,7 +51,7 @@ Status flow: `scheduled` (imported, not enabled) → `open` (enabled, now < lock
 ```
 order: number (1 = main event), weightClass, rounds: 3|5, isMainEvent, isMainCard,
 a: { fighterId, name, record, headshotUrl|null }, b: { ... },   // denormalized snapshot
-odds: { a: number|null, b: number|null, source: 'oddsapi'|'manual'|'default', updatedAt, frozen: boolean },
+odds: { a: number|null, b: number|null, source: 'espn'|'oddsapi'|'manual'|'default', updatedAt, frozen: boolean },
 status: 'scheduled'|'live'|'final'|'cancelled',
 result: null | { winner: 'A'|'B'|'draw'|'nc', method: 'KO'|'SUB'|'DEC'|'DQ'|'OTHER', round|null, time|null,
                  firstBlood: 'A'|'B'|'none'|null, source: 'espn'|'manual', updatedAt }
