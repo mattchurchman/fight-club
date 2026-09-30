@@ -25,7 +25,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Milestone 3 — App MVP
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T11 | Design system, app shell, PWA | B | T01 | done | 2026-09-30 | |
+| T11 | Design system, app shell, PWA | B | T01 | done | 2026-09-30 | 52972c3 |
 | T12 | Auth, invite gate, onboarding 👤 | B | T05, T06, T11 | todo | | |
 | T13 | Fights tab: event page & bout cards | B | T07, T11, T12 | todo | | |
 | T14 | Pick builder & submission | B | T04, T13 | todo | | |
