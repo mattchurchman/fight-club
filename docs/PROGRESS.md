@@ -19,7 +19,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 |---|---|---|---|---|---|---|
 | T07 | Job: ESPN events/bouts/fighters | B | T02, T03, T05 | done | 2026-09-29 | 3a83153 |
 | T08 | Job: moneyline odds 👤 | B | T07 | done | 2026-09-29 | 6318e7d |
-| T09 | Job: lifecycle (lock/results/score/finalize) | A | T04, T06, T07 | done | 2026-09-29 | |
+| T09 | Job: lifecycle (lock/results/score/finalize) | A | T04, T06, T07 | done | 2026-09-29 | aabeb92 |
 | T10 | GitHub Actions: CI, schedules, deploy 👤 | C | T06–T09 | todo | | |
 
 ## Milestone 3 — App MVP
