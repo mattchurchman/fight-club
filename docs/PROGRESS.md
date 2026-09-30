@@ -17,7 +17,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Milestone 2 — Data pipeline
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T07 | Job: ESPN events/bouts/fighters | B | T02, T03, T05 | done | 2026-09-29 | pending |
+| T07 | Job: ESPN events/bouts/fighters | B | T02, T03, T05 | done | 2026-09-29 | 3a83153 |
 | T08 | Job: moneyline odds 👤 | B | T07 | todo | | |
 | T09 | Job: lifecycle (lock/results/score/finalize) | A | T04, T06, T07 | todo | | |
 | T10 | GitHub Actions: CI, schedules, deploy 👤 | C | T06–T09 | todo | | |
