@@ -43,6 +43,20 @@ and add rows to PROGRESS.md. Don't run two tasks in one session.
 - `npm run job -- <path>` — run a job script with `tsx`, loading `.env.local` if present
 - `npm run jobs:hello` — run the sample `jobs/hello.ts` script
 
+## Deploy & jobs
+
+**Push to `main`** triggers CI, which runs lint, typecheck, tests, build. If it passes, the app deploys to
+Firebase Hosting automatically.
+
+**Jobs** (ingest, odds, lifecycle) run on a schedule in GitHub Actions. You can also run them manually:
+1. GitHub repo → **Actions** → **Jobs** → **Run workflow**
+2. Select which job(s): `ingest`, `odds`, `lifecycle`, or `all`
+3. Check the logs at **Actions** → **Jobs** → the run
+
+You can run jobs from the GitHub mobile app too.
+
+For local job runs, see `npm run job` above.
+
 ## Emulator test accounts
 
 `npm run seed` creates these Auth + Firestore accounts (password `password123` for all). Later tasks

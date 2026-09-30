@@ -1,0 +1,61 @@
+name: Jobs
+
+on:
+  schedule:
+    - cron: '17 09 * * *'  # ingest: daily 09:17 UTC
+    - cron: '17 15 * * *'  # odds: daily 15:17 UTC
+    - cron: '*/15 12-23,0-8 * * 0,6'  # lifecycle: every 15 min Sat 12:00–Sun 08:59 UTC
+    - cron: '0 */3 * * 1-5'  # lifecycle: every 3 h Mon–Fri UTC
+  workflow_dispatch:
+    inputs:
+      job:
+        description: Job to run
+        required: true
+        default: all
+        type: choice
+        options:
+          - ingest
+          - odds
+          - lifecycle
+          - all
+
+env:
+  FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+  FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+  ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    concurrency: jobs
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Determine job(s) to run
+        id: jobs
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            JOB="${{ github.event.inputs.job }}"
+          else
+            case "${{ github.event.schedule }}" in
+              "17 09 * * *") JOB="ingest" ;;
+              "17 15 * * *") JOB="odds" ;;
+              "*/15 12-23,0-8 * * 0,6" | "0 */3 * * 1-5") JOB="lifecycle" ;;
+              *) JOB="all" ;;
+            esac
+          fi
+          echo "job=$JOB" >> $GITHUB_OUTPUT
+      - name: Run ingest
+        if: steps.jobs.outputs.job == 'ingest' || steps.jobs.outputs.job == 'all'
+        run: npm run job -- jobs/ingest-events.ts --live
+      - name: Run odds
+        if: steps.jobs.outputs.job == 'odds' || steps.jobs.outputs.job == 'all'
+        run: npm run job -- jobs/ingest-odds.ts --live
+      - name: Run lifecycle
+        if: steps.jobs.outputs.job == 'lifecycle' || steps.jobs.outputs.job == 'all'
+        run: npm run job -- jobs/lifecycle.ts --live
