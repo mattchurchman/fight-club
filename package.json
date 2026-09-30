@@ -19,7 +19,8 @@
     "job": "tsx --env-file-if-exists=.env.local",
     "jobs:hello": "npm run job -- jobs/hello.ts",
     "jobs:ingest": "npm run job -- jobs/ingest-events.ts",
-    "jobs:odds": "npm run job -- jobs/ingest-odds.ts"
+    "jobs:odds": "npm run job -- jobs/ingest-odds.ts",
+    "jobs:lifecycle": "npm run job -- jobs/lifecycle.ts"
   },
   "dependencies": {
     "firebase": "^12.19.0",

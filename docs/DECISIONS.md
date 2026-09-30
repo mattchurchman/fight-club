@@ -88,3 +88,31 @@ athlete ids, so bout/fighter context has to come from the DB either way).
 stake bounds, multipliers) and every leaderboard/profile screen needs other players' `displayName`, so both are
 readable by any signed-in user. Neither holds a secret: `admins` is a list of uids and `users` carries no
 credentials. Writes are unchanged — balance, role and stats stay admin/job-only.
+
+## 2026-09-29 — Deterministic ledger ids are how the lifecycle job stays re-runnable (T09)
+`docs/DATA_MODEL.md` writes `ledger/{autoId}`. Decided: every row the lifecycle job posts gets a
+**derived** id instead — `buyin_<eventId>_<uid>`, `payout_<eventId>_<uid>`, `refund_<eventId>_<uid>`,
+`grant_start_<uid>` — so `postLedger` finds the doc already there on a re-run and does nothing. Ad-hoc
+admin rows (`grant`, `adjust`) have no natural key and keep Firestore's random ids, so they can repeat.
+Consequence: the job is safe to run every 15 minutes and safe to resume after a crash mid-lock; the
+`autoId` in DATA_MODEL should be read as "the id is opaque to readers", not "always random". T17's admin
+grants must keep using random ids, or a second grant of the same size would silently vanish.
+
+## 2026-09-29 — A cancelled event records `finalizedAt` when its refunds are settled (T09)
+`docs/DATA_MODEL.md` gives `finalizedAt` no meaning for `cancelled`. `planCancel` sets it once the refunds
+are planned, which is what makes a second run a plan-level no-op rather than relying on the ledger ids alone.
+Consequence: `finalizedAt != null` means "settled", not "status == final" — T18's admin UI should read it
+that way, and an event re-cancelled after settling will not refund twice.
+
+## 2026-09-29 — One missing price defaults *both* sides of a bout (T09)
+`docs/GAME_RULES.md` §4 says "if odds are missing at lock, both sides are +100 and source `'default'`",
+without saying what one missing side means. Decided: a bout with either side null freezes to +100/+100
+with `source: 'default'`. Scoring a real price on one fighter against an invented +100 on the other would
+skew the pot in a way nobody could see; defaulting both is visible in `odds.source`.
+
+## 2026-09-29 — `--fixture` is repeatable on the lifecycle job (T09)
+`docs/tasks/T09` lists a single `--fixture`. A result needs two ESPN responses — `competitors[].winner`
+(only in `site/scoreboard`) and `status.result` (only in `core/.../competitions/{id}/status`) — and
+`fixtures/espn/` captures them as separate files. Decided: `--fixture` may be passed more than once and
+each file is classified by shape (an object with `events[]` is a scoreboard; anything else is a map of
+competition id → status). No new flag, and the existing fixtures work unchanged.

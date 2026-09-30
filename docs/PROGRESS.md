@@ -19,7 +19,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 |---|---|---|---|---|---|---|
 | T07 | Job: ESPN events/bouts/fighters | B | T02, T03, T05 | done | 2026-09-29 | 3a83153 |
 | T08 | Job: moneyline odds 👤 | B | T07 | done | 2026-09-29 | 6318e7d |
-| T09 | Job: lifecycle (lock/results/score/finalize) | A | T04, T06, T07 | todo | | |
+| T09 | Job: lifecycle (lock/results/score/finalize) | A | T04, T06, T07 | done | 2026-09-29 | |
 | T10 | GitHub Actions: CI, schedules, deploy 👤 | C | T06–T09 | todo | | |
 
 ## Milestone 3 — App MVP
@@ -78,3 +78,17 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
   narrow owner-claim rule.
 - T17: `tokenRequests` updates are restricted to `status`, `resolvedBy` and `resolvedAt`, and `status` must
   become `approved` or `denied` — admin UI cannot reopen a resolved request or edit its amount.
+- Tooling: `npm run seed` seeds no entries, so T09's emulator smoke needed a throwaway script to create
+  them. Seeding 3–4 entries (and one player too broke to pay) would make the lifecycle path runnable from
+  `npm run seed` alone (`jobs/seed-emulator.ts` was outside T09's allowed files).
+- T18: nothing writes `bout.result.firstBlood` — ESPN has no such field, so every event with
+  `firstBloodEnabled` waits the full `FIRST_BLOOD_GRACE_MS` (12 h) and then scores the prop 0. The admin
+  result screen needs a first-blood control, or the prop is dead on arrival.
+- T17: admin `grant`/`adjust` rows must keep random ledger ids (`ledgerId` returns null for them). Giving
+  them a derived id would make a second identical grant a silent no-op. See DECISIONS.md 2026-09-29.
+- T10: `jobs/lifecycle.ts` loads cancelled events whose `finalizedAt` is null with no date bound, so the
+  candidate query grows with the number of cancelled events ever. Fine at this scale; revisit if it ever
+  needs an index.
+- T18: an admin who moves a `final` event back to `live` would make the next lifecycle run re-apply the
+  finalize stage, double-counting season standings, h2h and `users.stats` (the ledger is protected by its
+  derived ids, those three collections are not). Either block that transition or have it undo the fold.

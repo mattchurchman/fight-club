@@ -46,13 +46,24 @@ Only the executor (Firestore reads/writes, ESPN fetch) lives in `jobs/`.
    is voided, a bout cancelled mid-event is a push, a manual result isn't overwritten, and first blood waits then voids after 12 h.
 
 ## Acceptance criteria
-- [ ] Walk-through test passes. Ledger sums equal the balance deltas. Pot conservation holds.
-- [ ] Emulator smoke: `npm run seed`, then `npm run jobs:lifecycle -- --live --now <after lockAt> --fixture <completed event>` finalizes the
+- [x] Walk-through test passes. Ledger sums equal the balance deltas. Pot conservation holds.
+- [x] Emulator smoke: `npm run seed`, then `npm run jobs:lifecycle -- --live --now <after lockAt> --fixture <completed event>` finalizes the
       seeded event, and a second run changes nothing
-- [ ] Definition of Done passes
+      (three runs: the prop-hold means finalize lands on the run after the 12 h grace; the fourth is a no-op)
+- [x] Definition of Done passes
 
 ## Out of scope
 Scheduling (T10), notifications (T24), badges (T23 adds a hook in finalize).
 
 ## Completion notes
-_(agent fills in)_
+Five pure planners in `shared/lifecycle/` (lock, results, scores, finalize, cancel) exported from
+`index.ts`, plus `shared/ledger-plan.ts`; `jobs/lifecycle.ts` is the executor and `jobs/lib/ledger.ts`
+the only balance writer. Planners take epoch millis, not `Timestamp` — that keeps `shared/` free of
+firebase and drops straight into the generic `Bout<Ts>`/`Entry<Ts>` types. Idempotency is two-layered:
+each planner refuses to fire outside its own status, and ledger rows carry derived ids.
+Deviations (logged in DECISIONS.md): deterministic ledger ids; `finalizedAt` marks a settled cancellation;
+one missing price defaults both sides; `--fixture` is repeatable (a result needs two ESPN responses).
+`planResults` also takes `now` — it stamps `result.updatedAt`, and a planner can't read the clock.
+Emulator smoke ran lock → results → live → first-blood hold → finalize → no-op; pot 200 in, 200 out.
+Follow-ups: `npm run seed` seeds no entries, so the smoke needed a throwaway script; nothing yet writes
+`result.firstBlood`, so every event with the prop on waits the full 12 h until T18 ships.
