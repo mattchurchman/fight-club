@@ -30,10 +30,21 @@ Every token change is a transactional ledger entry. New players automatically re
 
 ## Acceptance criteria
 - [ ] On the seed: invite a new email, sign in as it, onboard, and the starting grant appears (via the button or a lifecycle run); approving a request raises the balance and adds a ledger row
-- [ ] Rules tests still pass. Definition of Done passes. Build passes.
+- [x] Rules tests still pass. Definition of Done passes. Build passes.
 
 ## Out of scope
 Event controls (T18).
 
 ## Completion notes
-_(agent fills in)_
+Built `postLedger.ts` (web-SDK `runTransaction` twin of `jobs/lib/ledger.ts`, same DI'd
+refs/transaction shape so it unit-tests against a fake store) plus `invites.ts`, `people.ts`,
+`tokenRequests.ts` and `postStartingGrants.ts` on top of it. Admin screens: `AdminHomePage` (stat
+cards + `jobRuns` panel), `PeoplePage` (Invites/People tabs) and `TokensPage`, wired at
+`/admin`, `/admin/people`, `/admin/tokens`. Admin identity for "Make admin" is `config/app.admins`
+(arrayUnion) plus `users.role` for display, per the rules file's own comment. `shared/lifecycle/grants.ts`
+(`planStartingGrants`, pure) is called from both `jobs/lifecycle.ts` (one call in `main`, independent of
+event candidates) and the console's "Post pending starting grants" button. Verified end-to-end against
+the emulator: invite → revoke, grant/deduct → balance + ledger row, make admin, approve request →
+one ledger row, starting-grants button → idempotent on a second click. Deny has no note field — rules
+only allow `status`/`resolvedBy`/`resolvedAt` on update (DECISIONS.md 2026-09-30). See PROGRESS.md
+backlog for two smaller gaps found along the way.

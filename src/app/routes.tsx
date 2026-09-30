@@ -7,7 +7,9 @@ import { EventPage } from '../features/events/EventPage';
 import { LivePage } from '../features/live/LivePage';
 import { StandingsPlaceholder } from '../pages/StandingsPlaceholder';
 import { WalletPage } from '../features/wallet/WalletPage';
-import { AdminPlaceholder } from '../pages/AdminPlaceholder';
+import { AdminHomePage } from '../features/admin/AdminHomePage';
+import { PeoplePage } from '../features/admin/PeoplePage';
+import { TokensPage } from '../features/admin/TokensPage';
 import { NotFoundPlaceholder } from '../pages/NotFoundPlaceholder';
 import { InstallPage } from '../features/install/InstallPage';
 import { LoginPage } from '../features/auth/LoginPage';
@@ -43,10 +45,26 @@ export const routeTree: RouteObject[] = [
           { path: '/wallet', element: <WalletPage /> },
           { path: '/me', element: <MePage /> },
           {
-            path: '/admin/*',
+            path: '/admin',
             element: (
               <RequireAdmin>
-                <AdminPlaceholder />
+                <AdminHomePage />
+              </RequireAdmin>
+            ),
+          },
+          {
+            path: '/admin/people',
+            element: (
+              <RequireAdmin>
+                <PeoplePage />
+              </RequireAdmin>
+            ),
+          },
+          {
+            path: '/admin/tokens',
+            element: (
+              <RequireAdmin>
+                <TokensPage />
               </RequireAdmin>
             ),
           },

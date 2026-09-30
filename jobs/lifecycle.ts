@@ -26,8 +26,10 @@ import {
   type Millis,
   type ParsedBoutResult,
 } from '@shared/lifecycle/index.ts';
+import { planStartingGrants } from '@shared/lifecycle/grants.ts';
 import {
   h2hId,
+  type AllowlistEntry,
   type AppConfig,
   type Bout,
   type Entry,
@@ -36,6 +38,7 @@ import {
   type Standing,
   type User,
 } from '@shared/index.ts';
+import { ledgerId, STARTING_GRANT_SCOPE } from '@shared/ledger-plan.ts';
 import { getAdmin } from './lib/admin.ts';
 import { fetchJson, parseResult, type EspnScoreboard, type EspnStatus } from './lib/espn.ts';
 import { postLedgerRow } from './lib/ledger.ts';
@@ -498,6 +501,45 @@ async function applyCancel(args: Args, candidate: Candidate): Promise<boolean> {
   return true;
 }
 
+/** Every user's `grant_start_<uid>` ledger doc, batched, so the planner can skip who's already paid. */
+async function loadAlreadyGrantedUids(uids: string[]): Promise<Set<string>> {
+  const { db } = getAdmin();
+  if (uids.length === 0) return new Set();
+  const refs = uids.map((uid) => db.collection('ledger').doc(ledgerId('grant', STARTING_GRANT_SCOPE, uid)!));
+  const snaps = await db.getAll(...refs);
+  const granted = new Set<string>();
+  snaps.forEach((snap, i) => {
+    if (snap.exists) granted.add(uids[i]!);
+  });
+  return granted;
+}
+
+/** T17 step 6: every allowlisted user gets `allowlist.startingGrant` once. Independent of any event. */
+async function applyStartingGrants(args: Args): Promise<void> {
+  const { db } = getAdmin();
+  const [usersSnap, allowlistSnap] = await Promise.all([db.collection('users').get(), db.collection('allowlist').get()]);
+  const users = usersSnap.docs.map((doc) => ({ uid: doc.id, email: (doc.data() as User<Timestamp>).email }));
+  const allowlist = new Map(
+    allowlistSnap.docs.map((doc) => [doc.id, (doc.data() as AllowlistEntry<Timestamp>).startingGrant]),
+  );
+  const alreadyGranted = await loadAlreadyGrantedUids(users.map((u) => u.uid));
+  const plan = planStartingGrants(users, allowlist, alreadyGranted);
+  if (!plan.applies) return;
+
+  for (const grant of plan.grants) {
+    await commit(args, `starting grant +${grant.amount} → ${grant.uid}`, async () => {
+      const outcome = await postLedgerRow({
+        uid: grant.uid,
+        amount: grant.amount,
+        type: 'grant',
+        scope: grant.scope,
+        note: grant.note,
+      });
+      if (!outcome.posted) log.info(JOB_NAME, `ledger row ${outcome.id} already existed`);
+    });
+  }
+}
+
 // ---- Entry point ----
 
 async function runCandidate(
@@ -526,6 +568,8 @@ async function runCandidate(
 export async function main(argv: string[] = process.argv.slice(2)): Promise<void> {
   const args = parseArgs(argv);
   const { db } = getAdmin();
+
+  await applyStartingGrants(args);
 
   const docs = await loadEventDocs(args.event);
   const candidates: Candidate[] = [];

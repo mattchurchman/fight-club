@@ -116,3 +116,11 @@ skew the pot in a way nobody could see; defaulting both is visible in `odds.sour
 `fixtures/espn/` captures them as separate files. Decided: `--fixture` may be passed more than once and
 each file is classified by shape (an object with `events[]` is a scoreboard; anything else is a map of
 competition id → status). No new flag, and the existing fixtures work unchanged.
+
+## 2026-09-30 — Denying a token request carries no note (T17)
+`docs/tasks/T17` step 5 asks for "deny (with an optional note)". `firestore.rules`' `tokenRequests` update
+rule allows only `status`/`resolvedBy`/`resolvedAt` to change (`note` is the requester's own field, fixed at
+creation), so a denial note has nowhere to persist without a rules change, which is outside this task's
+files. Decided: `denyTokenRequest` takes no note; the admin UI has no note input for denial. See the
+PROGRESS.md backlog — a rules change (a separate `resolutionNote` field, or letting admins touch `note`) is
+a follow-up, not done here.

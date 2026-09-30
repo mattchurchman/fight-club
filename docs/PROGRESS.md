@@ -31,7 +31,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T14 | Pick builder & submission | B | T04, T13 | done | 2026-09-29 | 8e7b114 |
 | T15 | Pick reveal & live leaderboard | B | T09, T14 | done | 2026-09-29 | 2304d80 |
 | T16 | Wallet & token requests | C | T12 | done | 2026-09-30 | 0f3327f |
-| T17 | Admin: invites, people, tokens | B | T06, T09, T16 | todo | | |
+| T17 | Admin: invites, people, tokens | B | T06, T09, T16 | done | 2026-09-30 | |
 | T18 | Admin: event controls & manual results | B | T09, T13, T17 | todo | | |
 
 ## Milestone 4 — Launch 🚀 (invite friends after T20)
@@ -110,3 +110,14 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
   surface names or a count before lock.
 - T15: `LiveLeaderboard`'s own-row pin is CSS `sticky top-0` plus a gold ring, not a reorder-to-top
   — confirm that reads as "pinned" on a real device once the list is long enough to scroll.
+- T17: denying a token request has no note field — `firestore.rules`' `tokenRequests` update only allows
+  `status`/`resolvedBy`/`resolvedAt` to change. See DECISIONS.md 2026-09-30.
+- T17: `jobs/seed-emulator.ts` gives each seed player's starting grant a random ledger id (outside T17's
+  allowed files), not `grant_start_<uid>`. The admin console's "Post pending starting grants" button (and
+  a lifecycle run) won't recognise it as already-granted, so on a freshly-seeded emulator the first click
+  double-grants every seeded player. Real signups always get the deterministic id, so this only bites
+  local dev; fix by switching the seed script's ledger row to `ledgerId('grant', STARTING_GRANT_SCOPE, uid)`.
+- T17: `PeoplePage`'s "Post pending starting grants" button reads its own `useAllUsers()`/`useAllowlist()`
+  instead of the ones `PeoplePage` and `InvitesSection` already hold, so `/admin/people` opens a couple of
+  redundant `onSnapshot` listeners on `users`/`allowlist`. Harmless at friend-group scale, not worth
+  threading through further right now.
