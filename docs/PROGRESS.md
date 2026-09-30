@@ -12,7 +12,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T03 | Shared domain types, constants & helpers | B | T01, T02 | done | 2026-09-29 | 4e5a299 |
 | T04 | Scoring, validation & payout engine | A | T03 | done | 2026-09-29 | 0d55fe6 |
 | T05 | Firebase wiring & emulators 👤 | B | T01, T03 | done | 2026-09-29 | b51df1d |
-| T06 | Firestore security rules + tests | A | T03, T05 | done | 2026-09-29 | |
+| T06 | Firestore security rules + tests | A | T03, T05 | done | 2026-09-29 | cc85e7c |
 
 ## Milestone 2 — Data pipeline
 | ID | Task | Tier | Depends | Status | Date | Commit |
