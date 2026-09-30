@@ -1,8 +1,19 @@
+import { RouterProvider } from 'react-router-dom';
+import { ToastProvider } from './components/ui/Toast';
+import { router } from './app/routes';
+import { useSwUpdateToast } from './app/useSwUpdateToast';
+
+function SwUpdateWatcher() {
+  useSwUpdateToast();
+  return null;
+}
+
 function App() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-zinc-950 text-zinc-100">
-      <h1 className="text-2xl font-semibold">Hello Fight Club</h1>
-    </main>
+    <ToastProvider>
+      <SwUpdateWatcher />
+      <RouterProvider router={router} />
+    </ToastProvider>
   );
 }
 

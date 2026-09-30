@@ -25,7 +25,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Milestone 3 — App MVP
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T11 | Design system, app shell, PWA | B | T01 | todo | | |
+| T11 | Design system, app shell, PWA | B | T01 | done | 2026-09-30 | |
 | T12 | Auth, invite gate, onboarding 👤 | B | T05, T06, T11 | todo | | |
 | T13 | Fights tab: event page & bout cards | B | T07, T11, T12 | todo | | |
 | T14 | Pick builder & submission | B | T04, T13 | todo | | |
@@ -92,3 +92,6 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 - T18: an admin who moves a `final` event back to `live` would make the next lifecycle run re-apply the
   finalize stage, double-counting season standings, h2h and `users.stats` (the ledger is protected by its
   derived ids, those three collections are not). Either block that transition or have it undo the fold.
+- Tooling: the production JS bundle is one ~910 KB chunk (firebase + react-router + app code, no
+  code-splitting). Fine at T11's placeholder-screen size; revisit with `build.rollupOptions` manual
+  chunks or route-level `lazy` once real screens (T13+) add weight.

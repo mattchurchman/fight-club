@@ -1,5 +1,49 @@
 @import 'tailwindcss';
+@import '@fontsource/anton';
+@import '@fontsource/inter';
+
+@theme {
+  --color-bg: #0b0b0d;
+  --color-surface: #16161a;
+  --color-surface-2: #1f1f25;
+  --color-line: #2a2a31;
+  --color-text: #f4f4f5;
+  --color-muted: #a1a1aa;
+  --color-red: #e5383b;
+  --color-blue: #3a86ff;
+  --color-gold: #f5c518;
+  --color-win: #22c55e;
+  --color-loss: #ef4444;
+
+  --font-display: 'Anton', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+
+  --radius-card: 16px;
+  --radius-chip: 999px;
+}
+
+:root {
+  color-scheme: dark;
+}
 
 body {
-  background-color: #09090b;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
 }

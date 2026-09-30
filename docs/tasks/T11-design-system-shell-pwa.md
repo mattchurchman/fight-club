@@ -40,4 +40,16 @@ cleanly on iPhone. The screens are placeholders, but the whole app already looks
 Data fetching, auth, real screens.
 
 ## Completion notes
-_(agent fills in)_
+Built the theme (Tailwind v4 `@theme` tokens + Anton/Inter via @fontsource), 12 primitives in
+`src/components/ui/`, a router (`react-router-dom` data router) with an `AppShell`
+(header/outlet/tab bar) and a `BareLayout` for `/install` and `/login`, all placeholder pages, and
+`/dev/ui` (dev-only, lazy-loaded). PWA via `vite-plugin-pwa` (generateSW/autoUpdate) with a generated
+icon set from an original SVG glyph; update toast is tap-to-refresh, not auto-refresh.
+Also touched `src/App.tsx`/`src/App.test.tsx` (mounts the router — not listed under "Files you may
+touch" but unavoidable since `main.tsx` renders `App`) and `src/test/setup.ts`
+(`afterEach(cleanup)` — RTL's auto-cleanup needs a global `afterEach`, which this repo's
+`vitest.config` doesn't enable; without it, sequential tests in one file shared DOM state) plus a
+`matchMedia` polyfill for jsdom, and added `src/app/pwa-env.d.ts` for the `virtual:pwa-register/react`
+module types.
+Follow-up: the main JS chunk is ~910 KB (firebase + react-router bundled together, no code-splitting)
+— fine for T11, worth revisiting once real screens add weight.
