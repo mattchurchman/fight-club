@@ -43,4 +43,18 @@ upserts `events`, `bouts` (main card only) and `fighters` idempotently.
 Odds (T08), results and lifecycle (T09), scheduling (T10).
 
 ## Completion notes
-_(agent fills in)_
+Built entirely on `site/scoreboard` — the fixture has no `cardSegment`/`matchNumber` (those need a second,
+per-event core-API call), so main-card membership is derived by clustering `competitions[].date`: the
+segment sharing the latest timestamp is the main card (verified against UFC 331's known 3-segment split).
+Avoids the extra network call and matches the single-fixture acceptance test.
+
+`planEventWrites` is generic over `Ts` (tests use plain ISO strings, the job uses Firestore `Timestamp`) so
+the upsert-decision logic needs no emulator to test. Verified end-to-end against the real Firestore emulator
+too: admin-edited `buyIn`/`enabled` survive a second ingest, existing bouts keep their `odds`/`status`/`result`
+untouched (only a brand-new bout gets defaults), a bout pulled from the source gets `cancelled`, and a
+`locked` event only accepts cancellations.
+
+`headshotUrl()` builds the full-size image per DATA_SOURCES.md §5's "Rule:" line; the resizing combiner is
+left to the UI per the existing T11/T13 backlog item. `nickname` stays `null` (needs a separate
+`core/athletes/{id}` call the task doesn't ask for). Resolves the T07 backlog note (numbered regex on
+`shortName`).

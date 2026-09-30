@@ -17,7 +17,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Milestone 2 — Data pipeline
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T07 | Job: ESPN events/bouts/fighters | B | T02, T03, T05 | todo | | |
+| T07 | Job: ESPN events/bouts/fighters | B | T02, T03, T05 | done | 2026-09-29 | pending |
 | T08 | Job: moneyline odds 👤 | B | T07 | todo | | |
 | T09 | Job: lifecycle (lock/results/score/finalize) | A | T04, T06, T07 | todo | | |
 | T10 | GitHub Actions: CI, schedules, deploy 👤 | C | T06–T09 | todo | | |
@@ -57,8 +57,6 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on
   2026-09-29, and `odds.source` / `events.kind` now carry `'espn'` / `'special'`. See DECISIONS.md.
   The Odds API half of T02 stays ☐ because no `ODDS_API_KEY` was available; it is now a fallback only.
-- T07: ingest `Noche UFC` / `UFC Freedom 250`-style cards as `kind: 'special'`, `number: null`,
-  `enabled: false` (the numbered regex must match `shortName`, not `name`).
 - T11/T13: hotlink headshots through `a.espncdn.com/combiner/i?img=...&w=160` (30 KB, not 220 KB) and add an
   initials fallback — ~10% of athletes 404 (debutants).
 - Tooling: add `fixtures` to `.prettierignore` so `npm run format` stops rewriting captured JSON

@@ -62,6 +62,16 @@ The cap is 8, which is headroom over a 5–6 bout main card; an entry with more 
 than partially checked. Consequence: an event whose `mainCardBoutIds` exceeds 8 cannot be entered — T09/T13
 should flag that rather than let players hit a bare permission error.
 
+## 2026-09-29 — Main-card split from `site/scoreboard` alone, no core-API call (T07)
+`docs/DATA_SOURCES.md` §2 gets bout order/`cardSegment` from a second per-event `core/events/{id}` call, but
+no fixture captures that call for the upcoming event (`build-fixtures.ts` fetches it only to list ids for
+odds, never saves it), and T07's acceptance test passes just `fixtures/espn/scoreboard-upcoming.json`.
+Decided: cluster `competitions[].date` instead — the segment sharing the latest timestamp is the main card,
+and array order within it already has the main event last (verified against UFC 331's known `cardSegment`
+split in `event-completed-331.json`: the date-cluster split matches exactly). Consequence: T07 makes one
+network call per ingest run instead of `1 + events`, and never touches the `core` API. `parseResult` (T09)
+still needs it for `status`/`period`/`displayClock`.
+
 ## 2026-09-29 — Signed-in read on `config/app` and `users` (T06)
 `DATA_MODEL.md` states writers for both but no reader. The pick builder needs `config/app.defaults` (budget,
 stake bounds, multipliers) and every leaderboard/profile screen needs other players' `displayName`, so both are
