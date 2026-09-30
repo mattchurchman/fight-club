@@ -14,6 +14,7 @@ The work is split into 25 tasks (`docs/tasks/`). Each one is sized for **one fre
 **model tier** (A strongest, C cheapest; see `docs/MODEL_TIERS.md`). Agents follow `AGENTS.md`.
 
 **The loop, once per task:**
+
 1. Start a **new session** (or clear the context) in your agent tool, in this folder.
 2. Select a model of the tier the previous agent told you (T01 is **Tier B**).
 3. Send: `Run the next task. Model tier: B` (use the tier letter you're actually on).
@@ -24,6 +25,7 @@ Tips: if an agent fails the checks twice, rerun the task one tier up. If a task 
 and add rows to PROGRESS.md. Don't run two tasks in one session.
 
 ## Commands
+
 - `npm run dev` — start the Vite dev server
 - `npm run build` — typecheck and build for production
 - `npm run preview` — preview the production build locally
@@ -33,6 +35,25 @@ and add rows to PROGRESS.md. Don't run two tasks in one session.
 - `npm test` — run the test suite once
 - `npm run test:watch` — run the test suite in watch mode
 - `npm run test:rules` — run Firestore rules tests (placeholder until T06)
-- `npm run emulators` — start the Firebase Emulator Suite (placeholder until T05)
+- `npm run emulators` — start the Firebase Emulator Suite (Auth, Firestore, Hosting + UI at http://127.0.0.1:4000),
+  importing/exporting state to `.emulator-data/`
+- `npm run seed` — seed the running emulators with a test event and accounts (below). Run this in a second
+  terminal after `npm run emulators` is up.
+- `npm run deploy:rules` — deploy `firestore.rules` and `firestore.indexes.json` to the real project
 - `npm run job -- <path>` — run a job script with `tsx`, loading `.env.local` if present
 - `npm run jobs:hello` — run the sample `jobs/hello.ts` script
+
+## Emulator test accounts
+
+`npm run seed` creates these Auth + Firestore accounts (password `password123` for all). Later tasks
+(auth UI, admin console, etc.) rely on these exact emails:
+
+| Email            | Role   | Starting balance |
+| ---------------- | ------ | ---------------- |
+| `admin@test.dev` | admin  | 500              |
+| `p1@test.dev`    | player | 500              |
+| `p2@test.dev`    | player | 500              |
+| `p3@test.dev`    | player | 500              |
+
+It also creates one `open` event (UFC 332, from `fixtures/`) with 5 main-card bouts and `lockAt` two days
+out, so pick submission can be exercised locally once T14 exists.

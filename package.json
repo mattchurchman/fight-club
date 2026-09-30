@@ -13,11 +13,14 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:rules": "echo \"rules tests arrive in T06\"",
-    "emulators": "echo \"emulators arrive in T05\"",
+    "emulators": "firebase emulators:start --import=.emulator-data --export-on-exit=.emulator-data",
+    "seed": "FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 FIREBASE_PROJECT_ID=fight-club-4de90 npm run job -- jobs/seed-emulator.ts",
+    "deploy:rules": "firebase deploy --only firestore",
     "job": "tsx --env-file-if-exists=.env.local",
     "jobs:hello": "npm run job -- jobs/hello.ts"
   },
   "dependencies": {
+    "firebase": "^12.19.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
@@ -33,6 +36,8 @@
     "@vitest/coverage-v8": "^5.0.2",
     "eslint": "^10.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",
+    "firebase-admin": "^14.5.0",
+    "firebase-tools": "^15.32.0",
     "globals": "^17.12.0",
     "jsdom": "^30.1.1",
     "prettier": "^3.9.9",

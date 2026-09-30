@@ -42,4 +42,14 @@ client that auto-connects to emulators in dev. The jobs have an Admin SDK initia
 Real security rules (T06), auth UI (T12).
 
 ## Completion notes
-_(agent fills in)_
+Live project `fight-club-4de90` created and linked (`.firebaserc`); Auth (Google + Email/Password) and
+Firestore enabled by the user. `firebase.json` wires hosting/rules/indexes/emulators; `firestore.rules` is
+deny-all pending T06. `src/lib/firebase.ts` auto-connects to emulators in dev (verified the console log in
+a real browser) with persistent multi-tab cache. `jobs/lib/admin.ts` picks `FIREBASE_SERVICE_ACCOUNT` (CI)
+or `GOOGLE_APPLICATION_CREDENTIALS` (local) via `applicationDefault()`; emulator env vars are respected by
+the underlying SDKs with no special-casing needed. Verified end-to-end: started real emulators, ran
+`npm run seed`, and read back all seeded docs (4 users, config/app, 1 event/5 bouts/10 fighters, 4 ledger
+rows) with the Admin SDK. Also seeded `fighters/{id}` docs (not explicitly required by the steps, but
+DATA_MODEL treats it as a first-class collection and the data was already on hand from the fixture).
+Needed Java (S1 prerequisite, missing on this machine) — installed Temurin 21 via `mise` globally rather
+than blocking on it. Follow-up: `.prettierignore` needs `firestore.rules` + `.firebaserc` (see Backlog).

@@ -23,6 +23,7 @@ firebase-debug*.log
 .firebase/
 ui-debug.log
 firestore-debug.log
+.emulator-data/
 
 # Testing
 playwright-report/
