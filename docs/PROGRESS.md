@@ -26,7 +26,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
 | T11 | Design system, app shell, PWA | B | T01 | done | 2026-09-30 | 52972c3 |
-| T12 | Auth, invite gate, onboarding 👤 | B | T05, T06, T11 | todo | | |
+| T12 | Auth, invite gate, onboarding 👤 | B | T05, T06, T11 | done | 2026-09-30 | |
 | T13 | Fights tab: event page & bout cards | B | T07, T11, T12 | todo | | |
 | T14 | Pick builder & submission | B | T04, T13 | todo | | |
 | T15 | Pick reveal & live leaderboard | B | T09, T14 | todo | | |
@@ -95,3 +95,8 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 - Tooling: the production JS bundle is one ~910 KB chunk (firebase + react-router + app code, no
   code-splitting). Fine at T11's placeholder-screen size; revisit with `build.rollupOptions` manual
   chunks or route-level `lazy` once real screens (T13+) add weight.
+- T12: `jobs/seed-emulator.ts` seeds every player fully onboarded (allowlist + auth + `users/{uid}`
+  in one batch), so there's no seeded "invited, signed in, not yet onboarded" fixture to exercise
+  the onboarding screen — verified it manually instead (allowlist an email with no matching auth
+  user via `bootstrap-admin`, then sign up with that email through the UI). Outside T12's allowed
+  files (`jobs/seed-emulator.ts` isn't in its list).

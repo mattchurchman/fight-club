@@ -30,11 +30,25 @@ Only allowlisted emails get in. First sign-in creates a profile with a unique us
 7. Tests: `useSession` state machine with mocked Firebase, username validation, error-code mapping.
 
 ## Acceptance criteria
-- [ ] With emulators and seed: a seeded player can sign in and onboard, a random email lands on "invite only", and an admin sees the gear icon
-- [ ] Rules tests still pass. Definition of Done passes. Build passes.
+- [x] With emulators and seed: a seeded player can sign in and onboard, a random email lands on "invite only", and an admin sees the gear icon
+- [x] Rules tests still pass. Definition of Done passes. Build passes.
 
 ## Out of scope
 Admin UI for invites (T17).
 
 ## Completion notes
-_(agent fills in)_
+Built `src/features/auth/**` (SessionProvider/useSession state machine, LoginPage, NotInvitedPage,
+OnboardingPage, MePage, authErrors, username validation) and `src/app/RootLayout.tsx` +
+`RouteGuards.tsx` wiring it into the router. Header now shows a real balance and gates the admin
+gear icon on `isAdmin`. `jobs/bootstrap-admin.ts` is idempotent (verified against the emulator,
+including the "sign in once, then rerun" path).
+
+Surprising: the `config/app` listener (for `isAdmin`) must be keyed to `authUser` like the
+allowlist/profile listeners, not mounted once — Firestore's JS SDK never resubscribes past a
+`permission-denied` (which a listener started before sign-in always hits), so an admin's gear icon
+stayed hidden forever until fixed. Caught this by manually driving the emulator + dev server, not
+by the unit tests (mocked-Firebase tests can't catch a real Firestore SDK behavior like this).
+
+Follow-ups (not done, out of this task's files):
+- `jobs/seed-emulator.ts` seeds players fully onboarded; there's no seeded "invited but not yet
+  onboarded" fixture to exercise the onboarding screen without manual `bootstrap-admin`-style setup.

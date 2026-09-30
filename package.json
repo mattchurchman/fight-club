@@ -21,7 +21,8 @@
     "jobs:hello": "npm run job -- jobs/hello.ts",
     "jobs:ingest": "npm run job -- jobs/ingest-events.ts",
     "jobs:odds": "npm run job -- jobs/ingest-odds.ts",
-    "jobs:lifecycle": "npm run job -- jobs/lifecycle.ts"
+    "jobs:lifecycle": "npm run job -- jobs/lifecycle.ts",
+    "bootstrap:admin": "npm run job -- jobs/bootstrap-admin.ts"
   },
   "dependencies": {
     "@fontsource/anton": "^5.3.0",
