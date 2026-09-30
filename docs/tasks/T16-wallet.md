@@ -32,4 +32,4 @@ Players see their token balance, a readable ledger history, and can ask the admi
 Approving requests (T17).
 
 ## Completion notes
-_(agent fills in)_
+Built wallet feature with live balance display, ledger history (formatted with human labels), and token request form. TokenPill in header was already wired to live balance from SessionProvider. Implemented form validation per rules (amount 1-1000, one pending request max) and show all request statuses. Tests pass, lint clean, build passes.
