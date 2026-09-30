@@ -4,7 +4,7 @@ import { AppShell, BareLayout } from './AppShell';
 import { RootLayout } from './RootLayout';
 import { RequireAdmin, RequireReady } from './RouteGuards';
 import { EventPage } from '../features/events/EventPage';
-import { LivePlaceholder } from '../pages/LivePlaceholder';
+import { LivePage } from '../features/live/LivePage';
 import { StandingsPlaceholder } from '../pages/StandingsPlaceholder';
 import { WalletPlaceholder } from '../pages/WalletPlaceholder';
 import { AdminPlaceholder } from '../pages/AdminPlaceholder';
@@ -38,7 +38,7 @@ export const routeTree: RouteObject[] = [
         children: [
           { path: '/', element: <EventPage /> },
           { path: '/event/:id', element: <EventPage /> },
-          { path: '/live', element: <LivePlaceholder /> },
+          { path: '/live', element: <LivePage /> },
           { path: '/standings', element: <StandingsPlaceholder /> },
           { path: '/wallet', element: <WalletPlaceholder /> },
           { path: '/me', element: <MePage /> },

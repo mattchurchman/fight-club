@@ -29,7 +29,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T12 | Auth, invite gate, onboarding 👤 | B | T05, T06, T11 | done | 2026-09-30 | 511214b |
 | T13 | Fights tab: event page & bout cards | B | T07, T11, T12 | done | 2026-09-29 | 35270d3 |
 | T14 | Pick builder & submission | B | T04, T13 | done | 2026-09-29 | 8e7b114 |
-| T15 | Pick reveal & live leaderboard | B | T09, T14 | todo | | |
+| T15 | Pick reveal & live leaderboard | B | T09, T14 | done | 2026-09-29 | |
 | T16 | Wallet & token requests | C | T12 | todo | | |
 | T17 | Admin: invites, people, tokens | B | T06, T09, T16 | todo | | |
 | T18 | Admin: event controls & manual results | B | T09, T13, T17 | todo | | |
@@ -103,3 +103,10 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 - T14: `BudgetMeter`'s sticky offset above the tab bar (`bottom-16`) is a fixed guess at the tab
   bar's rendered height, not measured — confirm it clears the tab bar on a real iOS device (safe-area
   inset) rather than only desktop Chrome.
+- T15: the pre-lock Live tab can't show "who has submitted" as spec'd — `firestore.rules`'
+  `entriesRevealed` denies reading anyone else's entry before the event locks, and no other field
+  tracks submission count pre-lock. Shows just a countdown for now; would need a denormalized
+  counter (e.g. `event.submittedCount`, written by the same rules path as the entry create) to
+  surface names or a count before lock.
+- T15: `LiveLeaderboard`'s own-row pin is CSS `sticky top-0` plus a gold ring, not a reorder-to-top
+  — confirm that reads as "pinned" on a real device once the list is long enough to scroll.

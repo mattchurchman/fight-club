@@ -35,4 +35,19 @@ leaderboard that updates as results land. This is the core bragging-rights momen
 The share image (T22), comments (T25).
 
 ## Completion notes
-_(agent fills in)_
+Built `src/features/live/`: `hooks.ts` (`useEntries`, gated on `isRevealed`), pure `reveal.ts`
+(consensus/contrarian/pick-outcome), `leaderboard.ts` (wraps `shared/scoring.ts#rankEntries`),
+`lastResult.ts`, and the components (`RevealGrid` + `PlayerSheet` mounted via `PicksSection` on
+`EventPage`; `LiveLeaderboard` + `LastResultBanner` on the new `/live` route). FLIP reorder is a
+plain `useLayoutEffect` transform, skipped under `prefers-reduced-motion`. Own row is `sticky
+top-0` plus a gold ring rather than being moved to the top.
+
+Verified end-to-end against the Firestore emulator (seed + a throwaway script to create 4 entries
+and finalize a bout): reveal renders all 4 players with correct consensus/contrarian, the player
+sheet's score breakdown matches `shared/scoring.ts`, and finalizing a second bout live re-ranked
+the leaderboard and updated the last-result banner with no page reload.
+
+Follow-up (couldn't be done as specified): T15 step 3 asks for "who has submitted" (names only)
+before lock, but `firestore.rules`' `entriesRevealed` denies reading anyone else's entry before
+`locked` — there's no data source for this pre-lock. Left the pre-lock Live tab as just a
+countdown; logged in Backlog below.
