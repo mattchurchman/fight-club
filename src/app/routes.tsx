@@ -10,6 +10,8 @@ import { WalletPage } from '../features/wallet/WalletPage';
 import { AdminHomePage } from '../features/admin/AdminHomePage';
 import { PeoplePage } from '../features/admin/PeoplePage';
 import { TokensPage } from '../features/admin/TokensPage';
+import { EventDetailPage as AdminEventDetailPage } from '../features/admin/events/EventDetailPage';
+import { EventsListPage as AdminEventsListPage } from '../features/admin/events/EventsListPage';
 import { NotFoundPlaceholder } from '../pages/NotFoundPlaceholder';
 import { InstallPage } from '../features/install/InstallPage';
 import { LoginPage } from '../features/auth/LoginPage';
@@ -65,6 +67,22 @@ export const routeTree: RouteObject[] = [
             element: (
               <RequireAdmin>
                 <TokensPage />
+              </RequireAdmin>
+            ),
+          },
+          {
+            path: '/admin/events',
+            element: (
+              <RequireAdmin>
+                <AdminEventsListPage />
+              </RequireAdmin>
+            ),
+          },
+          {
+            path: '/admin/events/:id',
+            element: (
+              <RequireAdmin>
+                <AdminEventDetailPage />
               </RequireAdmin>
             ),
           },

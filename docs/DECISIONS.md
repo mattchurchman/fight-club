@@ -124,3 +124,14 @@ creation), so a denial note has nowhere to persist without a rules change, which
 files. Decided: `denyTokenRequest` takes no note; the admin UI has no note input for denial. See the
 PROGRESS.md backlog — a rules change (a separate `resolutionNote` field, or letting admins touch `note`) is
 a follow-up, not done here.
+
+## 2026-09-30 — Finalize/Cancel aren't one Firestore transaction (T18)
+`docs/tasks/T18` step 3 says Finalize "runs `planFinalize` in a transaction". A literal single
+`runTransaction` spanning entries + ledger + standings + h2h + users + event doesn't work: the Web SDK
+transaction API requires every read before any write, and posting more than one ledger row needs a
+get-then-write per row (`postLedger`, from T17). Decided: mirror `jobs/lifecycle.ts#applyFinalize`
+exactly instead — plain sequential writes, each idempotent (deterministic ledger ids; merges elsewhere),
+with `event.status → 'final'`/cancelled-settled written **last** so a crash mid-run leaves the event still
+`locked`/`live` and a retry recomputes the identical plan rather than getting stuck on `already-final`
+with nothing paid out. "A second finalize is blocked" (T18's acceptance criterion) still holds — it's
+`planFinalize` seeing `status === 'final'` that blocks it, not a transaction. Verified against the emulator.

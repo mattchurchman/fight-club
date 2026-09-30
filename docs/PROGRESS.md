@@ -32,7 +32,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T15 | Pick reveal & live leaderboard | B | T09, T14 | done | 2026-09-29 | 2304d80 |
 | T16 | Wallet & token requests | C | T12 | done | 2026-09-30 | 0f3327f |
 | T17 | Admin: invites, people, tokens | B | T06, T09, T16 | done | 2026-09-30 | 7263ba4 |
-| T18 | Admin: event controls & manual results | B | T09, T13, T17 | todo | | |
+| T18 | Admin: event controls & manual results | B | T09, T13, T17 | done | 2026-09-30 | |
 
 ## Milestone 4 — Launch 🚀 (invite friends after T20)
 | ID | Task | Tier | Depends | Status | Date | Commit |
@@ -121,3 +121,13 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
   instead of the ones `PeoplePage` and `InvitesSection` already hold, so `/admin/people` opens a couple of
   redundant `onSnapshot` listeners on `users`/`allowlist`. Harmless at friend-group scale, not worth
   threading through further right now.
+- T18: `AdminHomePage.tsx` has no link to `/admin/events` — it wasn't in T18's allowed files
+  (`src/features/admin/events/**`, `src/app/routes`). An admin has to type the URL until a future task
+  adds a nav entry (a `StatCard` like the other three, or a row in the Jobs card).
+- T18: Cancel event's code path (`applyCancel` in `src/features/admin/events/actions.ts`) reuses the same
+  `postLedgerRow` and last-write-is-the-status-flip pattern already verified live for Finalize, but wasn't
+  itself run against the emulator (only one seeded event, already spent finalizing it). Worth a real
+  cancel-and-refund pass before relying on it for a live Fight Night.
+- T18: only `EventStatus` gates what an admin can edit (`permissions.ts`) — there's no lock on a second
+  admin editing the same bout at the same time. Fine for one admin on a friend-group app; revisit if that
+  ever changes.

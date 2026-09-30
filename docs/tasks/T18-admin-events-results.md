@@ -28,11 +28,20 @@ results and first blood, and trigger a rescore or finalize from the phone.
 5. Tests: the form validation and the "can edit?" rules by status.
 
 ## Acceptance criteria
-- [ ] On the seed: enter results manually for all bouts, set first blood, finalize, and the payouts land in wallets. A second finalize is blocked.
-- [ ] Rules tests still pass. Definition of Done passes. Build passes.
+- [x] On the seed: enter results manually for all bouts, set first blood, finalize, and the payouts land in wallets. A second finalize is blocked.
+- [x] Rules tests still pass. Definition of Done passes. Build passes.
 
 ## Out of scope
 New scoring rules.
 
 ## Completion notes
-_(agent fills in)_
+`/admin/events` (list, enable toggle) and `/admin/events/:id` (terms, per-bout card reorder/remove,
+odds override, result + first-blood entry, Rescore/Finalize/Cancel with a diff preview and typed
+confirmation for the latter two). `actions.ts` mirrors `jobs/lifecycle.ts`'s own Firestore glue
+exactly, including write order (status flips to `final`/`cancelled`-settled **last**, so a crash
+mid-run is safe to retry) — see DECISIONS.md for why that's what "in a transaction" became. Verified
+live against the emulator: seeded 3 entries, entered all 5 results + first blood, Rescored, Finalized
+(payouts landed, balances correct, standings folded), confirmed Finalize/Rescore/Cancel all disable
+once `final`. Cancel's code path (same `postLedgerRow`, same order-last pattern) wasn't separately
+live-tested — only one seeded event, already spent on Finalize. `mainCardBoutIds` display field
+(nothing else reads it) discovered stale-if-unmaintained; kept it in sync in `saveCard` anyway.
