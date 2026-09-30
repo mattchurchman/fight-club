@@ -3,7 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { AppShell, BareLayout } from './AppShell';
 import { RootLayout } from './RootLayout';
 import { RequireAdmin, RequireReady } from './RouteGuards';
-import { FightsPlaceholder } from '../pages/FightsPlaceholder';
+import { EventPage } from '../features/events/EventPage';
 import { LivePlaceholder } from '../pages/LivePlaceholder';
 import { StandingsPlaceholder } from '../pages/StandingsPlaceholder';
 import { WalletPlaceholder } from '../pages/WalletPlaceholder';
@@ -36,7 +36,8 @@ export const routeTree: RouteObject[] = [
           </RequireReady>
         ),
         children: [
-          { path: '/', element: <FightsPlaceholder /> },
+          { path: '/', element: <EventPage /> },
+          { path: '/event/:id', element: <EventPage /> },
           { path: '/live', element: <LivePlaceholder /> },
           { path: '/standings', element: <StandingsPlaceholder /> },
           { path: '/wallet', element: <WalletPlaceholder /> },

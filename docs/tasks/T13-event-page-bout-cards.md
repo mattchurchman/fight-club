@@ -28,11 +28,22 @@ great-looking main card: headshots, records, odds, main-event ribbon, status and
 6. Tests: the default-event selection function, BoutCard rendering (odds formatting, result state), and fallback avatar.
 
 ## Acceptance criteria
-- [ ] With the seed: the Fights tab renders 5 bouts correctly at 375px. The main event is first and has its ribbon.
-- [ ] Definition of Done passes. Build passes.
+- [x] With the seed: the Fights tab renders 5 bouts correctly at 375px. The main event is first and has its ribbon.
+- [x] Definition of Done passes. Build passes.
 
 ## Out of scope
 Making picks (T14), other users' picks (T15).
 
 ## Completion notes
-_(agent fills in)_
+Built `src/features/events/`: `hooks.ts` (`useEvents`/`useEvent`/`useBouts` on `onSnapshot`, plus the
+pure `categorizeEvents`/`selectDefaultEventId` used for the default-event pick), `format.ts` (odds/date/
+result formatting), `EventHeader`, `BoutCard` (display mode), `EventSwitcher`, and `EventPage` wired at
+`/` and `/event/:id` in `routes.tsx`. `useEvents` uses the existing `events: enabled asc, startsAt asc`
+index and splits/sorts client-side, so no new Firestore index was needed.
+Verified against the seed (5 bouts, no odds yet) in the emulator UI at 375px: main event ribbon on
+bout 1, avatar-initials fallback, countdown, status chip all render correctly; no console errors.
+Left `src/pages/FightsPlaceholder.tsx` in place unreferenced, matching how T12 left `LoginPlaceholder`/
+`MePlaceholder` — it's outside this task's allowed files.
+Follow-ups (not done, outside scope): headshot hotlinking is still the T11/T13 backlog item in
+docs/PROGRESS.md; no seeded event has a result/live status, so that path was verified in
+BoutCard.test.tsx but not against real emulator data.
