@@ -40,4 +40,20 @@ Fast, fun, one-handed pick-making: tap a winner, tap a method, set a stake, mark
 Viewing others' picks (T15).
 
 ## Completion notes
-_(agent fills in)_
+Built `src/features/picks/`: `usePickDraft` (draft reducer + sessionStorage + Firestore entry
+create/update/validate), `PickBuilder` (mounted by `EventPage`), `BudgetMeter`, `FirstBloodPicker`,
+`autoBalance`/`preview` helpers. `BoutCard` gained an optional `pick` prop (tap-to-pick, method chips,
+stake stepper, lock toggle, "if right"/actual-score line) driven entirely by props, per the task.
+
+`usePickDraft` takes `(eventId, event, bouts)` rather than just `eventId` — `PickBuilder` already has
+`event`/`bouts` from `EventPage`'s existing listeners, so this avoids a second `useEvent`/`useBouts`
+subscription for the same documents. Same hook, same job, one less Firestore listener pair.
+
+Verified end-to-end against the emulator (seeded `p1@test.dev`): completed and submitted a 5-bout
+entry + First Blood in well under 30 taps, reloaded and saw picks restored, edited a method and
+resubmitted ("Picks updated."), then moved `lockAt` into the past and confirmed the card went
+read-only (no Stepper/Submit, static "Staked N pts") without touching `firestore.rules`.
+
+Follow-up: `BudgetMeter`'s sticky offset above the tab bar (`bottom-16`) is a fixed guess at the tab
+bar's height, not measured — looked correct in desktop Chrome but hasn't been checked against a real
+iOS safe-area inset.

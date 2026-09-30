@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { PickBuilder } from '../picks/PickBuilder.tsx';
 import { BoutCard } from './BoutCard.tsx';
 import { EventHeader } from './EventHeader.tsx';
 import { EventSwitcher } from './EventSwitcher.tsx';
@@ -51,7 +52,12 @@ export function EventPage() {
       {bouts === undefined ? (
         <BoutListSkeleton />
       ) : bouts.length === 0 ? (
-        <EmptyState title="Card not announced yet" description="Check back closer to fight night." />
+        <EmptyState
+          title="Card not announced yet"
+          description="Check back closer to fight night."
+        />
+      ) : event ? (
+        <PickBuilder event={event} bouts={bouts} />
       ) : (
         <div className="flex flex-col gap-3 p-4">
           {bouts.map((bout) => (

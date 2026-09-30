@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import type { Timestamp } from 'firebase/firestore';
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { BoutCard } from './BoutCard.tsx';
+import type { BoutPickProps } from './BoutCard.tsx';
 import type { BoutWithId } from './hooks.ts';
 
 // BoutCard never reads `updatedAt`, so a bare `.toMillis()` stub is enough here.
@@ -82,5 +83,80 @@ describe('BoutCard', () => {
     render(<BoutCard bout={bout()} />);
     expect(screen.getByLabelText('Fighter A')).toHaveTextContent('FA');
     expect(screen.getByLabelText('Fighter B')).toHaveTextContent('FB');
+  });
+});
+
+function pick(overrides: Partial<BoutPickProps> = {}): BoutPickProps {
+  return {
+    winner: undefined,
+    method: undefined,
+    stake: undefined,
+    isLock: false,
+    readOnly: false,
+    preview: null,
+    scoreTotal: null,
+    onSelectWinner: vi.fn(),
+    onSelectMethod: vi.fn(),
+    onChangeStake: vi.fn(),
+    onToggleLock: vi.fn(),
+    ...overrides,
+  };
+}
+
+describe('BoutCard pick mode', () => {
+  it('calls onSelectWinner when a fighter half is tapped', () => {
+    const onSelectWinner = vi.fn();
+    render(<BoutCard bout={bout()} pick={pick({ onSelectWinner })} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Pick Fighter B' }));
+    expect(onSelectWinner).toHaveBeenCalledWith('B');
+  });
+
+  it('shows a check mark on the picked fighter', () => {
+    render(<BoutCard bout={bout()} pick={pick({ winner: 'A' })} />);
+    expect(screen.getByRole('button', { name: 'Pick Fighter A' })).toHaveTextContent('✓');
+    expect(screen.getByRole('button', { name: 'Pick Fighter B' })).not.toHaveTextContent('✓');
+  });
+
+  it('calls onSelectMethod for the tapped method chip', () => {
+    const onSelectMethod = vi.fn();
+    render(<BoutCard bout={bout()} pick={pick({ onSelectMethod })} />);
+    fireEvent.click(screen.getByText('SUB'));
+    expect(onSelectMethod).toHaveBeenCalledWith('SUB');
+  });
+
+  it('calls onToggleLock when the lock toggle is tapped', () => {
+    const onToggleLock = vi.fn();
+    render(<BoutCard bout={bout()} pick={pick({ onToggleLock })} />);
+    fireEvent.click(screen.getByRole('button', { name: '🔒 Lock' }));
+    expect(onToggleLock).toHaveBeenCalled();
+  });
+
+  it('shows the "if right" preview while editing', () => {
+    render(<BoutCard bout={bout()} pick={pick({ preview: 700 })} />);
+    expect(screen.getByText('If right: +700 pts')).toBeInTheDocument();
+  });
+
+  it('shows the actual score instead of the preview once the bout is scored', () => {
+    render(<BoutCard bout={bout()} pick={pick({ preview: 700, scoreTotal: -150 })} />);
+    expect(screen.getByText('-150 pts')).toBeInTheDocument();
+    expect(screen.queryByText(/If right/)).not.toBeInTheDocument();
+  });
+
+  it('shows this bout\'s own validation error', () => {
+    render(<BoutCard bout={bout()} pick={pick({ errorMessage: 'Pick a winner, a method and a stake.' })} />);
+    expect(screen.getByText('Pick a winner, a method and a stake.')).toBeInTheDocument();
+  });
+
+  it('renders fighter halves as non-interactive once read-only, keeping the pick visible', () => {
+    render(<BoutCard bout={bout()} pick={pick({ winner: 'A', method: 'KO', stake: 200, readOnly: true })} />);
+    expect(screen.queryByRole('button', { name: 'Pick Fighter A' })).not.toBeInTheDocument();
+    expect(screen.getByText('✓')).toBeInTheDocument();
+  });
+
+  it('disables the method chip and lock toggle, and shows a static stake instead of the stepper', () => {
+    render(<BoutCard bout={bout()} pick={pick({ winner: 'A', method: 'KO', stake: 200, readOnly: true })} />);
+    expect(screen.getByText('KO')).toBeDisabled();
+    expect(screen.getByRole('button', { name: '🔒 Lock' })).toBeDisabled();
+    expect(screen.getByText('Staked 200 pts')).toBeInTheDocument();
   });
 });
