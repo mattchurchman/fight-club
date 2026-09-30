@@ -6,7 +6,7 @@ import { RequireAdmin, RequireReady } from './RouteGuards';
 import { EventPage } from '../features/events/EventPage';
 import { LivePage } from '../features/live/LivePage';
 import { StandingsPlaceholder } from '../pages/StandingsPlaceholder';
-import { WalletPlaceholder } from '../pages/WalletPlaceholder';
+import { WalletPage } from '../features/wallet/WalletPage';
 import { AdminPlaceholder } from '../pages/AdminPlaceholder';
 import { NotFoundPlaceholder } from '../pages/NotFoundPlaceholder';
 import { InstallPage } from '../features/install/InstallPage';
@@ -40,7 +40,7 @@ export const routeTree: RouteObject[] = [
           { path: '/event/:id', element: <EventPage /> },
           { path: '/live', element: <LivePage /> },
           { path: '/standings', element: <StandingsPlaceholder /> },
-          { path: '/wallet', element: <WalletPlaceholder /> },
+          { path: '/wallet', element: <WalletPage /> },
           { path: '/me', element: <MePage /> },
           {
             path: '/admin/*',
