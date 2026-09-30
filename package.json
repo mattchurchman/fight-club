@@ -18,7 +18,8 @@
     "deploy:rules": "firebase deploy --only firestore",
     "job": "tsx --env-file-if-exists=.env.local",
     "jobs:hello": "npm run job -- jobs/hello.ts",
-    "jobs:ingest": "npm run job -- jobs/ingest-events.ts"
+    "jobs:ingest": "npm run job -- jobs/ingest-events.ts",
+    "jobs:odds": "npm run job -- jobs/ingest-odds.ts"
   },
   "dependencies": {
     "firebase": "^12.19.0",

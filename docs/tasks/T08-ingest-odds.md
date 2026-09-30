@@ -27,11 +27,22 @@ It never changes odds once `odds.frozen` is true or the event has locked.
 
 ## Acceptance criteria
 - [ ] Dry run against the fixture prints the matched odds for each main-card bout
-- [ ] Frozen or manual odds are never overwritten (test)
-- [ ] Definition of Done passes
+- [x] Dry run against the fixture prints the matched odds for each main-card bout
+- [x] Frozen or manual odds are never overwritten (test)
+- [x] Definition of Done passes
 
 ## Out of scope
 Freezing odds at lock (T09).
 
 ## Completion notes
-_(agent fills in)_
+Rescoped to ESPN per DECISIONS.md (2026-09-29): `jobs/lib/oddsApi.ts` calls
+`core/events/{id}/competitions/{id}/odds` and matches by athlete id (median price across items,
+though only DraftKings has ever appeared). No API key, no name matching, no "unmatched via wrong
+guess" risk — matching is exact by id, so `parseBoutOdds` returns null only when a fighter's id
+isn't priced yet. The Odds API (§7) is not implemented — still unverified, no fixture, no key.
+`jobs/ingest-odds.ts` reads open events (status filtered in the query, `lockAt` within 10 days
+filtered in memory to avoid a composite index) and always reads bouts from Firestore, even in dry
+run — unlike T07, the odds fixture alone has no fighter names/ids to preview against. Verified
+end-to-end against the Firestore emulator: dry run writes nothing, `--live` writes `source: 'espn'`,
+and pre-set `frozen`/`manual` bouts are skipped and left untouched on a second `--live` run.
+Follow-up: none.

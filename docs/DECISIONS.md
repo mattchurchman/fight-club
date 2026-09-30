@@ -72,6 +72,17 @@ split in `event-completed-331.json`: the date-cluster split matches exactly). Co
 network call per ingest run instead of `1 + events`, and never touches the `core` API. `parseResult` (T09)
 still needs it for `status`/`period`/`displayClock`.
 
+## 2026-09-29 — T08 implemented as ESPN-only, not The Odds API (T08)
+`docs/tasks/T08-ingest-odds.md` still describes The Odds API (fetch/consensus/name-matching, an
+`ODDS_API_KEY` USER ACTION step). Per the earlier "Odds come from ESPN, not The Odds API" decision,
+T08 was built entirely against `core/events/{id}/competitions/{id}/odds` (docs/DATA_SOURCES.md §6),
+matched by athlete id — no key, no `shared/names.ts` matching. `jobs/lib/oddsApi.ts` keeps its name
+from the task's file list but its contents are ESPN parsing, not an Odds API client; the Odds API
+stays unimplemented (§7: unverified, no fixture). Consequence: the "USER ACTION REQUIRED" step never
+applies, and `jobs/ingest-odds.ts` reads bouts from Firestore even during `--dry-run` (T07's dry run
+never touches Firestore because its single fixture is self-contained; T08's odds fixture only carries
+athlete ids, so bout/fighter context has to come from the DB either way).
+
 ## 2026-09-29 — Signed-in read on `config/app` and `users` (T06)
 `DATA_MODEL.md` states writers for both but no reader. The pick builder needs `config/app.defaults` (budget,
 stake bounds, multipliers) and every leaderboard/profile screen needs other players' `displayName`, so both are
