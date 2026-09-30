@@ -29,7 +29,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T12 | Auth, invite gate, onboarding 👤 | B | T05, T06, T11 | done | 2026-09-30 | 511214b |
 | T13 | Fights tab: event page & bout cards | B | T07, T11, T12 | done | 2026-09-29 | 35270d3 |
 | T14 | Pick builder & submission | B | T04, T13 | done | 2026-09-29 | 8e7b114 |
-| T15 | Pick reveal & live leaderboard | B | T09, T14 | done | 2026-09-29 | |
+| T15 | Pick reveal & live leaderboard | B | T09, T14 | done | 2026-09-29 | 2304d80 |
 | T16 | Wallet & token requests | C | T12 | todo | | |
 | T17 | Admin: invites, people, tokens | B | T06, T09, T16 | todo | | |
 | T18 | Admin: event controls & manual results | B | T09, T13, T17 | todo | | |
