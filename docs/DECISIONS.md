@@ -47,3 +47,23 @@ T03's acceptance criteria require `vitest --coverage` scoped to `shared/`, but n
 installed. Added `@vitest/coverage-v8@5.0.2` (pinned to the installed `vitest` version) as a dev-only
 dependency — it's Vitest's own official coverage provider, not a new tool. Not in AGENTS.md §5; adding it
 here since removing it would make the stated acceptance check impossible to run.
+
+## 2026-09-29 — `config/app.admins` is the only admin authority (T06)
+`firestore.rules` resolves `isAdmin()` from `config/app.admins` and never reads `users/{uid}.role`. Rationale:
+`config/app` is the documented bootstrap path (SETUP.md S7) and is admin/job-only, whereas `role` lives in a doc
+its own owner can write — one rule bug there would hand out admin. `role` stays as display metadata, and the
+rules deny a player changing it anyway. Consequence: granting admin means editing `config/app.admins`.
+
+## 2026-09-29 — Entries carry at most 8 picks (T06)
+Firestore rules have no loops, so per-pick validation (winner/method/stake bounds, GAME_RULES §3) is unrolled
+over `picks.values()` at fixed indices. Firestore aborts any request after 1000 expression evaluations, and a
+12-slot unroll exceeded that on a full entry (observed as `PERMISSION_DENIED: maximum of 1000 expressions`).
+The cap is 8, which is headroom over a 5–6 bout main card; an entry with more picks is denied outright rather
+than partially checked. Consequence: an event whose `mainCardBoutIds` exceeds 8 cannot be entered — T09/T13
+should flag that rather than let players hit a bare permission error.
+
+## 2026-09-29 — Signed-in read on `config/app` and `users` (T06)
+`DATA_MODEL.md` states writers for both but no reader. The pick builder needs `config/app.defaults` (budget,
+stake bounds, multipliers) and every leaderboard/profile screen needs other players' `displayName`, so both are
+readable by any signed-in user. Neither holds a secret: `admins` is a list of uids and `users` carries no
+credentials. Writes are unchanged — balance, role and stats stay admin/job-only.

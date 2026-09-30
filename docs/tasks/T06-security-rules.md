@@ -37,12 +37,24 @@ validation. A thorough emulator test suite proves it. This is the app's entire t
    an admin granting tokens (allowed), an admin updating a ledger row (denied).
 
 ## Acceptance criteria
-- [ ] `npm run test:rules` passes with ≥40 assertions covering every collection
-- [ ] Definition of Done passes
-- [ ] Completion notes list any DATA_MODEL permission that couldn't be enforced in rules and how it's covered instead
+- [x] `npm run test:rules` passes with ≥40 assertions covering every collection — 97 tests, 4 files
+- [x] Definition of Done passes
+- [x] Completion notes list any DATA_MODEL permission that couldn't be enforced in rules and how it's covered instead
 
 ## Out of scope
 UI, jobs.
 
 ## Completion notes
-_(agent fills in)_
+`firestore.rules` now covers every collection in DATA_MODEL.md plus a catch-all deny; 97 emulator tests in
+`tests/rules/**` run via `npm run test:rules` (`firebase emulators:exec` + `vitest.rules.config.ts`, project
+`demo-fight-club`). `npm test` excludes them. Added `@firebase/rules-unit-testing` (approved dep).
+- `isAdmin()` reads `config/app.admins` only, never `users.role` — see DECISIONS.md.
+- **Not enforceable in rules:** stake sum == budget (no loops) — client-side `shared/validation.ts` plus the T09
+  lifecycle job, which voids invalid entries at lock. Noted in the rules file itself.
+- Per-pick checks *are* enforced, by unrolling `picks.values()` over 8 fixed indices. A 12-slot unroll tripped
+  Firestore's 1000-expression request limit, so **entries are capped at 8 picks** (DECISIONS.md).
+- Tightened beyond spec: `users` delete denied outright (orphans its `usernames` doc); admins may only move
+  `status/resolvedBy/resolvedAt` on a `tokenRequest`; entry updates may only touch picks/lockBoutId/firstBlood/updatedAt.
+- Surprise: `RulesTestContext.firestore()` is typed as the *compat* Firestore but returns a modular one —
+  one cast in `tests/rules/helpers.ts` (`dbOf`) keeps call sites typed.
+- Follow-ups: `tests/**` is outside `tsc -b`; `allowlist.claimedBy` has no writer for onboarding (T12).

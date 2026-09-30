@@ -1,9 +1,347 @@
 rules_version = '2';
 
-// Placeholder: deny all client reads/writes until T06 implements the real rules.
-// Jobs use the Admin SDK, which bypasses these rules entirely.
+// Fight Club v2 — the app's entire trust boundary. Mirrors the "W:" / "read:" lines in
+// docs/DATA_MODEL.md and the entry gate in docs/GAME_RULES.md §2–3.
+//
+// Jobs (jobs/**) use the Admin SDK and bypass these rules entirely; everything a player's
+// browser can do is below. Tests: tests/rules/** (`npm run test:rules`).
+//
+// Admin identity: a uid listed in `config/app.admins` (written by hand / the bootstrap job,
+// see docs/SETUP.md S7). `users/{uid}.role` is display metadata only and is NOT consulted here,
+// so a compromised profile write can never grant admin.
+//
+// Two things in GAME_RULES.md cannot be expressed in rules and are enforced elsewhere:
+//   1. Sum of stakes == event budget (GAME_RULES §3). Rules have no loops, so the total is
+//      checked client-side (shared/validation.ts) and again by the lifecycle job (T09), which
+//      voids invalid entries at lock.
+//   2. Per-bout structural checks below are unrolled over the first MAX_PICKS values of the
+//      `picks` map (see pickValuesOk) — enough for any real main card, but not unbounded.
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ---------------------------------------------------------------- helpers
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function authEmailLower() {
+      return request.auth.token.email is string ? request.auth.token.email.lower() : '';
+    }
+
+    function appConfig() {
+      return get(/databases/$(database)/documents/config/app).data;
+    }
+
+    function isAdmin() {
+      return signedIn() && request.auth.uid in appConfig().admins;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function allowlisted() {
+      return signedIn()
+        && authEmailLower() != ''
+        && exists(/databases/$(database)/documents/allowlist/$(authEmailLower()));
+    }
+
+    // Every key this write touches is in `fields` (no other field added, changed or removed).
+    function onlyChanged(fields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+    }
+
+    function eventDoc(eventId) {
+      return get(/databases/$(database)/documents/events/$(eventId)).data;
+    }
+
+    function userDoc(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    // ------------------------------------------------------------ config/app
+
+    // Read is open to any signed-in user: the pick builder needs `defaults` (budget, stake
+    // bounds, multipliers). DATA_MODEL.md lists no read rule for this doc; nothing in it is
+    // secret. Writes stay with admins and jobs.
+    match /config/{docId} {
+      allow get, list: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // ------------------------------------------------------------- allowlist
+
+    // A signed-in user may read only their own invite (to learn their grant/role at onboarding).
+    match /allowlist/{emailLower} {
+      allow get: if isAdmin() || (signedIn() && emailLower == authEmailLower());
+      allow list: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ----------------------------------------------------------------- users
+
+    function userCreateOk(uid) {
+      let d = request.resource.data;
+      return isOwner(uid)
+        && allowlisted()
+        && d.keys().hasOnly([
+          'displayName', 'username', 'usernameLower', 'photoURL',
+          'email', 'role', 'balance', 'createdAt', 'lastSeenAt'
+        ])
+        && d.keys().hasAll([
+          'displayName', 'username', 'usernameLower', 'photoURL',
+          'email', 'role', 'balance', 'createdAt', 'lastSeenAt'
+        ])
+        && d.displayName is string && d.displayName.size() > 0 && d.displayName.size() <= 40
+        && d.username is string && d.username.size() > 0 && d.username.size() <= 20
+        && d.usernameLower == d.username.lower()
+        && (d.photoURL == null || d.photoURL is string)
+        && d.email is string && d.email.lower() == authEmailLower()
+        && d.role == 'player'
+        && d.balance == 0
+        && d.createdAt == request.time
+        && d.lastSeenAt == request.time
+        // the uniqueness doc must land in the same batch
+        && existsAfter(/databases/$(database)/documents/usernames/$(d.usernameLower));
+    }
+
+    match /users/{uid} {
+      allow get, list: if signedIn();
+      allow create: if userCreateOk(uid);
+      // Profile fields only. balance / role / stats / badges are admin- and job-only, which is
+      // what keeps a player from writing their own balance.
+      allow update: if isAdmin()
+        || (isOwner(uid)
+            && onlyChanged(['displayName', 'username', 'usernameLower', 'photoURL', 'lastSeenAt'])
+            && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['username'])
+                || request.resource.data.usernameLower == request.resource.data.username.lower()));
+      // Deleting a profile would orphan its `usernames` doc and its ledger history; jobs do it.
+      allow delete: if false;
+
+      // T24. A player's own FCM tokens.
+      match /devices/{token} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // Username uniqueness. Created by the owner alongside their user doc; freeing an old name
+    // (a rename) is a delete by its owner. Updates in place are never allowed.
+    match /usernames/{usernameLower} {
+      allow get, list: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid
+        && existsAfter(/databases/$(database)/documents/users/$(request.auth.uid));
+      allow update: if false;
+      allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    // -------------------------------------------------- fighters / events / bouts
+
+    match /fighters/{fighterId} {
+      allow get, list: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /events/{eventId} {
+      allow get, list: if signedIn();
+      allow write: if isAdmin();
+
+      match /bouts/{boutId} {
+        allow get, list: if signedIn();
+        allow write: if isAdmin();
+      }
+
+      // ------------------------------------------------------------- entries
+
+      // One pick. Stake bounds mirror GAME_RULES §3 (50..400, step 25); they are literals
+      // because rules cannot import shared/constants.ts.
+      // Kept deliberately lean: Firestore aborts a request after 1000 expression evaluations,
+      // and this runs once per pick. `.keys()` on a non-map errors out, which denies, so there
+      // is no separate `is map` check here.
+      function pickOk(p) {
+        return p.keys().hasOnly(['winner', 'method', 'stake'])
+          && p.keys().size() == 3
+          && (p.winner == 'A' || p.winner == 'B')
+          && (p.method == 'KO' || p.method == 'SUB' || p.method == 'DEC')
+          && p.stake is int
+          && p.stake >= 50
+          && p.stake <= 400
+          && p.stake % 25 == 0;
+      }
+
+      // Rules have no loops, so the per-pick check is unrolled. `vals.size() <= i ||` both
+      // short-circuits past the end of the list and keeps the index in range.
+      function nthPickOk(vals, i) {
+        return vals.size() <= i || pickOk(vals[i]);
+      }
+
+      function pickValuesOk(vals) {
+        return nthPickOk(vals, 0) && nthPickOk(vals, 1) && nthPickOk(vals, 2)
+          && nthPickOk(vals, 3) && nthPickOk(vals, 4) && nthPickOk(vals, 5)
+          && nthPickOk(vals, 6) && nthPickOk(vals, 7);
+      }
+
+      // MAX_PICKS = 8, which is what makes the unrolled check above exhaustive rather than a
+      // sample. A main card is 5–6 bouts, so 8 is headroom; it is also about as far as the
+      // unroll can go before a full entry exceeds Firestore's 1000-expression request budget.
+      // An entry with more picks than this is denied outright rather than half-checked.
+      function picksOk(picks) {
+        return picks is map
+          && picks.size() >= 1
+          && picks.size() <= 8
+          && pickValuesOk(picks.values());
+      }
+
+      function firstBloodOk(fb) {
+        return fb == null
+          || (fb is map
+              && fb.keys().hasOnly(['boutId', 'fighter'])
+              && fb.keys().hasAll(['boutId', 'fighter'])
+              && fb.boutId is string
+              && fb.fighter in ['A', 'B']);
+      }
+
+      // GAME_RULES §2: event enabled and open, before lockAt, and the player can cover the buy-in.
+      function entryWindowOpen(eventId, uid) {
+        let ev = eventDoc(eventId);
+        return ev.enabled == true
+          && ev.status == 'open'
+          && request.time < ev.lockAt
+          && userDoc(uid).balance >= ev.buyIn;
+      }
+
+      function entriesRevealed(eventId) {
+        return eventDoc(eventId).status in ['locked', 'live', 'final'];
+      }
+
+      match /entries/{uid} {
+        // Own entry always; everyone else's only once picks are revealed at lock.
+        allow get, list: if isAdmin() || isOwner(uid) || (signedIn() && entriesRevealed(eventId));
+
+        allow create: if isAdmin()
+          || (isOwner(uid)
+              && entryWindowOpen(eventId, uid)
+              && request.resource.data.keys().hasOnly([
+                'uid', 'displayName', 'photoURL', 'picks', 'lockBoutId', 'firstBlood',
+                'status', 'submittedAt', 'updatedAt', 'charged', 'score', 'rank', 'payout'
+              ])
+              && request.resource.data.uid == uid
+              && request.resource.data.status == 'submitted'
+              && request.resource.data.charged == false
+              && request.resource.data.score == null
+              && request.resource.data.rank == null
+              && request.resource.data.payout == null
+              && request.resource.data.lockBoutId is string
+              && request.resource.data.lockBoutId in request.resource.data.picks.keys()
+              && firstBloodOk(request.resource.data.firstBlood)
+              && picksOk(request.resource.data.picks));
+
+        // Editing picks before lock. score / rank / payout / charged / status / uid are all
+        // absent from the allowed key list, so they cannot move.
+        allow update: if isAdmin()
+          || (isOwner(uid)
+              && entryWindowOpen(eventId, uid)
+              && resource.data.status == 'submitted'
+              && onlyChanged(['picks', 'lockBoutId', 'firstBlood', 'updatedAt'])
+              && request.resource.data.lockBoutId is string
+              && request.resource.data.lockBoutId in request.resource.data.picks.keys()
+              && firstBloodOk(request.resource.data.firstBlood)
+              && picksOk(request.resource.data.picks));
+
+        // Withdrawing is not a product feature; the lifecycle job voids entries instead.
+        allow delete: if isAdmin();
+      }
+
+      // -------------------------------------------------------- comments (T25)
+
+      match /comments/{commentId} {
+        allow get, list: if signedIn();
+        allow create: if signedIn()
+          && request.resource.data.keys().hasOnly([
+            'uid', 'displayName', 'boutId', 'text', 'emoji', 'createdAt'
+          ])
+          && request.resource.data.keys().hasAll(['uid', 'displayName', 'text', 'createdAt'])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.displayName is string
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 280
+          && (!('boutId' in request.resource.data) || request.resource.data.boutId == null
+              || request.resource.data.boutId is string)
+          && (!('emoji' in request.resource.data) || request.resource.data.emoji == null
+              || request.resource.data.emoji is string)
+          // forces serverTimestamp(); no back- or future-dating
+          && request.resource.data.createdAt == request.time;
+        allow update: if false;
+        allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      }
+    }
+
+    // ---------------------------------------------------------------- ledger
+
+    // Append-only, and never written by a player — balances move only in a job transaction or
+    // an admin grant. No update or delete for anyone, admins included.
+    match /ledger/{rowId} {
+      allow get, list: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isAdmin()
+        && request.resource.data.uid is string
+        && request.resource.data.amount is int
+        && request.resource.data.type in ['grant', 'buyin', 'payout', 'refund', 'adjust']
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // --------------------------------------------------------- tokenRequests
+
+    match /tokenRequests/{requestId} {
+      allow get, list: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'uid', 'displayName', 'amount', 'note', 'status',
+          'createdAt', 'resolvedBy', 'resolvedAt'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.amount is int
+        && request.resource.data.amount >= 1
+        && request.resource.data.amount <= 1000
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.get('resolvedBy', null) == null
+        && request.resource.data.get('resolvedAt', null) == null;
+      // Only an admin resolves a request, and only the resolution fields move.
+      allow update: if isAdmin()
+        && onlyChanged(['status', 'resolvedBy', 'resolvedAt'])
+        && request.resource.data.status in ['approved', 'denied'];
+      allow delete: if isAdmin();
+    }
+
+    // ------------------------------------------------- standings / h2h / jobRuns
+
+    match /seasons/{seasonId} {
+      allow get, list: if signedIn();
+      allow write: if isAdmin();
+
+      match /standings/{uid} {
+        allow get, list: if signedIn();
+        allow write: if isAdmin();
+      }
+    }
+
+    match /h2h/{pairId} {
+      allow get, list: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Job health is an admin concern; only the Admin SDK writes it.
+    match /jobRuns/{jobName} {
+      allow get, list: if isAdmin();
+      allow write: if false;
+    }
+
+    // ---------------------------------------------------------- default deny
+
     match /{document=**} {
       allow read, write: if false;
     }

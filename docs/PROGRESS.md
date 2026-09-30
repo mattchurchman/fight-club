@@ -12,7 +12,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T03 | Shared domain types, constants & helpers | B | T01, T02 | done | 2026-09-29 | 4e5a299 |
 | T04 | Scoring, validation & payout engine | A | T03 | done | 2026-09-29 | 0d55fe6 |
 | T05 | Firebase wiring & emulators 👤 | B | T01, T03 | done | 2026-09-29 | b51df1d |
-| T06 | Firestore security rules + tests | A | T03, T05 | todo | | |
+| T06 | Firestore security rules + tests | A | T03, T05 | done | 2026-09-29 | |
 
 ## Milestone 2 — Data pipeline
 | ID | Task | Tier | Depends | Status | Date | Commit |
@@ -69,3 +69,14 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 - Tooling: `shared/names.test.ts` fails `prettier --check` (predates T04, outside its allowed files).
 - Tooling: add `firestore.rules` and `.firebaserc` to `.prettierignore` — prettier has no parser for either,
   so `npm run format` errors on them (outside T05's allowed files).
+- Tooling: `tests/**` is not covered by `npm run typecheck` — `tsc -b` only references the app/node/shared/jobs
+  projects. Add a `tsconfig.tests.json` (node types, `allowImportingTsExtensions`) and reference it from
+  `tsconfig.json`; that root file was outside T06's allowed files. T06's rules tests were typechecked by hand.
+- T09/T13: entries are capped at 8 picks by `firestore.rules` (see DECISIONS.md). An event whose
+  `mainCardBoutIds` is longer than 8 cannot be entered — surface that as an admin warning rather than letting
+  players hit a bare `permission-denied`.
+- T12: nothing writes `allowlist/{email}.claimedBy` / `claimedAt` at onboarding. DATA_MODEL gives the allowlist
+  `W: Adm`, so the rules deny the claiming user; either a job/admin action marks it, or the spec needs a
+  narrow owner-claim rule.
+- T17: `tokenRequests` updates are restricted to `status`, `resolvedBy` and `resolvedAt`, and `status` must
+  become `approved` or `denied` — admin UI cannot reopen a resolved request or edit its amount.
