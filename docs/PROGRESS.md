@@ -11,7 +11,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T02 | Data-source spike & fixtures 👤 | A | T01 | done | 2026-09-29 | e2cbed1 |
 | T03 | Shared domain types, constants & helpers | B | T01, T02 | done | 2026-09-29 | 4e5a299 |
 | T04 | Scoring, validation & payout engine | A | T03 | done | 2026-09-29 | 0d55fe6 |
-| T05 | Firebase wiring & emulators 👤 | B | T01, T03 | done | 2026-09-29 | |
+| T05 | Firebase wiring & emulators 👤 | B | T01, T03 | done | 2026-09-29 | b51df1d |
 | T06 | Firestore security rules + tests | A | T03, T05 | todo | | |
 
 ## Milestone 2 — Data pipeline
