@@ -18,7 +18,7 @@ import type { ResultInput } from './eventWrites.ts';
 import { canEditCard, canEditEventTerms, canEnterResult, canOverrideOdds } from './permissions.ts';
 
 const inputClass =
-  'min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus:outline-none';
+  'min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
 
 function changedBouts(before: readonly BoutWithId[], after: readonly BoutWithId[]): BoutWithId[] {
   const orig = new Map(before.map((b) => [b.id, b]));

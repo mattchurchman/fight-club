@@ -137,7 +137,7 @@ export function TokenRequestSheet({ open, onClose, requests, onSuccess }: TokenR
                   className={clsx(
                     'min-h-11 rounded-chip border px-4 text-sm',
                     'bg-surface-2 text-text placeholder-muted',
-                    'border-line focus:border-gold focus:outline-none',
+                    'border-line focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
                     hasPending && 'opacity-50',
                   )}
                 />
@@ -161,7 +161,7 @@ export function TokenRequestSheet({ open, onClose, requests, onSuccess }: TokenR
               maxLength={100}
               className={clsx(
                 'w-full rounded-lg border border-line bg-surface-2 p-3 text-sm',
-                'text-text placeholder-muted focus:border-gold focus:outline-none',
+                'text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
                 hasPending && 'opacity-50',
               )}
               rows={3}

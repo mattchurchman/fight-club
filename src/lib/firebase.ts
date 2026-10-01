@@ -17,7 +17,11 @@ export const db: Firestore = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
 });
 
-const useEmulators = import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS !== 'false';
+// `vite build --mode e2e` (.env.e2e) sets VITE_USE_EMULATORS=true so the production bundle
+// served by the hosting emulator (docs/tasks/T19) also talks to the emulators, not prod Firebase.
+const useEmulators =
+  import.meta.env.VITE_USE_EMULATORS === 'true' ||
+  (import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS !== 'false');
 
 if (useEmulators) {
   connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });

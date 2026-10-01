@@ -16,7 +16,7 @@ const WINNERS: { value: Winner; label: string }[] = [
 ];
 const METHODS: readonly ResultMethod[] = ['KO', 'SUB', 'DEC', 'DQ', 'OTHER'];
 const inputClass =
-  'min-h-9 rounded-chip border border-line bg-surface-2 px-3 text-sm text-text placeholder-muted focus:border-gold focus:outline-none';
+  'min-h-9 rounded-chip border border-line bg-surface-2 px-3 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
 
 interface BoutRowProps {
   bout: BoutWithId;

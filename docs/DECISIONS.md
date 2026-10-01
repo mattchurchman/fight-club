@@ -135,3 +135,13 @@ with `event.status → 'final'`/cancelled-settled written **last** so a crash mi
 `locked`/`live` and a retry recomputes the identical plan rather than getting stuck on `already-final`
 with nothing paid out. "A second finalize is blocked" (T18's acceptance criterion) still holds — it's
 `planFinalize` seeing `status === 'final'` that blocks it, not a transaction. Verified against the emulator.
+
+## 2026-09-30 — T19 touched a few files outside its list
+`docs/tasks/T19`'s "Files you may touch" names `e2e/**`, `playwright.config.ts`, `package.json` (script
+`test:e2e`) and small `src/**` fixes. Getting `npm run test:e2e` to actually pass needed a handful of
+small companion changes outside that list, same category as T06's noted `tsconfig.tests.json` gap:
+`.gitignore` (`!.env.e2e`, `e2e/.generated/`), `.env.e2e` itself (the `VITE_USE_EMULATORS=true` flag a
+built bundle needs to reach the emulators — paired with the in-scope `src/lib/firebase.ts` fix), and
+`package.json`'s existing `test`/`test:watch` scripts (added `--exclude "e2e/**"`, since vitest's default
+glob otherwise tries to run the Playwright spec itself and fails with "test() did not expect to be
+called here"). None of these change what `npm run build` or any other script does outside of e2e.

@@ -80,7 +80,7 @@ export function GrantAdjustSheet({ player, onClose }: GrantAdjustSheetProps) {
                 value={amount === '' ? '' : amount}
                 onChange={(e) => setAmount(e.target.value === '' ? '' : Math.max(1, Math.floor(Number(e.target.value))))}
                 placeholder="Custom"
-                className="min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus:outline-none"
+                className="min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
               />
             </div>
           </div>
@@ -96,7 +96,7 @@ export function GrantAdjustSheet({ player, onClose }: GrantAdjustSheetProps) {
               onChange={(e) => setNote(e.target.value)}
               placeholder="Why?"
               maxLength={100}
-              className="min-h-11 w-full rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus:outline-none"
+              className="min-h-11 w-full rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
             />
           </div>
 

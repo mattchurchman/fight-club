@@ -37,7 +37,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Milestone 4 — Launch 🚀 (invite friends after T20)
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T19 | End-to-end smoke tests & polish | B | T14–T18 | todo | | |
+| T19 | End-to-end smoke tests & polish | B | T14–T18 | done | 2026-09-30 | |
 | T20 | Security & launch review 👤 | A | T19 | todo | | |
 
 ## Milestone 5 — Fun
@@ -131,3 +131,14 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 - T18: only `EventStatus` gates what an admin can edit (`permissions.ts`) — there's no lock on a second
   admin editing the same bout at the same time. Fine for one admin on a friend-group app; revisit if that
   ever changes.
+- T19: `e2e/**` is not covered by `npm run typecheck` — `tsc -b` only references the app/node/shared/jobs
+  projects (same gap T06 flagged for `tests/**`). Add a `tsconfig.e2e.json` and reference it from
+  `tsconfig.json`; that root file was outside T19's allowed files. ESLint already lints `e2e/**` fine
+  (its flat config isn't type-aware), so this only affects type checking.
+- T19: `npm run test:e2e` needs the emulator ports (8080/9099/5000/4400/4500) free — it fails outright if
+  a `npm run emulators` dev session is already running on them. Worth a port-conflict error message or a
+  pre-flight check; for now, stop the persistent dev emulators first.
+- T19: the e2e happy path always has the first-blood pick land on a fighter who doesn't get it — ESPN
+  never reports first blood (T02 follow-up, T18 backlog), so `applyFinalize` always waits the full
+  12h `FIRST_BLOOD_GRACE_MS` before paying out. The spec simulates that with `--now`, but a live Fight
+  Night always eats the same 12h wait unless T18's admin first-blood control gets built.

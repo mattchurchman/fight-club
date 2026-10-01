@@ -18,7 +18,7 @@ import {
 } from './actions.ts';
 
 const confirmInputClass =
-  'min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus:outline-none';
+  'min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
 
 interface ActionsPanelProps {
   eventId: string;

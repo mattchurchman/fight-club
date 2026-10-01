@@ -25,11 +25,21 @@ An automated happy-path test proves the whole loop works on the emulators, and t
 5. Collect follow-ups left in earlier tasks' completion notes (grep "Follow-up") into PROGRESS.md "Backlog".
 
 ## Acceptance criteria
-- [ ] `npm run test:e2e` passes locally, headless
-- [ ] Definition of Done passes. Build passes.
+- [x] `npm run test:e2e` passes locally, headless
+- [x] Definition of Done passes. Build passes.
 
 ## Out of scope
 Adding e2e to CI (optional follow-up; emulator startup is slow).
 
 ## Completion notes
-_(agent fills in)_
+`e2e/happy-path.spec.ts` drives the real loop against the emulators: admin invites → player signs
+up/onboards → `jobs:lifecycle` grants → picks → lock → reveal → a synthetic results fixture →
+leaderboard → finalize → wallet payout. `npm run test:e2e` builds with `vite build --mode e2e`
+(added `VITE_USE_EMULATORS` opt-in to `src/lib/firebase.ts` — it was dev-mode-only, so the built
+bundle the task asks Playwright to test always hit prod Firebase) inside `firebase emulators:exec`.
+Surprising: `applyFinalize` stamps `result.updatedAt` from `--now` itself, so one job call can't
+clear its own 12h first-blood grace — the spec runs two `--now` values instead.
+Keyboard pass (`docs/DESIGN.md` Accessibility) found and fixed two real gaps: 9 admin/wallet inputs
+had `focus:outline-none` with no visible ring, and the shared `Sheet` modal had no focus trap or
+focus-restore. Everything else checked (login, onboarding, picks, admin) was fine. Follow-ups in
+PROGRESS.md Backlog: `e2e/**` outside `tsc -b`; `test:e2e` needs the emulator ports free.

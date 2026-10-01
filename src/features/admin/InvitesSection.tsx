@@ -57,7 +57,7 @@ function InviteForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="friend@example.com"
-            className="min-h-11 w-full rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus:outline-none"
+            className="min-h-11 w-full rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           />
         </div>
 
@@ -81,7 +81,7 @@ function InviteForm() {
             value={grant === '' ? '' : grant}
             onChange={(e) => setGrant(e.target.value === '' ? '' : Math.max(0, Math.floor(Number(e.target.value))))}
             placeholder={String(defaultGrant)}
-            className="min-h-11 w-full rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus:outline-none"
+            className="min-h-11 w-full rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           />
         </div>
 
