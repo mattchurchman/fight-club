@@ -37,7 +37,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Milestone 4 — Launch 🚀 (invite friends after T20)
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T19 | End-to-end smoke tests & polish | B | T14–T18 | done | 2026-09-30 | |
+| T19 | End-to-end smoke tests & polish | B | T14–T18 | done | 2026-09-30 | 284a3b1 |
 | T20 | Security & launch review 👤 | A | T19 | todo | | |
 
 ## Milestone 5 — Fun
