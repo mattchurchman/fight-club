@@ -36,4 +36,12 @@ They work on Android and desktop, and on iPhone once the app is installed to the
 In-app notification center.
 
 ## Completion notes
-_(agent fills in)_
+Built: `src/features/notifications/{constants,push,useNotificationToggle,NotificationsSection}.ts(x)`
+(toggle, not yet wired into `/me` — see backlog), `public/firebase-messaging-sw.js` (own scope, not
+merged into the Workbox SW — DECISIONS.md), `jobs/notify.ts` + `notify.test.ts` (pure planners for
+all 3 hooks, tested; delivery via Admin `sendEach` with dead-token pruning), `jobs/lifecycle.ts` now
+calls `runLockReminders`/`runTokenRequestApprovals` every run and `sendFinalizeSummaries` after a
+finalize, `.github/workflows/jobs.yml` gained a manual-only `notify` dispatch choice (no new cron —
+budget reasons, DECISIONS.md). `firestore.rules`'s `users/{uid}/devices` and its rules test already
+existed. See PROGRESS.md backlog for the `/me` wiring gap, the weekday lock-reminder gap, and the
+`shared/types.ts` fields `jobs/notify.ts` reads via a local intersection type instead.

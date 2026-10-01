@@ -43,6 +43,7 @@ import { getAdmin } from './lib/admin.ts';
 import { fetchJson, parseResult, type EspnScoreboard, type EspnStatus } from './lib/espn.ts';
 import { postLedgerRow } from './lib/ledger.ts';
 import { log, recordJobRun } from './lib/log.ts';
+import { runLockReminders, runTokenRequestApprovals, sendFinalizeSummaries } from './notify.ts';
 
 const JOB_NAME = 'lifecycle';
 const SITE = 'https://site.api.espn.com/apis/site/v2/sports/mma/ufc';
@@ -87,6 +88,7 @@ function toLifecycleEntry(data: Entry<Timestamp>): LifecycleEntry {
 
 interface Candidate {
   event: LifecycleEvent;
+  name: string;
   espnId: string;
   startsAt: Millis;
   bouts: Record<string, LifecycleBout>;
@@ -148,6 +150,7 @@ async function loadCandidate(id: string, data: Event<Timestamp>): Promise<Candid
 
   return {
     event: toLifecycleEvent(id, data),
+    name: data.name,
     espnId: data.espnId,
     startsAt: data.startsAt.toMillis(),
     bouts,
@@ -487,6 +490,10 @@ async function applyFinalize(args: Args, candidate: Candidate, seasonId: string)
     ),
   );
   candidate.event = { ...candidate.event, status: 'final' };
+
+  await commit(args, `notify ${plan.entries.length} finalize summar${plan.entries.length === 1 ? 'y' : 'ies'}`, () =>
+    sendFinalizeSummaries(candidate.event.id, candidate.name, plan.entries, true),
+  );
   return true;
 }
 
@@ -578,6 +585,17 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 
   await applyStartingGrants(args);
 
+  // Not tied to any one candidate, so these run every invocation — including a "nothing to do"
+  // run below, which is the common case (an `open` event only becomes a lock/results/finalize
+  // candidate inside `LOCK_LOOKAHEAD_MS` of its lockAt, far narrower than the reminder window).
+  // jobs/notify.ts also runs `runLockReminders` on its own, denser weekday schedule (see
+  // .github/workflows/jobs.yml) — both are idempotent, so whichever job gets there first wins.
+  const summary: string[] = [];
+  const reminders = await runLockReminders(args.now, args.live);
+  const approvals = await runTokenRequestApprovals(args.live);
+  if (reminders > 0) summary.push(`notify: ${reminders} lock reminder(s)`);
+  if (approvals > 0) summary.push(`notify: ${approvals} token request(s)`);
+
   const docs = await loadEventDocs(args.event);
   const candidates: Candidate[] = [];
   for (const { id, data } of docs) {
@@ -587,8 +605,9 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
   }
 
   if (candidates.length === 0) {
-    console.log('nothing to do');
-    if (args.live) await recordJobRun(JOB_NAME, true, 'no candidate events');
+    const line = summary.length > 0 ? summary.join('; ') : 'nothing to do';
+    console.log(line);
+    if (args.live) await recordJobRun(JOB_NAME, true, line);
     return;
   }
 
@@ -596,7 +615,6 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
   const seasonId = config?.seasonId ?? String(new Date(args.now).getUTCFullYear());
   const fixtures = args.fixtures.length > 0 ? await loadFixtures(args.fixtures) : null;
 
-  const summary: string[] = [];
   for (const candidate of candidates) {
     console.log(`${candidate.event.id} (${candidate.event.status}, ${candidate.entries.length} entries)`);
     const stages = await runCandidate(args, candidate, seasonId, fixtures);

@@ -160,3 +160,26 @@ called here"). None of these change what `npm run build` or any other script doe
   rename onto. None of that changes DATA_MODEL's field list or GAME_RULES — it enforces what both
   already imply — but it does mean a *fixture* entry whose `displayName` doesn't match its seeded
   profile is now rejected (`tests/rules/helpers.ts#PROFILE_NAME` keeps them in step).
+
+## 2026-09-30 — T24: a second, separately-scoped service worker for FCM
+The task flagged this as an open decision ("public/firebase-messaging-sw.js or integrate via
+injectManifest; decide and log it"). `vite.config.ts`'s `VitePWA` plugin uses `generateSW`
+(Workbox auto-generates `dist/sw.js`, registered at scope `/` by `src/app/useSwUpdateToast.ts`) —
+switching that to `injectManifest` to merge in FCM would mean editing `vite.config.ts`, which isn't
+in T24's allowed files. Went with a standalone `public/firebase-messaging-sw.js` instead, registered
+by `src/features/notifications/push.ts` at a dedicated scope (`/firebase-cloud-messaging-push-scope`)
+so it doesn't collide with the Workbox SW's `/` scope. Push delivery and `notificationclick` don't
+depend on scope the way fetch interception does, so this loses nothing FCM needs.
+
+## 2026-09-30 — T24: no dedicated lock-reminder cron; lifecycle carries it instead
+The task lists `.github/workflows/jobs.yml` ("add a lock-reminder check") as a file to touch. A cron
+step dense enough to reliably catch the 45-75 min reminder window every day (e.g. every 15 min,
+24/7) would run ~2,880 times/month — alone past the 2,000 Actions-minutes/month free quota
+docs/ARCHITECTURE.md already budgets ~600 of (T10). Instead, `jobs/notify.ts`'s `runLockReminders`
+and `runTokenRequestApprovals` are called once per `jobs/lifecycle.ts` run (added to its existing
+schedule, no new cron) rather than per-candidate — cheap (one `events` query), and idempotent
+(`notified.lockReminder` / `tokenRequests.notifiedAt`) so it's safe to also expose `notify` as its
+own `workflow_dispatch` choice for manual testing. Consequence: the weekend dense cadence (every 15
+min) reliably hits the window; the weekday cadence (every 3 h) can miss it for an event that locks
+on a weekday. Logged as a PROGRESS.md backlog item rather than solved — numbered events all lock on
+weekends per ARCHITECTURE.md, so this only bites a weekday-locking Fight Night/special event.

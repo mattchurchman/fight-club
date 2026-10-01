@@ -17,6 +17,7 @@ on:
           - ingest
           - odds
           - lifecycle
+          - notify
           - all
 
 permissions:
@@ -28,7 +29,7 @@ jobs:
     concurrency: jobs
     timeout-minutes: 10
     # The service account is the Admin SDK key: it bypasses firestore.rules entirely. Scoped to
-    # the three steps that need it rather than the whole workflow, so `npm ci` (and any install
+    # just the steps that need it rather than the whole workflow, so `npm ci` (and any install
     # script in the dependency tree) never sees it.
     env:
       FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
@@ -76,3 +77,12 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: npm run job -- jobs/lifecycle.ts --live
+      # Manual-only (docs/tasks/T24): lock reminders and token-request approvals already ride
+      # along with every `lifecycle` run (weekend cadence catches the 45-75 min window precisely;
+      # the weekday 3 h cadence can miss it for a weekday-locking event — see PROGRESS.md backlog).
+      # This step exists for `workflow_dispatch` testing, e.g. `--test <uid>`, not a schedule.
+      - name: Run notify
+        if: steps.jobs.outputs.job == 'notify'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: npm run job -- jobs/notify.ts --live

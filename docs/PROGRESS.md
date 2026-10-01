@@ -46,7 +46,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T21 | Season standings, profiles, head-to-head | B | T09, T15 | done | 2026-09-30 | 5dba887 |
 | T22 | Shareable results card | B | T15 | done | 2026-09-30 | c03252b |
 | T23 | Badges | C | T09, T21 | done | 2026-09-30 | dd1fa14 |
-| T24 | Push notifications 👤 | B | T10, T11, T12 | todo | | |
+| T24 | Push notifications 👤 | B | T10, T11, T12 | done | 2026-09-30 | |
 | T25 | Fight-night trash talk | C | T15 | todo | | |
 
 👤 = has a USER ACTION REQUIRED step (see the task file / docs/SETUP.md).
@@ -168,3 +168,14 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 - T21: `useSeasonIds` (Standings tab) and `useEventHistory` (profile) both one-shot-scan the whole
   `events` collection / one `getDoc` per final event. Fine at this app's event-count scale; revisit with
   a real index or a denormalized per-user event list if that collection ever grows large.
+- T24: `NotificationsSection` (the `/me` "Enable notifications" toggle) isn't wired into `/me` —
+  `src/features/auth/MePage.tsx` and `src/features/profile/MyProfilePage.tsx` weren't in T24's allowed
+  files (same gap T18 hit for `AdminHomePage.tsx`). Add `<NotificationsSection uid={user.uid} />` to one
+  of them.
+- T24: lifecycle's weekday 3 h cadence can miss the 45-75 min lock-reminder window for an event that
+  locks on a weekday (a weekend-locking numbered event is covered by the dense 15-min cadence). No
+  dedicated cron was added — see DECISIONS.md 2026-09-30 (Actions-minutes budget).
+- T24: `shared/types.ts`/`docs/DATA_MODEL.md` don't carry `events.notified.lockReminder` or
+  `tokenRequests.notifiedAt` — neither file was in T24's allowed list. `jobs/notify.ts` reads/writes
+  them via a local intersection type instead. Worth folding into the real types if another task
+  touches either field.
