@@ -28,11 +28,19 @@ against each friend ("You're 7–3 vs. Dave").
 5. Tests: the sparkline path generator and the H2H summary text.
 
 ## Acceptance criteria
-- [ ] After finalizing the seed event: standings show 4 players, profiles show history, and H2H records are consistent (a's wins = b's losses)
-- [ ] Definition of Done passes. Build passes.
+- [x] After finalizing the seed event: standings show 4 players, profiles show history, and H2H records are consistent (a's wins = b's losses)
+- [x] Definition of Done passes. Build passes.
 
 ## Out of scope
 Badge computation (T23).
 
 ## Completion notes
-_(agent fills in)_
+Standings tab (season Tabs selector, ranked table linking to `/u/:username`), profile body shared
+by `/me` and `/u/:username` (badges placeholder, lifetime stats, season sparkline, event history,
+H2H list + "You vs Them" card), and `jobs/backfill-standings.ts` (dry-run default; replays stored
+final-entry scores through `applyEventToStandings`, doesn't re-score). `MePage.tsx` (T12) isn't in
+this task's allowed files, so `/me` composes it unchanged with the new `ProfileBody` instead of
+replacing it — `src/features/auth/MePage.tsx` is otherwise now only reachable from
+`MyProfilePage.tsx`. Verified end-to-end against the emulator: seeded a synthetic final event with
+4 entries, ran the backfill job (dry-run then `--live`), and loaded `/standings`, `/u/<name>` and
+`/me` in a browser — stats, sparkline, event history and H2H (a's wins = b's losses) all matched.

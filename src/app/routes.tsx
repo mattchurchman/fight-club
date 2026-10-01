@@ -5,7 +5,9 @@ import { RootLayout } from './RootLayout';
 import { RequireAdmin, RequireReady } from './RouteGuards';
 import { EventPage } from '../features/events/EventPage';
 import { LivePage } from '../features/live/LivePage';
-import { StandingsPlaceholder } from '../pages/StandingsPlaceholder';
+import { MyProfilePage } from '../features/profile/MyProfilePage';
+import { ProfilePage } from '../features/profile/ProfilePage';
+import { StandingsPage } from '../features/standings/StandingsPage';
 import { WalletPage } from '../features/wallet/WalletPage';
 import { AdminHomePage } from '../features/admin/AdminHomePage';
 import { PeoplePage } from '../features/admin/PeoplePage';
@@ -15,7 +17,6 @@ import { EventsListPage as AdminEventsListPage } from '../features/admin/events/
 import { NotFoundPlaceholder } from '../pages/NotFoundPlaceholder';
 import { InstallPage } from '../features/install/InstallPage';
 import { LoginPage } from '../features/auth/LoginPage';
-import { MePage } from '../features/auth/MePage';
 
 const devRoutes: RouteObject[] = import.meta.env.DEV
   ? [
@@ -43,9 +44,10 @@ export const routeTree: RouteObject[] = [
           { path: '/', element: <EventPage /> },
           { path: '/event/:id', element: <EventPage /> },
           { path: '/live', element: <LivePage /> },
-          { path: '/standings', element: <StandingsPlaceholder /> },
+          { path: '/standings', element: <StandingsPage /> },
           { path: '/wallet', element: <WalletPage /> },
-          { path: '/me', element: <MePage /> },
+          { path: '/me', element: <MyProfilePage /> },
+          { path: '/u/:username', element: <ProfilePage /> },
           {
             path: '/admin',
             element: (

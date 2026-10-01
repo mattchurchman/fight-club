@@ -43,7 +43,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 ## Milestone 5 — Fun
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T21 | Season standings, profiles, head-to-head | B | T09, T15 | todo | | |
+| T21 | Season standings, profiles, head-to-head | B | T09, T15 | done | 2026-09-30 | PENDING |
 | T22 | Shareable results card | B | T15 | todo | | |
 | T23 | Badges | C | T09, T21 | todo | | |
 | T24 | Push notifications 👤 | B | T10, T11, T12 | todo | | |
@@ -158,3 +158,13 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
   thing enforcing the allowed characters, so a hand-crafted write can take a username with spaces or
   punctuation. Harmless today (nothing parses it), worth mirroring the regex if usernames ever appear
   in a URL.
+- T21: `src/features/auth/MePage.tsx` (T12) isn't in this task's allowed files, so `/me` now renders it
+  composed with the new `ProfileBody` from `MyProfilePage.tsx` rather than folding profile content into
+  it directly. `src/pages/StandingsPlaceholder.tsx` is similarly now unreferenced (routes.tsx points at
+  `StandingsPage` instead) but wasn't deleted — `src/pages/**` wasn't in T21's allowed files either.
+- T21: `jobs/backfill-standings.ts` has no `npm run jobs:backfill-standings` script (`package.json` wasn't
+  in T21's allowed files) and isn't in the admin Jobs card's `JOB_NAMES` list (`src/features/admin/hooks.ts`)
+  — it only runs via `npm run job -- jobs/backfill-standings.ts [--live]`.
+- T21: `useSeasonIds` (Standings tab) and `useEventHistory` (profile) both one-shot-scan the whole
+  `events` collection / one `getDoc` per final event. Fine at this app's event-count scale; revisit with
+  a real index or a denormalized per-user event list if that collection ever grows large.
