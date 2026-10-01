@@ -46,7 +46,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T21 | Season standings, profiles, head-to-head | B | T09, T15 | done | 2026-09-30 | 5dba887 |
 | T22 | Shareable results card | B | T15 | done | 2026-09-30 | c03252b |
 | T23 | Badges | C | T09, T21 | done | 2026-09-30 | dd1fa14 |
-| T24 | Push notifications 👤 | B | T10, T11, T12 | done | 2026-09-30 | |
+| T24 | Push notifications 👤 | B | T10, T11, T12 | done | 2026-09-30 | fed82f1 |
 | T25 | Fight-night trash talk | C | T15 | todo | | |
 
 👤 = has a USER ACTION REQUIRED step (see the task file / docs/SETUP.md).
