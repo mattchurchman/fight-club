@@ -6,14 +6,23 @@ on:
     branches: [main]
     types: [completed]
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
-    if: github.event.workflow_run.conclusion == 'success'
+    # `branches: [main]` above matches the *head branch name* of the CI run, and the repo is public:
+    # a fork PR from a branch called "main" matches it too. Checkout below always pulls this repo
+    # (never the fork's code), so that could only ever redeploy our own main — but it would still be
+    # an outsider firing a production deploy, so require the CI run to have come from this repo.
+    if: >-
+      github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: ${{ github.event.workflow_run.head_sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -22,7 +31,8 @@ jobs:
       - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          # No `repoToken`: it exists only so the action can comment a preview URL on a PR, which a
+          # `channelId: live` deploy never does. Leaving it out keeps this workflow's token read-only.
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
           channelId: live

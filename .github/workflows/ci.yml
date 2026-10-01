@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+# The repo is public, so fork PRs run this workflow. It needs nothing but the code.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest

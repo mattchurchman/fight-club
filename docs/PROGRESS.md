@@ -38,7 +38,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
 | T19 | End-to-end smoke tests & polish | B | T14–T18 | done | 2026-09-30 | 284a3b1 |
-| T20 | Security & launch review 👤 | A | T19 | todo | | |
+| T20 | Security & launch review 👤 | A | T19 | done | 2026-09-30 | |
 
 ## Milestone 5 — Fun
 | ID | Task | Tier | Depends | Status | Date | Commit |
@@ -142,3 +142,19 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
   never reports first blood (T02 follow-up, T18 backlog), so `applyFinalize` always waits the full
   12h `FIRST_BLOOD_GRACE_MS` before paying out. The spec simulates that with `--now`, but a live Fight
   Night always eats the same 12h wait unless T18's admin first-blood control gets built.
+- T20: `isMember()` is an `exists(users/{uid})` on every read request — one billed document read each.
+  Fine at ~6K reads a fight night (12% of the Spark limit), but a custom claim set by a job would be
+  free. Revisit only if quota ever bites.
+- T20: revoking an invite doesn't revoke access. `isMember()` keys off `users/{uid}`, and `users`
+  delete is denied to everyone including admins (jobs only) — so there's no admin action that boots
+  someone. Needs either a job (`jobs/remove-member.ts`) or a `membership: 'active'|'revoked'` field
+  the rules consult.
+- T20: the new CSP has only been exercised against email/password sign-in (that's all `e2e/**` does).
+  The Google popup path (`frame-src` + `Cross-Origin-Opener-Policy: same-origin-allow-popups`) needs
+  one manual sign-in after deploy — see SECURITY_REVIEW "Verify after deploying".
+- T20: `tokenRequests` and `comments` have no rate limit (rules can't count). A bored friend can post
+  thousands; an admin can only delete them after the fact.
+- T20: rules bound `username` length but not its charset — `src/features/auth/username.ts` is the only
+  thing enforcing the allowed characters, so a hand-crafted write can take a username with spaces or
+  punctuation. Harmless today (nothing parses it), worth mirroring the regex if usernames ever appear
+  in a URL.

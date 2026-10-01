@@ -38,9 +38,15 @@ export async function approveInTx(
 ): Promise<LedgerOutcome> {
   const requestRef = refs.requestDoc(input.requestId);
   const requestSnap = await tx.get(requestRef);
-  const status = (requestSnap.data() as { status?: string } | undefined)?.status;
-  if (status !== 'pending') {
+  const request = requestSnap.data() as { status?: string; amount?: number; uid?: string } | undefined;
+  if (request?.status !== 'pending') {
     throw new Error('This request was already resolved.');
+  }
+  // `amount` and `uid` arrive from the admin screen's listener snapshot. The grant is money, so
+  // check them against the request as this transaction reads it rather than trusting the caller
+  // (docs/tasks/T20).
+  if (request.amount !== input.amount || request.uid !== input.uid) {
+    throw new Error('This request changed while you were looking at it. Reload and try again.');
   }
 
   const outcome = await postLedger(

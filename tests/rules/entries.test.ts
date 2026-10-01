@@ -3,7 +3,17 @@ import {
   assertSucceeds,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import { deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  writeBatch,
+} from 'firebase/firestore';
 import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
 import {
   asAdmin,
@@ -350,6 +360,61 @@ describe('entries read', () => {
 
   it('lets an admin read entries before lock', async () => {
     await assertSucceeds(getDoc(doc(asAdmin(env), `events/${EVT.open}/entries/${UID.p2}`)));
+  });
+
+  // A `get` on one doc is the obvious attempt; listing the whole collection is the other one.
+  it('denies listing the entries collection while the event is open', async () => {
+    await assertFails(getDocs(collection(asPlayer1(env), `events/${EVT.open}/entries`)));
+  });
+
+  it('allows listing entries once the event is locked (the live leaderboard)', async () => {
+    await assertSucceeds(getDocs(collection(asPlayer1(env), `events/${EVT.locked}/entries`)));
+  });
+});
+
+describe('the lock window cannot be slipped', () => {
+  // `set({ merge: true })` on an existing doc is an update, so it lands on the same rule.
+  it('denies a merge-set once lockAt has passed', async () => {
+    await assertFails(
+      setDoc(
+        doc(asPlayer2(env), `events/${EVT.pastLock}/entries/${UID.p2}`),
+        { picks: validPicks(), updatedAt: serverTimestamp() },
+        { merge: true },
+      ),
+    );
+  });
+
+  // Each write in a batch is authorised on its own, so pairing a late edit with a legal one
+  // doesn't smuggle it through.
+  it('denies a batch that pairs a legal write with a late edit', async () => {
+    const db = asPlayer2(env);
+    const batch = writeBatch(db);
+    batch.update(doc(db, `users/${UID.p2}`), { lastSeenAt: serverTimestamp() });
+    batch.update(doc(db, `events/${EVT.pastLock}/entries/${UID.p2}`), {
+      picks: validPicks(),
+      updatedAt: serverTimestamp(),
+    });
+    await assertFails(batch.commit());
+  });
+});
+
+describe('entry identity fields', () => {
+  it("denies an entry whose displayName isn't the player's own profile name", async () => {
+    await assertFails(
+      setDoc(doc(asPlayer1(env), p1Entry(EVT.open)), {
+        ...validEntry(UID.p1),
+        displayName: 'p2', // p2's profile name — would spoof them on the leaderboard
+      }),
+    );
+  });
+
+  it('denies an entry carrying an arbitrary photoURL', async () => {
+    await assertFails(
+      setDoc(doc(asPlayer1(env), p1Entry(EVT.open)), {
+        ...validEntry(UID.p1),
+        photoURL: 'https://example.invalid/not-mine.png',
+      }),
+    );
   });
 });
 

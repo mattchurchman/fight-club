@@ -9,7 +9,9 @@ interface FakeRef extends DocRef {
   collection: 'ledger' | 'users' | 'tokenRequests';
 }
 
-function store(users: Record<string, number>, requests: Record<string, { status: string }>) {
+type FakeRequest = { status: string; uid?: string; amount?: number };
+
+function store(users: Record<string, number>, requests: Record<string, FakeRequest>) {
   const rows = new Map<string, Record<string, unknown>>();
   const userBalances = new Map(Object.entries(users));
   const requestDocs = new Map(Object.entries(requests));
@@ -49,23 +51,43 @@ function store(users: Record<string, number>, requests: Record<string, { status:
 }
 
 describe('approveInTx', () => {
+  const pending = { req1: { status: 'pending', uid: 'u1', amount: 200 } };
+
   it('posts exactly one ledger row and approves the request', async () => {
-    const { refs, tx, rows, userBalances, requestDocs } = store({ u1: 100 }, { req1: { status: 'pending' } });
+    const { refs, tx, rows, userBalances, requestDocs } = store({ u1: 100 }, pending);
 
     const outcome = await approveInTx(tx, { requestId: 'req1', uid: 'u1', amount: 200, adminUid: 'admin1' }, refs, 'NOW');
 
     expect(outcome.posted).toBe(true);
     expect(rows.size).toBe(1);
     expect(userBalances.get('u1')).toBe(300);
-    expect(requestDocs.get('req1')).toEqual({ status: 'approved', resolvedBy: 'admin1', resolvedAt: 'NOW' });
+    expect(requestDocs.get('req1')).toMatchObject({
+      status: 'approved',
+      resolvedBy: 'admin1',
+      resolvedAt: 'NOW',
+    });
   });
 
   it('refuses to approve a request that is no longer pending', async () => {
-    const { refs, tx, rows } = store({ u1: 100 }, { req1: { status: 'approved' } });
+    const { refs, tx, rows } = store({ u1: 100 }, { req1: { status: 'approved', uid: 'u1', amount: 200 } });
 
     await expect(
       approveInTx(tx, { requestId: 'req1', uid: 'u1', amount: 200, adminUid: 'admin1' }, refs, 'NOW'),
     ).rejects.toThrow('already resolved');
     expect(rows.size).toBe(0);
+  });
+
+  // The admin screen passes amount/uid from a listener snapshot; the transaction re-reads them.
+  it('refuses to grant an amount or uid the request does not carry', async () => {
+    const { refs, tx, rows, userBalances } = store({ u1: 100, u2: 0 }, pending);
+
+    await expect(
+      approveInTx(tx, { requestId: 'req1', uid: 'u1', amount: 5000, adminUid: 'admin1' }, refs, 'NOW'),
+    ).rejects.toThrow('changed while you were looking at it');
+    await expect(
+      approveInTx(tx, { requestId: 'req1', uid: 'u2', amount: 200, adminUid: 'admin1' }, refs, 'NOW'),
+    ).rejects.toThrow('changed while you were looking at it');
+    expect(rows.size).toBe(0);
+    expect(userBalances.get('u1')).toBe(100);
   });
 });

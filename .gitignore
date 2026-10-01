@@ -25,6 +25,9 @@ firebase-debug*.log
 ui-debug.log
 firestore-debug.log
 .emulator-data/
+# `emulators:export` dumps auth users and Firestore docs — real emails if it was ever pointed at
+# the live project, and this repo is public (T20).
+firebase-export-*/
 
 # Testing
 playwright-report/

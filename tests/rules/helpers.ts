@@ -98,11 +98,21 @@ export function validPicks(): Record<string, { winner: string; method: string; s
   };
 }
 
+/**
+ * The `displayName` each seeded profile carries. The rules require an entry's `displayName` and
+ * `photoURL` to match the author's profile, so fixtures have to agree with `seed()`.
+ */
+export const PROFILE_NAME: Record<string, string> = {
+  [UID.admin]: 'admin',
+  [UID.p1]: 'p1',
+  [UID.p2]: 'p2',
+};
+
 /** A complete, valid entry document for `uid`. */
 export function validEntry(uid: string): Record<string, unknown> {
   return {
     uid,
-    displayName: uid,
+    displayName: PROFILE_NAME[uid] ?? uid,
     photoURL: null,
     picks: validPicks(),
     lockBoutId: BOUT.main,

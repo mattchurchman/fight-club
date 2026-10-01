@@ -3,9 +3,29 @@ import {
   assertSucceeds,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { asAdmin, asAnon, asPlayer1, asStranger, createEnv, EMAIL, seed, UID } from './helpers.ts';
+import {
+  asAdmin,
+  asAnon,
+  asPlayer1,
+  asStranger,
+  BOUT,
+  createEnv,
+  EMAIL,
+  EVT,
+  seed,
+  UID,
+} from './helpers.ts';
 
 let env: RulesTestEnvironment;
 
@@ -21,7 +41,7 @@ beforeEach(async () => {
 });
 
 describe('config/app', () => {
-  it('is readable by any signed-in user (the pick builder needs defaults)', async () => {
+  it('is readable by a member (the pick builder needs defaults)', async () => {
     const snap = await assertSucceeds(getDoc(doc(asPlayer1(env), 'config/app')));
     expect(snap.data()?.defaults.budget).toBe(1000);
   });
@@ -135,6 +155,55 @@ describe('standings, h2h and fighters', () => {
     const db = asAnon(env);
     await assertFails(getDoc(doc(db, 'fighters/ftr_123')));
     await assertFails(getDoc(doc(db, `seasons/2026/standings/${UID.p1}`)));
+  });
+});
+
+// Anyone can create a Firebase Auth account against this project (public web config, public repo),
+// so "signed in" is not "invited". p3 is that account: signed in, never allowlisted, no profile.
+describe('a signed-in outsider', () => {
+  it('cannot read any game data', async () => {
+    const db = asStranger(env);
+    await assertFails(getDoc(doc(db, 'config/app')));
+    await assertFails(getDoc(doc(db, `users/${UID.p1}`)));
+    await assertFails(getDocs(collection(db, 'users')));
+    await assertFails(getDoc(doc(db, 'usernames/p1')));
+    await assertFails(getDoc(doc(db, 'fighters/ftr_123')));
+    await assertFails(getDoc(doc(db, `events/${EVT.open}`)));
+    await assertFails(getDocs(collection(db, 'events')));
+    await assertFails(getDoc(doc(db, `events/${EVT.open}/bouts/${BOUT.main}`)));
+    await assertFails(getDoc(doc(db, `events/${EVT.locked}/entries/${UID.p2}`)));
+    await assertFails(getDoc(doc(db, `seasons/2026/standings/${UID.p1}`)));
+    await assertFails(getDoc(doc(db, 'h2h/uid_p1__uid_p2')));
+  });
+
+  it('cannot post a comment or ask for tokens', async () => {
+    const db = asStranger(env);
+    await assertFails(
+      addDoc(collection(db, `events/${EVT.open}/comments`), {
+        uid: UID.p3,
+        displayName: 'Nobody',
+        text: 'let me in',
+        createdAt: serverTimestamp(),
+      }),
+    );
+    await assertFails(
+      addDoc(collection(db, 'tokenRequests'), {
+        uid: UID.p3,
+        displayName: 'Nobody',
+        amount: 500,
+        note: null,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+        resolvedBy: null,
+        resolvedAt: null,
+      }),
+    );
+  });
+
+  it('can still read its own (empty) invite and profile slot, which is how onboarding resolves', async () => {
+    const db = asStranger(env);
+    await assertSucceeds(getDoc(doc(db, `allowlist/${EMAIL.p3}`)));
+    await assertSucceeds(getDoc(doc(db, `users/${UID.p3}`)));
   });
 });
 

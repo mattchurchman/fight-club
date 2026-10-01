@@ -145,3 +145,18 @@ built bundle needs to reach the emulators — paired with the in-scope `src/lib/
 `package.json`'s existing `test`/`test:watch` scripts (added `--exclude "e2e/**"`, since vitest's default
 glob otherwise tries to run the Playwright spec itself and fails with "test() did not expect to be
 called here"). None of these change what `npm run build` or any other script does outside of e2e.
+
+## 2026-09-30 — T20 touched `.gitignore`, and tightened rules T06 had left loose
+`docs/tasks/T20`'s "Files you may touch" lists `firestore.rules`, `tests/rules/**`,
+`docs/SECURITY_REVIEW.md` and small fixes in `shared/**`, `jobs/**`, `src/**`. Two notes:
+- Step 1 says "Check `.gitignore`". It was missing `firebase-export-*/`, so a future
+  `emulators:export` (the directory from one is already sitting in the working tree) would commit
+  real auth users and Firestore docs — emails included — to a **public** repo. Added the one line
+  rather than filing it as a follow-up, since the whole point of this task is closing holes before
+  friends join. `.github/workflows/**` and `firebase.json` are likewise outside the list but are
+  named explicitly in step 1 (workflow `permissions:`, CSP headers), so those are in scope.
+- The rules changes go beyond "a gap found and fixed": entry `displayName`/`photoURL` must now equal
+  the author's profile, and profile updates are length-bounded and must own the `usernames` doc they
+  rename onto. None of that changes DATA_MODEL's field list or GAME_RULES — it enforces what both
+  already imply — but it does mean a *fixture* entry whose `displayName` doesn't match its seeded
+  profile is now rejected (`tests/rules/helpers.ts#PROFILE_NAME` keeps them in step).

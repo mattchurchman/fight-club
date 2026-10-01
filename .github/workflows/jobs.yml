@@ -19,16 +19,19 @@ on:
           - lifecycle
           - all
 
-env:
-  FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-  FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-  ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+permissions:
+  contents: read
 
 jobs:
   run:
     runs-on: ubuntu-latest
     concurrency: jobs
     timeout-minutes: 10
+    # The service account is the Admin SDK key: it bypasses firestore.rules entirely. Scoped to
+    # the three steps that need it rather than the whole workflow, so `npm ci` (and any install
+    # script in the dependency tree) never sees it.
+    env:
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,11 +41,18 @@ jobs:
       - run: npm ci
       - name: Determine job(s) to run
         id: jobs
+        # Inputs go through env, not `${{ }}` inside the script, so nothing from the event can be
+        # interpolated into the shell (the dispatch input is a fixed `choice`, but the pattern is
+        # the one to copy).
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_JOB: ${{ github.event.inputs.job }}
+          SCHEDULE: ${{ github.event.schedule }}
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            JOB="${{ github.event.inputs.job }}"
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            JOB="$INPUT_JOB"
           else
-            case "${{ github.event.schedule }}" in
+            case "$SCHEDULE" in
               "17 09 * * *") JOB="ingest" ;;
               "17 15 * * *") JOB="odds" ;;
               "*/15 12-23,0-8 * * 0,6" | "0 */3 * * 1-5") JOB="lifecycle" ;;
@@ -52,10 +62,17 @@ jobs:
           echo "job=$JOB" >> $GITHUB_OUTPUT
       - name: Run ingest
         if: steps.jobs.outputs.job == 'ingest' || steps.jobs.outputs.job == 'all'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: npm run job -- jobs/ingest-events.ts --live
       - name: Run odds
         if: steps.jobs.outputs.job == 'odds' || steps.jobs.outputs.job == 'all'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: npm run job -- jobs/ingest-odds.ts --live
       - name: Run lifecycle
         if: steps.jobs.outputs.job == 'lifecycle' || steps.jobs.outputs.job == 'all'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: npm run job -- jobs/lifecycle.ts --live

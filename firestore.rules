@@ -47,6 +47,28 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/allowlist/$(authEmailLower()));
     }
 
+    // A signed-in account is not a member. Firebase Auth lets anyone on the internet create an
+    // account against this project (the web config in src/lib/firebase.config.ts is public, and the
+    // repo is public), so `signedIn()` alone would publish every email, pick and balance in here to
+    // anyone who signs up. Membership is "has a profile", which `userCreateOk` only grants to an
+    // allowlisted email — one `exists()` (= one document read) per request. See docs/SECURITY_REVIEW.md.
+    function isMember() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    // Who may read game data. An admin bootstrapped into `config/app.admins` may not have onboarded
+    // yet (jobs/bootstrap-admin.ts), hence the second half.
+    function canRead() {
+      return isMember() || isAdmin();
+    }
+
+    // Onboarding has to read `config/app` and check `usernames` *before* the profile exists, so
+    // those two accept an un-onboarded invitee as well.
+    function invitedOrMember() {
+      return isMember() || allowlisted() || isAdmin();
+    }
+
     // Every key this write touches is in `fields` (no other field added, changed or removed).
     function onlyChanged(fields) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
@@ -62,11 +84,12 @@ service cloud.firestore {
 
     // ------------------------------------------------------------ config/app
 
-    // Read is open to any signed-in user: the pick builder needs `defaults` (budget, stake
-    // bounds, multipliers). DATA_MODEL.md lists no read rule for this doc; nothing in it is
-    // secret. Writes stay with admins and jobs.
+    // Readable by members and invitees: the pick builder needs `defaults` (budget, stake bounds,
+    // multipliers) and the session provider reads `admins` right after sign-in, before onboarding.
+    // DATA_MODEL.md lists no read rule for this doc; nothing in it is secret. Writes stay with
+    // admins and jobs.
     match /config/{docId} {
-      allow get, list: if signedIn();
+      allow get, list: if invitedOrMember();
       allow write: if isAdmin();
     }
 
@@ -106,16 +129,30 @@ service cloud.firestore {
         && existsAfter(/databases/$(database)/documents/usernames/$(d.usernameLower));
     }
 
+    // Profiles carry emails, so reading them needs membership. Own doc stays readable while it
+    // doesn't exist yet — that non-existent read is how the session provider decides "needsProfile".
+    function profileEditOk(uid) {
+      let d = request.resource.data;
+      let changed = d.diff(resource.data).affectedKeys();
+      return isOwner(uid)
+        && onlyChanged(['displayName', 'username', 'usernameLower', 'photoURL', 'lastSeenAt'])
+        && d.displayName is string && d.displayName.size() > 0 && d.displayName.size() <= 40
+        && d.username is string && d.username.size() > 0 && d.username.size() <= 20
+        && d.usernameLower == d.username.lower()
+        && (d.photoURL == null || (d.photoURL is string && d.photoURL.size() <= 500))
+        // A rename must come with a `usernames` doc that is *yours*. `usernames` can never be
+        // updated in place, so this is what stops a player renaming onto a name someone else holds.
+        && (!changed.hasAny(['username', 'usernameLower'])
+            || getAfter(/databases/$(database)/documents/usernames/$(d.usernameLower)).data.uid == uid);
+    }
+
     match /users/{uid} {
-      allow get, list: if signedIn();
+      allow get: if canRead() || isOwner(uid);
+      allow list: if canRead();
       allow create: if userCreateOk(uid);
       // Profile fields only. balance / role / stats / badges are admin- and job-only, which is
       // what keeps a player from writing their own balance.
-      allow update: if isAdmin()
-        || (isOwner(uid)
-            && onlyChanged(['displayName', 'username', 'usernameLower', 'photoURL', 'lastSeenAt'])
-            && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['username'])
-                || request.resource.data.usernameLower == request.resource.data.username.lower()));
+      allow update: if isAdmin() || profileEditOk(uid);
       // Deleting a profile would orphan its `usernames` doc and its ledger history; jobs do it.
       allow delete: if false;
 
@@ -128,7 +165,8 @@ service cloud.firestore {
     // Username uniqueness. Created by the owner alongside their user doc; freeing an old name
     // (a rename) is a delete by its owner. Updates in place are never allowed.
     match /usernames/{usernameLower} {
-      allow get, list: if signedIn();
+      // Invitees need this to check availability at onboarding, before they have a profile.
+      allow get, list: if invitedOrMember();
       allow create: if signedIn()
         && request.resource.data.keys().hasOnly(['uid'])
         && request.resource.data.uid == request.auth.uid
@@ -140,16 +178,16 @@ service cloud.firestore {
     // -------------------------------------------------- fighters / events / bouts
 
     match /fighters/{fighterId} {
-      allow get, list: if signedIn();
+      allow get, list: if canRead();
       allow write: if isAdmin();
     }
 
     match /events/{eventId} {
-      allow get, list: if signedIn();
+      allow get, list: if canRead();
       allow write: if isAdmin();
 
       match /bouts/{boutId} {
-        allow get, list: if signedIn();
+        allow get, list: if canRead();
         allow write: if isAdmin();
       }
 
@@ -218,7 +256,7 @@ service cloud.firestore {
 
       match /entries/{uid} {
         // Own entry always; everyone else's only once picks are revealed at lock.
-        allow get, list: if isAdmin() || isOwner(uid) || (signedIn() && entriesRevealed(eventId));
+        allow get, list: if isAdmin() || isOwner(uid) || (canRead() && entriesRevealed(eventId));
 
         allow create: if isAdmin()
           || (isOwner(uid)
@@ -228,6 +266,11 @@ service cloud.firestore {
                 'status', 'submittedAt', 'updatedAt', 'charged', 'score', 'rank', 'payout'
               ])
               && request.resource.data.uid == uid
+              // The leaderboard renders these two, so they must be the player's real profile,
+              // not a free-text field they can point at someone else. `userDoc(uid)` is already
+              // read by entryWindowOpen above, so this costs no extra document access.
+              && request.resource.data.displayName == userDoc(uid).displayName
+              && request.resource.data.photoURL == userDoc(uid).photoURL
               && request.resource.data.status == 'submitted'
               && request.resource.data.charged == false
               && request.resource.data.score == null
@@ -257,14 +300,15 @@ service cloud.firestore {
       // -------------------------------------------------------- comments (T25)
 
       match /comments/{commentId} {
-        allow get, list: if signedIn();
-        allow create: if signedIn()
+        allow get, list: if canRead();
+        allow create: if isMember()
           && request.resource.data.keys().hasOnly([
             'uid', 'displayName', 'boutId', 'text', 'emoji', 'createdAt'
           ])
           && request.resource.data.keys().hasAll(['uid', 'displayName', 'text', 'createdAt'])
           && request.resource.data.uid == request.auth.uid
           && request.resource.data.displayName is string
+          && request.resource.data.displayName.size() <= 40
           && request.resource.data.text is string
           && request.resource.data.text.size() > 0
           && request.resource.data.text.size() <= 280
@@ -297,12 +341,18 @@ service cloud.firestore {
 
     match /tokenRequests/{requestId} {
       allow get, list: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
-      allow create: if signedIn()
+      allow create: if isMember()
         && request.resource.data.keys().hasOnly([
           'uid', 'displayName', 'amount', 'note', 'status',
           'createdAt', 'resolvedBy', 'resolvedAt'
         ])
+        && request.resource.data.keys().hasAll(['uid', 'displayName', 'amount', 'status', 'createdAt'])
         && request.resource.data.uid == request.auth.uid
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() <= 40
+        // `note` is free text an admin reads in the console — cap it like a comment.
+        && (request.resource.data.get('note', null) == null
+            || (request.resource.data.note is string && request.resource.data.note.size() <= 280))
         && request.resource.data.status == 'pending'
         && request.resource.data.amount is int
         && request.resource.data.amount >= 1
@@ -320,17 +370,17 @@ service cloud.firestore {
     // ------------------------------------------------- standings / h2h / jobRuns
 
     match /seasons/{seasonId} {
-      allow get, list: if signedIn();
+      allow get, list: if canRead();
       allow write: if isAdmin();
 
       match /standings/{uid} {
-        allow get, list: if signedIn();
+        allow get, list: if canRead();
         allow write: if isAdmin();
       }
     }
 
     match /h2h/{pairId} {
-      allow get, list: if signedIn();
+      allow get, list: if canRead();
       allow write: if isAdmin();
     }
 

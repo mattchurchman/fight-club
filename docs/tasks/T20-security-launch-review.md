@@ -37,4 +37,14 @@ Review as if a clever friend wants to give themselves free tokens or peek at pic
 New features.
 
 ## Completion notes
-_(agent fills in)_
+Full checklist with verdicts in `docs/SECURITY_REVIEW.md` (81 lines). One serious finding: reads were
+gated on `signedIn()`, and anyone can create a Firebase Auth account against this public project — so
+the whole dataset (emails, balances, post-lock picks) was readable after a signup. Fixed with an
+`isMember()` ("has a profile", which only an allowlisted email can create) gate, plus `invitedOrMember()`
+for the two docs onboarding reads before the profile exists. Also closed: renaming onto another player's
+username, unbounded `displayName`/`username`/`note` on update, and entry `displayName`/`photoURL` being
+free text the leaderboard renders. Outside the rules: least-privilege `permissions:` on all three
+workflows, the Admin SDK key scoped to the steps that need it, `deploy.yml` pinned to this repo's
+`head_sha`, a CSP + security headers in `firebase.json`, and `approveInTx` re-reading its own amount.
+14 new rules tests (110 total); e2e happy path re-run green against the new rules **and** the new CSP.
+Follow-ups in PROGRESS backlog. Deviations (`.gitignore`, scope of the rules tightening) in DECISIONS.

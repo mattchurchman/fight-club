@@ -162,6 +162,44 @@ describe('users update', () => {
     );
   });
 
+  it("denies renaming onto a username someone else holds", async () => {
+    const db = asPlayer1(env);
+    // usernames/p2 exists and belongs to uid_p2, so the getAfter ownership check fails.
+    await assertFails(
+      updateDoc(doc(db, `users/${UID.p1}`), { username: 'p2', usernameLower: 'p2' }),
+    );
+    // Same attempt, but claiming the uniqueness doc in the same batch — `usernames` is never
+    // updatable in place, so this fails too.
+    const batch = writeBatch(db);
+    batch.update(doc(db, `users/${UID.p1}`), { username: 'p2', usernameLower: 'p2' });
+    batch.set(doc(db, 'usernames/p2'), { uid: UID.p1 });
+    await assertFails(batch.commit());
+  });
+
+  it('denies a rename with no usernames doc to back it', async () => {
+    await assertFails(
+      updateDoc(doc(asPlayer1(env), `users/${UID.p1}`), {
+        username: 'unclaimed',
+        usernameLower: 'unclaimed',
+      }),
+    );
+  });
+
+  it('allows a rename that claims a free username in the same batch', async () => {
+    const db = asPlayer1(env);
+    const batch = writeBatch(db);
+    batch.update(doc(db, `users/${UID.p1}`), { username: 'Southpaw', usernameLower: 'southpaw' });
+    batch.set(doc(db, 'usernames/southpaw'), { uid: UID.p1 });
+    batch.delete(doc(db, 'usernames/p1'));
+    await assertSucceeds(batch.commit());
+  });
+
+  it('denies an over-long or empty displayName', async () => {
+    const db = asPlayer1(env);
+    await assertFails(updateDoc(doc(db, `users/${UID.p1}`), { displayName: 'x'.repeat(41) }));
+    await assertFails(updateDoc(doc(db, `users/${UID.p1}`), { displayName: '' }));
+  });
+
   it('lets an admin write balance and role', async () => {
     await assertSucceeds(
       updateDoc(doc(asAdmin(env), `users/${UID.p1}`), { balance: 900, role: 'admin' }),
