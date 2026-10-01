@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import type { BoutWithId, EventWithId } from '../events/hooks.ts';
-import { isRevealed, useEntries } from './hooks.ts';
+import { isRevealed, useEntries, useComments } from './hooks.ts';
 import { RevealGrid } from './RevealGrid.tsx';
 
 interface PicksSectionProps {
@@ -13,6 +13,7 @@ interface PicksSectionProps {
 export function PicksSection({ event, bouts }: PicksSectionProps) {
   const revealed = isRevealed(event.status);
   const entries = useEntries(event.id, revealed);
+  const comments = useComments(event.id);
   const mainCard = useMemo(() => bouts.filter((bout) => bout.isMainCard), [bouts]);
 
   if (!revealed) return null;
@@ -23,7 +24,7 @@ export function PicksSection({ event, bouts }: PicksSectionProps) {
       {entries === undefined ? (
         <Skeleton className="h-40 w-full" />
       ) : (
-        <RevealGrid bouts={mainCard} entries={entries} />
+        <RevealGrid bouts={mainCard} entries={entries} comments={comments} />
       )}
     </div>
   );

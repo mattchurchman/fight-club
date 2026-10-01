@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import type { Timestamp } from 'firebase/firestore';
-import { collection, onSnapshot } from 'firebase/firestore';
-import type { Entry, EventStatus } from '@shared/index.ts';
+import { collection, onSnapshot, orderBy, query, limit } from 'firebase/firestore';
+import type { Comment, Entry, EventStatus } from '@shared/index.ts';
 import { db } from '../../lib/firebase.ts';
 
 export interface EntryWithId extends Entry<Timestamp> {
+  id: string;
+}
+
+export interface CommentWithId extends Comment<Timestamp> {
   id: string;
 }
 
@@ -31,4 +35,27 @@ export function useEntries(eventId: string | null, revealed: boolean): EntryWith
   }, [eventId, revealed]);
 
   return entries;
+}
+
+/** Load the last 100 comments for an event, ordered by createdAt. */
+export function useComments(eventId: string | null): CommentWithId[] | undefined {
+  const [comments, setComments] = useState<CommentWithId[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (!eventId) return undefined;
+    const q = query(
+      collection(db, 'events', eventId, 'comments'),
+      orderBy('createdAt', 'asc'),
+      limit(100)
+    );
+    const unsubscribe = onSnapshot(q, (snap) => {
+      setComments(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Comment<Timestamp>) })));
+    });
+    return () => {
+      unsubscribe();
+      setComments(undefined);
+    };
+  }, [eventId]);
+
+  return comments;
 }

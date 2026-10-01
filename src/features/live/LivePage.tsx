@@ -1,13 +1,14 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Countdown } from '../../components/ui/Countdown.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { useSession } from '../auth/SessionProvider.tsx';
 import { selectDefaultEventId, useBouts, useEvent, useEvents } from '../events/hooks.ts';
 import { ShareButton } from '../share/ShareButton.tsx';
+import { ChatPanel } from '../chat/ChatPanel.tsx';
 import { LastResultBanner } from './LastResultBanner.tsx';
 import { LiveLeaderboard } from './LiveLeaderboard.tsx';
-import { isRevealed, useEntries } from './hooks.ts';
+import { isRevealed, useEntries, useComments } from './hooks.ts';
 
 /** The `/live` tab: leaderboard once the active event locks, a countdown before that (docs/tasks/T15). */
 export function LivePage() {
@@ -18,6 +19,8 @@ export function LivePage() {
   const bouts = useBouts(activeId);
   const revealed = isRevealed(event?.status);
   const entries = useEntries(activeId, revealed);
+  const comments = useComments(activeId);
+  const [chatOpen, setChatOpen] = useState(false);
 
   if (eventsLoading || event === undefined) {
     return (
@@ -55,6 +58,21 @@ export function LivePage() {
           <ShareButton event={event} bouts={bouts} entries={entries} selfUid={user?.uid ?? null} />
         </>
       )}
+      <div className="fixed bottom-0 left-0 right-0 flex justify-center gap-2 px-4 pb-4">
+        <button
+          onClick={() => setChatOpen(true)}
+          className="rounded-full bg-gold px-4 py-2 text-sm font-semibold text-background hover:opacity-90"
+        >
+          💬 Trash Talk
+        </button>
+      </div>
+      <ChatPanel
+        eventId={activeId}
+        comments={comments}
+        bouts={bouts ?? undefined}
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+      />
     </div>
   );
 }

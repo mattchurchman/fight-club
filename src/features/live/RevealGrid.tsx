@@ -3,8 +3,9 @@ import clsx from 'clsx';
 import { Avatar } from '../../components/ui/Avatar.tsx';
 import { Card } from '../../components/ui/Card.tsx';
 import type { BoutWithId } from '../events/hooks.ts';
-import type { EntryWithId } from './hooks.ts';
+import type { CommentWithId, EntryWithId } from './hooks.ts';
 import { PlayerSheet } from './PlayerSheet.tsx';
+import { ReactionChips } from './ReactionChips.tsx';
 import { computeConsensus, contrarianLabel, findContrarian } from './reveal.ts';
 
 interface PickerColumnProps {
@@ -43,10 +44,11 @@ function PickerColumn({ corner, boutId, pickers, onTap }: PickerColumnProps) {
 interface RevealGridProps {
   bouts: BoutWithId[];
   entries: EntryWithId[];
+  comments?: CommentWithId[] | undefined;
 }
 
 /** Everyone's picks, one row per main-card bout, once the event locks (docs/tasks/T15). */
-export function RevealGrid({ bouts, entries }: RevealGridProps) {
+export function RevealGrid({ bouts, entries, comments }: RevealGridProps) {
   const [openUid, setOpenUid] = useState<string | null>(null);
   const openEntry = entries.find((entry) => entry.uid === openUid) ?? null;
 
@@ -80,6 +82,7 @@ export function RevealGrid({ bouts, entries }: RevealGridProps) {
                   {contrarianLabel(contrarian, bout)}
                 </p>
               ) : null}
+              {comments && <ReactionChips boutId={bout.id} comments={comments} />}
             </Card>
           );
         })}

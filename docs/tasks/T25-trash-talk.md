@@ -29,4 +29,4 @@ A lightweight event chat plus emoji reactions on each bout, so the group's bante
 Moderation beyond self-delete and admin delete.
 
 ## Completion notes
-_(agent fills in)_
+Built chat panel on Live tab: message list with live Firestore listener (last 100 comments), input (≤280 chars, auto-counter), bout selector, quick emoji buttons (🔥 😂 🩸 💀 🐐), auto-scroll, self-delete. Per-bout reaction aggregation chips on RevealGrid. Tests cover aggregation logic and input validation. All Definition of Done checks pass (lint, typecheck, tests, build, rules).
