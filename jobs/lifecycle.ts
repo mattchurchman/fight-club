@@ -11,7 +11,7 @@
 // `status` (which carries `status.result`). Results need both halves, so a full offline run passes
 // one of each; see `fetchJson` callers below for the live URLs they stand in for.
 import { readFile } from 'node:fs/promises';
-import { Timestamp } from 'firebase-admin/firestore';
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import {
   planCancel,
   planFinalize,
@@ -468,8 +468,15 @@ async function applyFinalize(args: Args, candidate: Candidate, seasonId: string)
   }
 
   for (const user of plan.users) {
+    const update: Record<string, unknown> = { stats: user.stats };
+    if (user.badges && user.badges.length > 0) {
+      update.badges = FieldValue.arrayUnion(...user.badges);
+    }
+    if (user.lockStreak !== undefined) {
+      update.lockStreak = user.lockStreak;
+    }
     await commit(args, `stats ${user.uid}: ${user.stats.points} pts`, () =>
-      db.collection('users').doc(user.uid).set({ stats: user.stats }, { merge: true }),
+      db.collection('users').doc(user.uid).set(update, { merge: true }),
     );
   }
 

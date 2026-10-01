@@ -73,6 +73,7 @@ export interface User<Ts = Timestamp> {
   lastSeenAt: Ts;
   stats?: UserStats;
   badges?: string[];
+  lockStreak?: number;
 }
 
 export interface UsernameRecord {

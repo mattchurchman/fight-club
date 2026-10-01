@@ -32,6 +32,8 @@ export interface LifecycleUser {
   displayName: string;
   balance: number;
   stats?: UserStats;
+  lockStreak?: number;
+  badges?: string[];
 }
 
 /**

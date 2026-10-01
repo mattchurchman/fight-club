@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { Avatar } from '../../components/ui/Avatar.tsx';
 import { Card } from '../../components/ui/Card.tsx';
-import { Chip } from '../../components/ui/Chip.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { BadgesRow } from './BadgesRow.tsx';
 import { EventHistoryList } from './EventHistoryList.tsx';
 import { H2HSection } from './H2HSection.tsx';
 import { Sparkline } from './Sparkline.tsx';
@@ -66,13 +66,7 @@ export function ProfileBody({ uid, isSelf, viewerUid }: ProfileBodyProps) {
 
       <div className="flex flex-col gap-2">
         <SectionLabel>Badges</SectionLabel>
-        <div className="flex flex-wrap gap-2 px-4">
-          {user.badges && user.badges.length > 0 ? (
-            user.badges.map((badge) => <Chip key={badge}>{badge}</Chip>)
-          ) : (
-            <p className="text-sm text-muted">No badges yet.</p>
-          )}
-        </div>
+        <BadgesRow earned={user.badges ?? []} />
       </div>
 
       <div className="flex flex-col gap-2">

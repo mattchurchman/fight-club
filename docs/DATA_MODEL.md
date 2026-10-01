@@ -18,12 +18,13 @@ rulesVersion: "v2.0"
 ## `allowlist/{emailLower}`  (W: Adm; read: the signed-in user whose email matches, Adm)
 `{ email, role: 'player'|'admin', startingGrant: number, invitedBy: uid, invitedAt, claimedBy: uid|null, claimedAt|null }`
 
-## `users/{uid}`  (create: Own, only if allowlisted; update: Own for profile fields only; W balance/role/stats: Adm, J)
+## `users/{uid}`  (create: Own, only if allowlisted; update: Own for profile fields only; W balance/role/stats/badges/lockStreak: Adm, J)
 ```
 displayName, username, usernameLower, photoURL|null, email, role: 'player'|'admin',
 balance: number (tokens), createdAt, lastSeenAt,
 stats?: { events, wins, podiums, points, correctWinners }   // lifetime; written at finalize
-badges?: string[]
+badges?: string[],
+lockStreak?: number   // consecutive lock wins (for lock-smith badge); reset to 0 on wrong lock; incremented at finalize
 ```
 `usernames/{usernameLower}` → `{ uid }` for uniqueness (create: Own, in the same batch as the user doc).
 `users/{uid}/devices/{fcmToken}` → `{ createdAt, platform }` (W: Own) (T24).

@@ -2,6 +2,7 @@ import { DEFAULTS } from '../constants.ts';
 import { computePayouts } from '../payouts.ts';
 import { applyEventToStandings } from '../standings.ts';
 import { mainCardBoutIds } from '../validation.ts';
+import { computeBadges } from '../badges.ts';
 import { isPaid, scoreAndRank } from './scores.ts';
 import type { Payout } from '../payouts.ts';
 import type { Ranked } from '../scoring.ts';
@@ -47,7 +48,7 @@ export interface FinalizePlan extends Plan {
   entries: FinalizeEntryWrite[];
   standings: SeasonTotals[];
   h2h: H2HDelta[];
-  users: { uid: string; stats: UserStats }[];
+  users: { uid: string; stats: UserStats; badges?: string[]; lockStreak?: number }[];
   event: EventPatch;
 }
 
@@ -173,6 +174,19 @@ export function planFinalize(
 
   const userStats = ranked.map((entry) => {
     const current = users[entry.uid]?.stats ?? NO_STATS;
+    const user = users[entry.uid];
+    const payout = won.get(entry.uid) ?? 0;
+    const balanceAfterPayout = (user?.balance ?? 0) + payout;
+    const lockBoutId = (paid.find((e) => e.uid === entry.uid) as LifecycleEntry | undefined)?.lockBoutId ?? '';
+
+    const { badges, lockStreak } = computeBadges(
+      entry,
+      bouts,
+      lockBoutId,
+      balanceAfterPayout,
+      user?.lockStreak ?? 0,
+    );
+
     return {
       uid: entry.uid,
       stats: {
@@ -182,6 +196,8 @@ export function planFinalize(
         points: current.points + entry.score.total,
         correctWinners: current.correctWinners + entry.score.correctWinners,
       },
+      ...(badges.length > 0 && { badges }),
+      ...(lockStreak !== undefined && { lockStreak }),
     };
   });
 
