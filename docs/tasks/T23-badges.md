@@ -29,4 +29,4 @@ Players earn the badges in GAME_RULES §9 automatically at finalize, and they sh
 Push notifications for badges.
 
 ## Completion notes
-_(agent fills in)_
+Implemented all 6 badges (champion, perfect-card, upset-artist, lock-smith, bleeder, busted) with automatic computation at event finalize. Lock-smith badge tracks consecutive lock wins via user.lockStreak field. Created BadgesRow component showing all badges (earned in color, unearned greyed out) with tap-to-reveal descriptions. Comprehensive test coverage validates each badge type and lock-streak reset logic. Integrated into finalize lifecycle with arrayUnion writes to Firestore.
