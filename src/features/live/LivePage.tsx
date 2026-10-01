@@ -2,13 +2,16 @@ import { useMemo } from 'react';
 import { Countdown } from '../../components/ui/Countdown.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { useSession } from '../auth/SessionProvider.tsx';
 import { selectDefaultEventId, useBouts, useEvent, useEvents } from '../events/hooks.ts';
+import { ShareButton } from '../share/ShareButton.tsx';
 import { LastResultBanner } from './LastResultBanner.tsx';
 import { LiveLeaderboard } from './LiveLeaderboard.tsx';
 import { isRevealed, useEntries } from './hooks.ts';
 
 /** The `/live` tab: leaderboard once the active event locks, a countdown before that (docs/tasks/T15). */
 export function LivePage() {
+  const { user } = useSession();
   const { upcoming, recent, loading: eventsLoading } = useEvents();
   const activeId = useMemo(() => selectDefaultEventId(upcoming, recent), [upcoming, recent]);
   const event = useEvent(activeId);
@@ -47,7 +50,10 @@ export function LivePage() {
       ) : entries.length === 0 ? (
         <EmptyState title="No entries" description="Nobody picked this one." />
       ) : (
-        <LiveLeaderboard entries={entries} bouts={bouts} />
+        <>
+          <LiveLeaderboard entries={entries} bouts={bouts} />
+          <ShareButton event={event} bouts={bouts} entries={entries} selfUid={user?.uid ?? null} />
+        </>
       )}
     </div>
   );

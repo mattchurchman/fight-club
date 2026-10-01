@@ -44,7 +44,7 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | ID | Task | Tier | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
 | T21 | Season standings, profiles, head-to-head | B | T09, T15 | done | 2026-09-30 | 5dba887 |
-| T22 | Shareable results card | B | T15 | todo | | |
+| T22 | Shareable results card | B | T15 | done | 2026-09-30 | |
 | T23 | Badges | C | T09, T21 | todo | | |
 | T24 | Push notifications 👤 | B | T10, T11, T12 | todo | | |
 | T25 | Fight-night trash talk | C | T15 | todo | | |
