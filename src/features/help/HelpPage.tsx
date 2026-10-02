@@ -66,16 +66,45 @@ export function HelpPage() {
 
       <Section emoji="🏆" title="How scoring works">
         <p>Pick the winner wrong and that fight scores zero (or a Lock penalty, see above). Pick the
-          winner right, and up to two things add to your score:
+          winner right and you get <strong className="text-text">base points</strong>, plus a{' '}
+          <strong className="text-text">method bonus</strong> on top if you also called how it ends.
+          Worked example below — the real math, step by step.
         </p>
+
+        <div className="rounded-card border border-line bg-surface-2 p-3">
+          <p className="mb-2 text-xs font-semibold uppercase text-muted">
+            Example: 200-point stake, fighter at +150 odds, wins by submission
+          </p>
+
+          <div className="flex items-center justify-between gap-2 border-b border-line py-2 text-sm">
+            <span>Step 1 — turn the odds into a multiplier</span>
+          </div>
+          <p className="pb-2 pt-1 text-xs">
+            +150 odds means a win pays 1.5× your stake <em>on top of</em> getting your stake back — a
+            2.5× multiplier in total. (Negative odds like −200 work the other way: multiplier = 1 +
+            100/200 = 1.5×.)
+          </p>
+
+          <div className="flex items-center justify-between gap-2 border-b border-line py-2 text-sm">
+            <span className="text-muted">Step 2 — base points = stake × multiplier</span>
+            <span className="shrink-0 tabular-nums text-text">200 × 2.5 = 500</span>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 border-b border-line py-2 text-sm">
+            <span className="text-muted">Step 3 — method bonus (submission = +100% of stake)</span>
+            <span className="shrink-0 tabular-nums text-text">+(200 × 1.00) = 200</span>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pt-2 text-sm font-semibold">
+            <span className="text-text">Total for this fight</span>
+            <span className="shrink-0 tabular-nums text-win">700</span>
+          </div>
+        </div>
+
         <p>
-          <strong className="text-text">1. Base points</strong> — your stake × that fighter's odds. A
-          bigger underdog pays more. Bet 200 on a fighter at +150 and win: 200 × 2.5 ={' '}
-          <strong className="text-win">500 points</strong>.
-        </p>
-        <p>
-          <strong className="text-text">2. Method bonus</strong> — only if you <em>also</em> called the
-          finish correctly, worth a fraction of your stake on top:
+          The method bonus only applies on top of a <em>correct</em> winner pick — it's always a
+          straight percentage of your stake, and that percentage never changes, fight to fight or
+          event to event:
         </p>
         <ul className="list-disc space-y-1 pl-5">
           <li>Submission correct: <strong className="text-text">+100%</strong> of your stake</li>
@@ -83,10 +112,8 @@ export function HelpPage() {
           <li>Decision correct: <strong className="text-text">+50%</strong> of your stake</li>
         </ul>
         <p>
-          So that same 200-stake, +150 pick: if it also won by submission, you'd add another 200 points
-          (100% of the 200 stake) for <strong className="text-win">700 total</strong> on that fight. Get
-          the winner right but the method wrong (or it ends in a DQ/no-contest-style oddity) and you just
-          keep the base 500 — no bonus, no penalty.
+          Get the winner right but the method wrong (or it ends in a DQ/no-contest) and you just keep
+          the base points — no bonus, no penalty for missing the method.
         </p>
       </Section>
 

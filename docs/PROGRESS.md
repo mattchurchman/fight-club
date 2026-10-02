@@ -52,8 +52,6 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 👤 = has a USER ACTION REQUIRED step (see the task file / docs/SETUP.md).
 
 ## Backlog (follow-ups discovered along the way)
-- T11: scaffold has no favicon/app icons (demo assets were removed in T01) — add real ones via
-  `@vite-pwa/assets-generator` when PWA/design-system work happens.
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on
   2026-09-29, and `odds.source` / `events.kind` now carry `'espn'` / `'special'`. See DECISIONS.md.
   The Odds API half of T02 stays ☐ because no `ODDS_API_KEY` was available; it is now a fallback only.
