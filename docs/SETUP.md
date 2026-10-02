@@ -5,7 +5,9 @@ Agents point you to a section here when a task needs it. Nothing here asks for a
 
 ## S1. Tools on your computer (once, before T01)
 - **Node.js 22 LTS** (nodejs.org) and **Git**.
-- **Java 17+** (e.g. Temurin from adoptium.net). The Firebase emulators need it (T05 and later).
+- **Java 21+** (e.g. Temurin from adoptium.net). The Firebase emulators need it (T05 and later) —
+  `firebase-tools` 15.x raised its minimum from 11/17, so an older JDK fails `npm run test:rules`
+  and `npm run emulators` with "no longer supports Java version before 21".
 - An AI coding agent that can edit files and run terminal commands in a folder (any vendor).
 - Check it's all installed: `node -v` (v22.x), `git --version`, `java -version`.
 

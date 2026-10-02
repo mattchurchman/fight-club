@@ -51,6 +51,7 @@ tests/rules/*.test.ts
 Path alias: `@shared/*` → `shared/*`. There's one `package.json` (no monorepo tooling).
 
 ## Environments
-- **Local:** Firebase Emulator Suite (Auth + Firestore + Hosting). Needs Java 11+. `npm run emulators`.
+- **Local:** Firebase Emulator Suite (Auth + Firestore + Hosting). Needs Java 21+ (firebase-tools
+  15.x raised its minimum from 11; CI updated 2026-10-02). `npm run emulators`.
 - **Prod:** one Firebase project. Web config lives in `src/lib/firebase.config.ts` (public). Job secrets live in GitHub
   Actions secrets: `FIREBASE_SERVICE_ACCOUNT`, `ODDS_API_KEY`, `FIREBASE_PROJECT_ID`.
