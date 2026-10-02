@@ -31,11 +31,6 @@
         { "fieldPath": "enabled", "order": "ASCENDING" },
         { "fieldPath": "startsAt", "order": "ASCENDING" }
       ]
-    },
-    {
-      "collectionGroup": "standings",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [{ "fieldPath": "points", "order": "DESCENDING" }]
     }
   ],
   "fieldOverrides": []
