@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Card } from '../../components/ui/Card.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { useAllTokenRequests, useAllUsers, useAllowlist, useJobRuns } from './hooks.ts';
+import { useAllEvents } from './events/hooks.ts';
 
 interface StatCardProps {
   to: string;
@@ -26,15 +27,18 @@ export function AdminHomePage() {
   const { users, loading: usersLoading } = useAllUsers();
   const { entries, loading: invitesLoading } = useAllowlist();
   const { runs, loading: runsLoading } = useJobRuns();
+  const { events, loading: eventsLoading } = useAllEvents();
 
   const pendingRequests = requestsLoading ? null : requests.filter((r) => r.status === 'pending').length;
   const playerCount = usersLoading ? null : users.length;
   const joinedEmails = new Set(users.map((u) => u.email.toLowerCase()));
   const pendingInvites = invitesLoading || usersLoading ? null : entries.filter((e) => !joinedEmails.has(e.id)).length;
+  const eventCount = eventsLoading ? null : events.length;
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
+        <StatCard to="/admin/events" label="Events" value={eventCount} />
         <StatCard to="/admin/tokens" label="Requests" value={pendingRequests} />
         <StatCard to="/admin/people" label="Players" value={playerCount} />
         <StatCard to="/admin/people" label="Invites" value={pendingInvites} />
