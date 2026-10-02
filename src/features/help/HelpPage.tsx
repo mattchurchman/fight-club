@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from '../../components/ui/Card.tsx';
 
 interface SectionProps {
@@ -64,13 +65,46 @@ export function HelpPage() {
       </Section>
 
       <Section emoji="🏆" title="How scoring works">
-        <p>Three things add up on every fight you pick correctly:</p>
+        <p>Pick the winner wrong and that fight scores zero (or a Lock penalty, see above). Pick the
+          winner right, and up to two things add to your score:
+        </p>
+        <p>
+          <strong className="text-text">1. Base points</strong> — your stake × that fighter's odds. A
+          bigger underdog pays more. Bet 200 on a fighter at +150 and win: 200 × 2.5 ={' '}
+          <strong className="text-win">500 points</strong>.
+        </p>
+        <p>
+          <strong className="text-text">2. Method bonus</strong> — only if you <em>also</em> called the
+          finish correctly, worth a fraction of your stake on top:
+        </p>
         <ul className="list-disc space-y-1 pl-5">
-          <li>Your stake, multiplied by that fighter's odds — a bigger underdog pays more.</li>
-          <li>A method bonus if you also called KO, SUB, or DEC correctly.</li>
-          <li>Double points if it was your Lock.</li>
+          <li>Submission correct: <strong className="text-text">+100%</strong> of your stake</li>
+          <li>KO/TKO correct: <strong className="text-text">+75%</strong> of your stake</li>
+          <li>Decision correct: <strong className="text-text">+50%</strong> of your stake</li>
         </ul>
-        <p>Pick the winner wrong and that fight scores zero (or a Lock penalty, see above).</p>
+        <p>
+          So that same 200-stake, +150 pick: if it also won by submission, you'd add another 200 points
+          (100% of the 200 stake) for <strong className="text-win">700 total</strong> on that fight. Get
+          the winner right but the method wrong (or it ends in a DQ/no-contest-style oddity) and you just
+          keep the base 500 — no bonus, no penalty.
+        </p>
+      </Section>
+
+      <Section emoji="💵" title="Payouts — it's not always winner-take-all">
+        <p>
+          The pot is everyone's buy-ins added together. How it splits depends on how many people paid
+          in, not just first place:
+        </p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>2–3 players: 1st place takes <strong className="text-text">100%</strong></li>
+          <li>4–6 players: <strong className="text-text">70%</strong> to 1st, <strong className="text-text">30%</strong> to 2nd</li>
+          <li>7+ players: <strong className="text-text">60% / 30% / 10%</strong> to 1st / 2nd / 3rd</li>
+          <li>Just 1 player entered: everyone gets refunded, no pot</li>
+        </ul>
+        <p>
+          Tied for a payout spot? Those players pool every place they're tied for and split it evenly.
+          Payouts post the moment an admin finalizes the event — there's no separate claim step.
+        </p>
       </Section>
 
       <Section emoji="📡" title="When picks lock & how results show up">
@@ -118,6 +152,25 @@ export function HelpPage() {
           The Live tab has a chat panel for the group — post messages, tag a specific fight, or just
           drop a quick 🔥 😂 🩸 💀 🐐 reaction. Your own messages can be deleted if you change your mind.
         </p>
+      </Section>
+
+      <Section emoji="📲" title="Yes, you can install this as an app">
+        <p>
+          It's a real installable app (a PWA) — no App Store needed. Installed, it opens full-screen
+          like any other app and can send you push notifications.
+        </p>
+        <p>
+          <strong className="text-text">On iPhone:</strong> open this site in Safari (it has to be
+          Safari, not Chrome), tap the Share icon, then{' '}
+          <strong className="text-text">Add to Home Screen</strong>.
+        </p>
+        <p>
+          <strong className="text-text">On Android:</strong> open this site in Chrome, then use the
+          browser menu's <strong className="text-text">Install app</strong> option.
+        </p>
+        <Link to="/install" className="font-semibold text-gold underline underline-offset-2">
+          Full install steps →
+        </Link>
       </Section>
     </div>
   );
