@@ -65,6 +65,16 @@ export function MeIcon(props: IconProps) {
   );
 }
 
+export function HelpIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.2 9a2.8 2.8 0 0 1 5.4 1c0 1.8-2.6 2-2.6 3.8" />
+      <path d="M12 17.2h.01" />
+    </svg>
+  );
+}
+
 export function AdminIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>

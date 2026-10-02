@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { TokenPill } from '../components/ui/TokenPill';
 import { useSession } from '../features/auth/SessionProvider';
-import { AdminIcon } from './icons';
+import { AdminIcon, HelpIcon } from './icons';
 
 interface HeaderProps {
   title: string;
@@ -22,6 +22,13 @@ export function Header({ title, subtitle }: HeaderProps) {
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <TokenPill balance={profile?.balance ?? 0} />
+          <Link
+            to="/help"
+            aria-label="How it works"
+            className="inline-flex size-11 items-center justify-center rounded-xl text-muted hover:text-text"
+          >
+            <HelpIcon className="size-5" />
+          </Link>
           {isAdmin ? (
             <Link
               to="/admin"

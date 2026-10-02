@@ -17,6 +17,7 @@ import { EventsListPage as AdminEventsListPage } from '../features/admin/events/
 import { NotFoundPlaceholder } from '../pages/NotFoundPlaceholder';
 import { InstallPage } from '../features/install/InstallPage';
 import { LoginPage } from '../features/auth/LoginPage';
+import { HelpPage } from '../features/help/HelpPage';
 
 const devRoutes: RouteObject[] = import.meta.env.DEV
   ? [
@@ -48,6 +49,7 @@ export const routeTree: RouteObject[] = [
           { path: '/wallet', element: <WalletPage /> },
           { path: '/me', element: <MyProfilePage /> },
           { path: '/u/:username', element: <ProfilePage /> },
+          { path: '/help', element: <HelpPage /> },
           {
             path: '/admin',
             element: (
