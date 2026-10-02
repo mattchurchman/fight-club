@@ -48,11 +48,14 @@ playing the clever friend who wants free tokens or an early look at the picks.
    workflow `env` to the three steps that use it, so `npm ci` and its install scripts never see it.
    `deploy.yml` now requires the triggering CI run to come from this repo (`branches: [main]` matches
    a *fork's* branch named `main` too) and checks out `head_sha`, deploying exactly what CI verified.
-5. **CSP + headers** (`firebase.json`, every path): `default-src 'self'`, `script-src 'self'` (the
-   build emits no inline script), `object-src 'none'`, `frame-ancestors 'none'`, `nosniff`,
-   `Referrer-Policy`, `Permissions-Policy`, HSTS, and `Cross-Origin-Opener-Policy:
-   same-origin-allow-popups` (plain `same-origin` breaks `signInWithPopup`). `connect-src` names the
-   Firebase APIs plus `localhost`/`127.0.0.1`, which the emulator-served e2e build needs.
+5. **CSP + headers** (`firebase.json`, every path): `default-src 'self'`, `script-src 'self'
+   https://apis.google.com` (the build emits no inline script; `apis.google.com` is Firebase's
+   `signInWithPopup` helper iframe — found missing in a real post-deploy Google sign-in attempt on
+   2026-10-01, which blocked the popup for every user, not just the one testing it), `object-src
+   'none'`, `frame-ancestors 'none'`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS, and
+   `Cross-Origin-Opener-Policy: same-origin-allow-popups` (plain `same-origin` breaks
+   `signInWithPopup`). `connect-src` names the Firebase APIs plus `localhost`/`127.0.0.1`, which the
+   emulator-served e2e build needs.
 6. **Token approval re-reads its own amount.** `approveInTx` took `uid`/`amount` from the admin
    screen's snapshot; it now checks both against the request as the transaction reads it.
 
