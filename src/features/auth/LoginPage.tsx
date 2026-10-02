@@ -14,7 +14,7 @@ import { Button } from '../../components/ui/Button.tsx';
 import { Card } from '../../components/ui/Card.tsx';
 import { useToast } from '../../components/ui/Toast.tsx';
 import { auth } from '../../lib/firebase.ts';
-import { isIos, isStandalone } from '../install/useInstallPrompt.ts';
+import { isMobile } from '../install/useInstallPrompt.ts';
 import { mapAuthError } from './authErrors.ts';
 import { useSession } from './SessionProvider.tsx';
 
@@ -61,8 +61,10 @@ export function LoginPage() {
   const onGoogle = () =>
     withBusy(async () => {
       const provider = new GoogleAuthProvider();
-      // Google's popup flow is blocked inside an installed iOS PWA, so redirect there instead.
-      if (isIos() && isStandalone()) {
+      // signInWithPopup is unreliable on mobile browsers (not just an installed iOS PWA) — the
+      // popup/opener handoff silently breaks under iOS Safari's storage restrictions. Redirect
+      // everywhere on mobile; popup stays on desktop for the nicer no-navigation UX.
+      if (isMobile()) {
         await signInWithRedirect(auth, provider);
       } else {
         await signInWithPopup(auth, provider);
