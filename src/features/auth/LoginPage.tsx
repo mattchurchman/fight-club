@@ -101,16 +101,6 @@ export function LoginPage() {
       </div>
 
       <Card className="flex flex-col gap-4">
-        <Button type="button" variant="secondary" loading={busy} onClick={onGoogle}>
-          Continue with Google
-        </Button>
-
-        <div className="flex items-center gap-3 text-xs uppercase text-muted">
-          <span className="h-px flex-1 bg-line" aria-hidden="true" />
-          or
-          <span className="h-px flex-1 bg-line" aria-hidden="true" />
-        </div>
-
         <form className="flex flex-col gap-3" onSubmit={onSubmit}>
           <label className="flex flex-col gap-1 text-sm text-muted">
             Email
@@ -158,6 +148,16 @@ export function LoginPage() {
             Forgot password?
           </button>
         </div>
+
+        <div className="flex items-center gap-3 text-xs uppercase text-muted">
+          <span className="h-px flex-1 bg-line" aria-hidden="true" />
+          or
+          <span className="h-px flex-1 bg-line" aria-hidden="true" />
+        </div>
+
+        <Button type="button" variant="ghost" className="border border-line" loading={busy} onClick={onGoogle}>
+          Continue with Google
+        </Button>
       </Card>
     </div>
   );
