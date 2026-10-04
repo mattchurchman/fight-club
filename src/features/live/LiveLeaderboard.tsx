@@ -20,7 +20,7 @@ function prefersReducedMotion(): boolean {
 
 /** FLIP-animates rows into their new position on reorder; a no-op when motion is reduced. */
 function useFlip(orderKey: string) {
-  const rowRefs = useRef(new Map<string, HTMLDivElement>());
+  const rowRefs = useRef(new Map<string, HTMLButtonElement>());
   const prevTops = useRef(new Map<string, number>());
 
   useLayoutEffect(() => {
@@ -49,10 +49,13 @@ function useFlip(orderKey: string) {
 interface LiveLeaderboardProps {
   entries: LeaderboardEntryLike[];
   bouts: BoutWithId[];
+  onTap: (uid: string) => void;
 }
 
-/** Rank, avatar, name, points and per-bout result dots; your own row is pinned and highlighted (docs/tasks/T15). */
-export function LiveLeaderboard({ entries, bouts }: LiveLeaderboardProps) {
+/** Rank, avatar, name, points and per-bout result dots; your own row is pinned and highlighted
+ * (docs/tasks/T15). Tap a row to see that player's full picks — picks are already revealed to
+ * everyone once the event locks, so there's nothing left to keep secret. */
+export function LiveLeaderboard({ entries, bouts, onTap }: LiveLeaderboardProps) {
   const { user } = useSession();
   const rows = buildLeaderboard(entries);
   const mainCard = bouts.filter((bout) => bout.isMainCard);
@@ -67,14 +70,16 @@ export function LiveLeaderboard({ entries, bouts }: LiveLeaderboardProps) {
         ).length;
 
         return (
-          <div
+          <button
             key={row.uid}
+            type="button"
+            onClick={() => onTap(row.uid)}
             ref={(el) => {
               if (el) rowRefs.current.set(row.uid, el);
               else rowRefs.current.delete(row.uid);
             }}
             className={clsx(
-              'flex items-center gap-3 rounded-card border p-3',
+              'flex w-full items-center gap-3 rounded-card border p-3 text-left',
               isMe ? 'sticky top-0 z-10 border-gold bg-gold/10' : 'border-line bg-surface',
             )}
           >
@@ -102,7 +107,7 @@ export function LiveLeaderboard({ entries, bouts }: LiveLeaderboardProps) {
               {row.score.total >= 0 ? '+' : ''}
               {row.score.total}
             </p>
-          </div>
+          </button>
         );
       })}
     </div>
