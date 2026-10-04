@@ -70,9 +70,9 @@ export function AdminHelpPage() {
           field; nothing will ever fill it in for you.
         </p>
         <p>
-          After a result lands (either way), tap <strong className="text-text">Rescore now</strong>{' '}
-          to push the updated leaderboard out to everyone's Live tab. Results alone don't update
-          the leaderboard — rescoring is what actually does that.
+          Either way, the leaderboard updates itself automatically the moment a result lands —{' '}
+          <strong className="text-text">Rescore now</strong> is just there as a manual backstop if
+          you ever want to force a recheck.
         </p>
       </Section>
 
