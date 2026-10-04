@@ -130,4 +130,11 @@ describe('parseResult', () => {
   it('returns null when the bout has no result yet', () => {
     expect(parseResult({ period: 0, displayClock: '-' }, [])).toBeNull();
   });
+
+  it('returns null for a present-but-empty result object, not a fallback no-contest', () => {
+    // ESPN sends `result: {}` (no id/name) for a bout that hasn't finished — confirmed live on
+    // 2026-10-04, where this previously fell through to the "unmapped result" fallback and wrote
+    // every main-card bout as `nc`/`OTHER` the instant the event locked, before any fight happened.
+    expect(parseResult({ period: 0, displayClock: '-', result: {} }, [])).toBeNull();
+  });
 });

@@ -73,7 +73,9 @@ export interface EspnScoreboard {
 export interface EspnStatus {
   period?: number;
   displayClock?: string;
-  result?: { id: number; name: string };
+  // ESPN sends a present-but-empty `result: {}` for a bout that hasn't finished yet, not an
+  // absent field — `id`/`name` only populate once there's an actual decision. Both optional.
+  result?: { id?: number; name?: string };
 }
 
 // ---- Parsed output ----
@@ -229,7 +231,7 @@ export function parseResult(
   competitors: { order: number; winner?: boolean }[],
 ): ParsedResult | null {
   const result = status.result;
-  if (!result) return null;
+  if (!result || !result.name) return null;
   const round = status.period ?? null;
   const time = status.displayClock ?? null;
   const entry = RESULT_TABLE[result.name];
