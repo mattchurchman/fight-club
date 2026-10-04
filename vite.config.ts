@@ -37,6 +37,14 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: 'index.html',
+        // Without this, the SPA fallback hijacks every navigation — including Firebase's own
+        // reserved /__/auth/** helper pages (used by signInWithRedirect). The service worker
+        // serves our cached index.html instead of letting the request reach the real page, and
+        // React Router's catch-all then renders "page not found" for a route it's never heard
+        // of — which looks exactly like a 404, but is entirely client-side, on a URL the real
+        // server answers correctly (confirmed directly: curl returns Firebase's actual auth
+        // helper page, not ours).
+        navigateFallbackDenylist: [/^\/__\//],
       },
     }),
   ],

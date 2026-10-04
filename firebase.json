@@ -9,7 +9,7 @@
         "headers": [
           {
             "key": "Content-Security-Policy",
-            "value": "default-src 'self'; script-src 'self' https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://a.espncdn.com https://lh3.googleusercontent.com; font-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fcmregistrations.googleapis.com https://firebaseinstallations.googleapis.com https://fight-club-4de90.firebaseapp.com http://127.0.0.1:* http://localhost:*; frame-src 'self' https://fight-club-4de90.firebaseapp.com https://accounts.google.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+            "value": "default-src 'self'; script-src 'self' https://apis.google.com 'nonce-firebase-auth-helper'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://a.espncdn.com https://lh3.googleusercontent.com; font-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fcmregistrations.googleapis.com https://firebaseinstallations.googleapis.com https://fight-club-4de90.firebaseapp.com http://127.0.0.1:* http://localhost:*; frame-src 'self' https://fight-club-4de90.firebaseapp.com https://accounts.google.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
           },
           { "key": "X-Content-Type-Options", "value": "nosniff" },
           { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },

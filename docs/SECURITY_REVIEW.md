@@ -49,12 +49,18 @@ playing the clever friend who wants free tokens or an early look at the picks.
    `deploy.yml` now requires the triggering CI run to come from this repo (`branches: [main]` matches
    a *fork's* branch named `main` too) and checks out `head_sha`, deploying exactly what CI verified.
 5. **CSP + headers** (`firebase.json`, every path): `default-src 'self'`, `script-src 'self'
-   https://apis.google.com` (the build emits no inline script; `apis.google.com` is Firebase's
-   `signInWithPopup` helper iframe — found missing in a real post-deploy Google sign-in attempt on
-   2026-10-01, which blocked the popup for every user, not just the one testing it), `object-src
-   'none'`, `frame-ancestors 'none'`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS, and
-   `Cross-Origin-Opener-Policy: same-origin-allow-popups` (plain `same-origin` breaks
-   `signInWithPopup`). `connect-src` names the Firebase APIs plus `localhost`/`127.0.0.1`, which the
+   https://apis.google.com 'nonce-firebase-auth-helper'` (the build emits no inline script;
+   `apis.google.com` is Firebase's `signInWithPopup` helper iframe — found missing in a real
+   post-deploy Google sign-in attempt on 2026-10-01, which blocked the popup for every user, not
+   just the one testing it. `'nonce-firebase-auth-helper'` is a fixed, non-random nonce Firebase
+   Hosting always stamps on the inline bootstrap script of its own `/__/auth/handler` page — found
+   missing the same way on 2026-10-02, after switching mobile to `signInWithRedirect`: without it,
+   that page loads but its one inline script never runs, so the redirect to Google's consent
+   screen never fires. Safe to allowlist since our own build never emits an inline script that
+   could carry this literal nonce value), `object-src 'none'`, `frame-ancestors 'none'`, `nosniff`,
+   `Referrer-Policy`, `Permissions-Policy`, HSTS, and `Cross-Origin-Opener-Policy:
+   same-origin-allow-popups` (plain `same-origin` breaks `signInWithPopup`). `connect-src` names
+   the Firebase APIs plus `localhost`/`127.0.0.1`, which the
    emulator-served e2e build needs.
 6. **Token approval re-reads its own amount.** `approveInTx` took `uid`/`amount` from the admin
    screen's snapshot; it now checks both against the request as the transaction reads it.
