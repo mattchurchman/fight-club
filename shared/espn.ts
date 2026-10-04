@@ -1,5 +1,7 @@
 // Pure ESPN parsing helpers (docs/DATA_SOURCES.md). No Firestore/Admin SDK imports here —
-// everything below is a pure function over plain JSON so it can be unit-tested against fixtures.
+// everything below is a pure function over plain JSON so it can be unit-tested against fixtures,
+// and reused directly from the browser bundle (docs/tasks/T18 admin "Check ESPN now") as well as
+// from jobs/.
 import {
   fighterId as toFighterId,
   boutId as toBoutId,
@@ -7,7 +9,7 @@ import {
   type EventKind,
   type ResultMethod,
   type Winner,
-} from '@shared/index.ts';
+} from './index.ts';
 
 const USER_AGENT = 'fight-club-private/1.0';
 const TIMEOUT_MS = 10_000;

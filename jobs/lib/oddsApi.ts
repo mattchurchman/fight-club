@@ -3,7 +3,7 @@
 // The Odds API (§7) stays a documented, unimplemented fallback: no key was ever available to capture
 // a fixture or confirm its response shape, so implementing it now would be guessing.
 import { fighterId as toFighterId, median } from '@shared/index.ts';
-import { fetchJson } from './espn.ts';
+import { fetchJson } from '@shared/espn.ts';
 
 const CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
 

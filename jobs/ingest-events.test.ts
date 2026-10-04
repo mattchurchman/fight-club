@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { planEventWrites, type ExistingEvent, type PlanConfig } from './ingest-events.ts';
-import type { ParsedBout, ParsedEvent, ParsedFighter } from './lib/espn.ts';
+import type { ParsedBout, ParsedEvent, ParsedFighter } from '@shared/espn.ts';
 
 const CONFIG: PlanConfig = { autoEnableNumbered: true, buyIn: 100, budget: 1000 };
 const NOW = '2026-09-29T00:00:00.000Z';

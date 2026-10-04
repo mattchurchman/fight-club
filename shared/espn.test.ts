@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import scoreboardUpcoming from '../../fixtures/espn/scoreboard-upcoming.json' with { type: 'json' };
-import scoreboardCompleted from '../../fixtures/espn/scoreboard-completed-331.json' with { type: 'json' };
-import eventCompleted331 from '../../fixtures/espn/event-completed-331.json' with { type: 'json' };
-import competitionStatus from '../../fixtures/espn/competition-status.json' with { type: 'json' };
+import scoreboardUpcoming from '../fixtures/espn/scoreboard-upcoming.json' with { type: 'json' };
+import scoreboardCompleted from '../fixtures/espn/scoreboard-completed-331.json' with { type: 'json' };
+import eventCompleted331 from '../fixtures/espn/event-completed-331.json' with { type: 'json' };
+import competitionStatus from '../fixtures/espn/competition-status.json' with { type: 'json' };
 import { headshotUrl, parseEvents, parseMainCard, parseResult, type EspnEvent, type EspnScoreboard } from './espn.ts';
 
 describe('parseEvents', () => {

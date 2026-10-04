@@ -16,6 +16,7 @@ import {
   type CancelPreview,
   type FinalizePreview,
 } from './actions.ts';
+import { applyEspnRefresh, previewEspnRefresh, type EspnRefreshPreview } from './espnRefresh.ts';
 
 const confirmInputClass =
   'min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
@@ -27,13 +28,14 @@ interface ActionsPanelProps {
   onDone: () => void;
 }
 
-type ActiveAction = 'rescore' | 'finalize' | 'cancel' | null;
+type ActiveAction = 'espn' | 'rescore' | 'finalize' | 'cancel' | null;
 
 export function ActionsPanel({ eventId, status, onDone }: ActionsPanelProps) {
   const { user } = useSession();
   const [active, setActive] = useState<ActiveAction>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [espnPreview, setEspnPreview] = useState<EspnRefreshPreview | null>(null);
   const [rescorePlan, setRescorePlan] = useState<ScoresPlan | null>(null);
   const [finalizePreview, setFinalizePreview] = useState<FinalizePreview | null>(null);
   const [cancelPreview, setCancelPreview] = useState<CancelPreview | null>(null);
@@ -44,6 +46,7 @@ export function ActionsPanel({ eventId, status, onDone }: ActionsPanelProps) {
     setActive(null);
     setLoading(false);
     setError('');
+    setEspnPreview(null);
     setRescorePlan(null);
     setFinalizePreview(null);
     setCancelPreview(null);
@@ -84,6 +87,14 @@ export function ActionsPanel({ eventId, status, onDone }: ActionsPanelProps) {
         <Button
           variant="secondary"
           disabled={!canRescore(status)}
+          onClick={() => openPreview('espn', async () => setEspnPreview(await previewEspnRefresh(eventId)))}
+          className="min-h-9 px-3 text-xs"
+        >
+          Check ESPN now
+        </Button>
+        <Button
+          variant="secondary"
+          disabled={!canRescore(status)}
           onClick={() => openPreview('rescore', async () => setRescorePlan(await previewRescore(eventId)))}
           className="min-h-9 px-3 text-xs"
         >
@@ -105,6 +116,36 @@ export function ActionsPanel({ eventId, status, onDone }: ActionsPanelProps) {
           Cancel event
         </Button>
       </div>
+
+      <Sheet open={active === 'espn'} onClose={reset} title="Check ESPN now">
+        {loading && !espnPreview ? (
+          <p className="text-sm text-muted">Checking ESPN…</p>
+        ) : espnPreview ? (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-text">
+              Checked {espnPreview.checked} {espnPreview.checked === 1 ? 'bout' : 'bouts'} still in play.
+            </p>
+            {espnPreview.plan.applies ? (
+              <ul className="flex flex-col gap-1 text-sm text-text">
+                {espnPreview.plan.bouts.map((write) => (
+                  <li key={write.boutId}>
+                    {write.boutId.replace(/^bout_/, '')}: {write.result.winner} by {write.result.method}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted">No new results from ESPN yet.</p>
+            )}
+            {error ? <p className="text-sm text-red">{error}</p> : null}
+            <Button
+              disabled={loading || !espnPreview.plan.applies}
+              onClick={() => confirm(() => applyEspnRefresh(eventId, espnPreview))}
+            >
+              {loading ? 'Applying…' : `Apply ${espnPreview.plan.bouts.length} result${espnPreview.plan.bouts.length === 1 ? '' : 's'}`}
+            </Button>
+          </div>
+        ) : null}
+      </Sheet>
 
       <Sheet open={active === 'rescore'} onClose={reset} title="Rescore now">
         {loading && !rescorePlan ? (

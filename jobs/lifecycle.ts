@@ -40,7 +40,7 @@ import {
 } from '@shared/index.ts';
 import { ledgerId, STARTING_GRANT_SCOPE } from '@shared/ledger-plan.ts';
 import { getAdmin } from './lib/admin.ts';
-import { fetchJson, parseResult, type EspnScoreboard, type EspnStatus } from './lib/espn.ts';
+import { fetchJson, parseResult, type EspnScoreboard, type EspnStatus } from '@shared/espn.ts';
 import { postLedgerRow } from './lib/ledger.ts';
 import { log, recordJobRun } from './lib/log.ts';
 import { runLockReminders, runTokenRequestApprovals, sendFinalizeSummaries } from './notify.ts';

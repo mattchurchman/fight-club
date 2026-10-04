@@ -14,7 +14,7 @@ import {
 } from '@shared/index.ts';
 import { getAdmin } from './lib/admin.ts';
 import { log, recordJobRun } from './lib/log.ts';
-import { fetchJson, parseEvents, type EspnScoreboard, type ParsedEvent, type ParsedFighter } from './lib/espn.ts';
+import { fetchJson, parseEvents, type EspnScoreboard, type ParsedEvent, type ParsedFighter } from '@shared/espn.ts';
 
 const JOB_NAME = 'ingest';
 const SITE = 'https://site.api.espn.com/apis/site/v2/sports/mma/ufc';
