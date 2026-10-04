@@ -87,6 +87,15 @@ export async function previewRescore(eventId: string): Promise<ScoresPlan> {
   return planScores(event, bouts, entries);
 }
 
+/** Rescores immediately, no preview step — a no-op if nothing changed (`applyRescore` already
+ * guards on `plan.applies`). Call this after any write that lands a new bout result (manual
+ * entry, ESPN refresh) so the leaderboard updates itself instead of requiring a separate,
+ * easy-to-forget "Rescore now" click — found live: a locked Lock-of-the-Night result sat
+ * unscored for two hours because nothing rescored after it landed. */
+export async function rescoreNow(eventId: string): Promise<void> {
+  await applyRescore(eventId, await previewRescore(eventId));
+}
+
 /** docs/tasks/T18 step 3: writes `planScores`' entries straight through, in one batch. */
 export async function applyRescore(eventId: string, plan: ScoresPlan): Promise<void> {
   if (!plan.applies) return;

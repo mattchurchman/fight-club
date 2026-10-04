@@ -13,6 +13,7 @@ import { EVENT_STATUS_LABEL, formatEventDateTime } from '../../events/format.ts'
 import { ActionsPanel } from './ActionsPanel.tsx';
 import { BoutRow } from './BoutRow.tsx';
 import { moveMainCardBout, toggleMainCard } from './card.ts';
+import { rescoreNow } from './actions.ts';
 import { overrideOdds, saveCard, setEventEnabled, setEventTerms, setResult } from './eventWrites.ts';
 import type { ResultInput } from './eventWrites.ts';
 import { canEditCard, canEditEventTerms, canEnterResult, canOverrideOdds } from './permissions.ts';
@@ -191,9 +192,10 @@ export function EventDetailPage() {
               }
               onOverrideOdds={(a, b) => run(bout.id, () => overrideOdds(eventId, bout.id, a, b))}
               onSetResult={(input: ResultInput) =>
-                run(bout.id, () => {
-                  if (event.status !== 'locked' && event.status !== 'live') return Promise.resolve();
-                  return setResult(eventId, bout.id, event.status, input);
+                run(bout.id, async () => {
+                  if (event.status !== 'locked' && event.status !== 'live') return;
+                  await setResult(eventId, bout.id, event.status, input);
+                  await rescoreNow(eventId);
                 })
               }
             />

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import clsx from 'clsx';
 import { useSession } from '../auth/SessionProvider.tsx';
 import { useToast } from '../../components/ui/Toast.tsx';
@@ -22,7 +22,7 @@ interface ChatPanelProps {
 }
 
 export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanelProps) {
-  const { user } = useSession();
+  const { user, profile } = useSession();
   const { show: showToast } = useToast();
   const [text, setText] = useState('');
   const [selectedBoutId, setSelectedBoutId] = useState<string | null>(null);
@@ -50,7 +50,7 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!eventId || !user || !text.trim()) return;
+    if (!eventId || !user || !profile || !text.trim()) return;
 
     setIsSubmitting(true);
     try {
@@ -59,11 +59,11 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
 
       await addDoc(collection(db, 'events', eventId, 'comments'), {
         uid: user.uid,
-        displayName: user.displayName,
+        displayName: profile.displayName,
         boutId,
         text: text.trim(),
         emoji,
-        createdAt: new Date(),
+        createdAt: serverTimestamp(),
       });
 
       setText('');

@@ -13,6 +13,7 @@ import {
   previewCancel,
   previewFinalize,
   previewRescore,
+  rescoreNow,
   type CancelPreview,
   type FinalizePreview,
 } from './actions.ts';
@@ -139,7 +140,12 @@ export function ActionsPanel({ eventId, status, onDone }: ActionsPanelProps) {
             {error ? <p className="text-sm text-red">{error}</p> : null}
             <Button
               disabled={loading || !espnPreview.plan.applies}
-              onClick={() => confirm(() => applyEspnRefresh(eventId, espnPreview))}
+              onClick={() =>
+                confirm(async () => {
+                  await applyEspnRefresh(eventId, espnPreview);
+                  await rescoreNow(eventId);
+                })
+              }
             >
               {loading ? 'Applying…' : `Apply ${espnPreview.plan.bouts.length} result${espnPreview.plan.bouts.length === 1 ? '' : 's'}`}
             </Button>
