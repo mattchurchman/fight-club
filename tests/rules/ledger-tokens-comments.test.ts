@@ -211,10 +211,16 @@ describe('comments', () => {
     await assertFails(addDoc(collection(asPlayer1(env), path), comment({ uid: UID.p2 })));
   });
 
-  it('denies text over 280 characters and empty text', async () => {
+  it('denies text over 280 characters and empty text with no emoji', async () => {
     const db = asPlayer1(env);
     await assertFails(addDoc(collection(db, path), comment({ text: 'x'.repeat(281) })));
     await assertFails(addDoc(collection(db, path), comment({ text: '' })));
+  });
+
+  it('allows a standalone reaction — empty text with an emoji', async () => {
+    await assertSucceeds(
+      addDoc(collection(asPlayer1(env), path), comment({ text: '', emoji: '🔥' })),
+    );
   });
 
   it('denies a client-supplied createdAt', async () => {

@@ -85,11 +85,28 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
     }
   };
 
-  const handleEmojiSelect = (emoji: string) => {
-    if (selectedEmoji === emoji) {
-      setSelectedEmoji(null);
-    } else {
-      setSelectedEmoji(emoji);
+  /** No text typed: send a standalone reaction immediately (one tap). Mid-message: just stage
+   * the emoji onto the text you're about to send instead, since a tap can't mean both. */
+  const handleEmojiTap = async (emoji: string) => {
+    if (text.trim()) {
+      setSelectedEmoji(selectedEmoji === emoji ? null : emoji);
+      return;
+    }
+    if (!eventId || !user || !profile) return;
+    setIsSubmitting(true);
+    try {
+      await addDoc(collection(db, 'events', eventId, 'comments'), {
+        uid: user.uid,
+        displayName: profile.displayName,
+        boutId: selectedBoutId || null,
+        text: '',
+        emoji,
+        createdAt: serverTimestamp(),
+      });
+    } catch {
+      showToast('Failed to send reaction', { variant: 'error' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -125,7 +142,7 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
                     </button>
                   )}
                 </div>
-                <p className="text-sm text-text">{comment.text}</p>
+                {comment.text && <p className="text-sm text-text">{comment.text}</p>}
                 {comment.emoji && <p className="text-lg">{comment.emoji}</p>}
                 {comment.boutId && bouts && (
                   <p className="text-xs text-muted">
@@ -145,12 +162,13 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
               <button
                 key={emoji}
                 type="button"
-                onClick={() => handleEmojiSelect(emoji)}
+                onClick={() => handleEmojiTap(emoji)}
+                disabled={isSubmitting}
                 className={clsx(
                   'text-xl transition-colors',
                   selectedEmoji === emoji ? 'opacity-100' : 'opacity-50 hover:opacity-75'
                 )}
-                aria-label={`Select ${emoji} emoji`}
+                aria-label={text.trim() ? `Attach ${emoji} to your message` : `Send ${emoji} reaction`}
               >
                 {emoji}
               </button>

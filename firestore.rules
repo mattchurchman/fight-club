@@ -310,12 +310,15 @@ service cloud.firestore {
           && request.resource.data.displayName is string
           && request.resource.data.displayName.size() <= 40
           && request.resource.data.text is string
-          && request.resource.data.text.size() > 0
           && request.resource.data.text.size() <= 280
           && (!('boutId' in request.resource.data) || request.resource.data.boutId == null
               || request.resource.data.boutId is string)
           && (!('emoji' in request.resource.data) || request.resource.data.emoji == null
               || request.resource.data.emoji is string)
+          // A comment needs real content: either typed text, or a standalone reaction (an emoji
+          // with no text — docs/tasks/T25's design for the RevealGrid's per-bout reaction chips).
+          && (request.resource.data.text.size() > 0
+              || ('emoji' in request.resource.data && request.resource.data.emoji is string))
           // forces serverTimestamp(); no back- or future-dating
           && request.resource.data.createdAt == request.time;
         allow update: if false;
