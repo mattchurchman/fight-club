@@ -49,7 +49,12 @@ deploy secret automatically. Firestore rules and indexes are deployed from your 
 
 ## S7. Make yourself admin (T12)
 After T12 is deployed (or with emulators), run: `npm run bootstrap:admin -- you@example.com`
-(it uses your S4 credentials). This allowlists you as admin and writes `config/app.admins`.
+(it uses your S4 credentials). This allowlists you as admin, writes `config/app.admins`, and — on
+a brand new project — also fills in the rest of `config/app` (`seasonId`, `defaults`,
+`autoEnableNumbered`, `rulesVersion`), which nothing else seeds for a real Firebase project
+(only the emulator gets this from `jobs/seed-emulator.ts`). Without it, Finalize crashes outright
+trying to load season standings. Safe to rerun any time — it only fills in fields that are
+missing, never overwrites one you changed on purpose (e.g. rolling `seasonId` to a new year).
 Then sign in.
 
 ## S8. Inviting friends (after T17)

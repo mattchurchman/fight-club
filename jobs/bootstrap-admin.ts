@@ -3,7 +3,7 @@
 // Idempotent: safe to rerun. If the person hasn't signed in yet, allowlists them as admin and
 // asks you to rerun once they have (we need their uid for config/app.admins and users/{uid}).
 import { FieldValue } from 'firebase-admin/firestore';
-import { DEFAULTS } from '@shared/index.ts';
+import { DEFAULTS, RULES_VERSION } from '@shared/index.ts';
 import { getAdmin } from './lib/admin.ts';
 
 async function main(): Promise<void> {
@@ -15,6 +15,23 @@ async function main(): Promise<void> {
   }
 
   const { db, auth } = getAdmin();
+
+  // docs/SETUP.md never had a step that seeds config/app beyond `admins` for a real (non-emulator)
+  // project — only jobs/seed-emulator.ts did this, for the emulator only. Found live: a real
+  // deployment's config/app had nothing but `admins`, which crashes Finalize (it needs
+  // config/app.seasonId to load season standings). Fill in only what's missing, never overwrite a
+  // value someone deliberately changed later (e.g. rolled seasonId to a new year).
+  const appConfigRef = db.collection('config').doc('app');
+  const appConfig = (await appConfigRef.get()).data();
+  const appConfigPatch: Record<string, unknown> = {};
+  if (appConfig?.seasonId === undefined) appConfigPatch.seasonId = new Date().getFullYear().toString();
+  if (appConfig?.defaults === undefined) appConfigPatch.defaults = DEFAULTS;
+  if (appConfig?.autoEnableNumbered === undefined) appConfigPatch.autoEnableNumbered = true;
+  if (appConfig?.rulesVersion === undefined) appConfigPatch.rulesVersion = RULES_VERSION;
+  if (Object.keys(appConfigPatch).length > 0) {
+    await appConfigRef.set(appConfigPatch, { merge: true });
+    console.log(`config/app -> filled in missing field(s): ${Object.keys(appConfigPatch).join(', ')}`);
+  }
 
   const allowlistRef = db.collection('allowlist').doc(email);
   const existing = (await allowlistRef.get()).data();
