@@ -44,6 +44,18 @@ export function AdminHomePage() {
         <StatCard to="/admin/people" label="Invites" value={pendingInvites} />
       </div>
 
+      <Link to="/admin/help" className="block">
+        <Card className="flex items-center justify-between gap-3">
+          <div>
+            <span className="font-display text-sm uppercase text-text">Admin Help</span>
+            <p className="text-xs text-muted">What to do before, during and after a card</p>
+          </div>
+          <span aria-hidden="true" className="text-muted">
+            →
+          </span>
+        </Card>
+      </Link>
+
       <Card className="flex flex-col gap-3">
         <h2 className="text-xs font-semibold uppercase text-muted">Jobs</h2>
         {runsLoading ? (

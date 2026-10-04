@@ -12,6 +12,7 @@ const titles: Record<string, string> = {
 };
 
 function titleFor(pathname: string): string {
+  if (pathname === '/admin/help') return 'Admin Help';
   if (pathname.startsWith('/admin')) return 'Admin';
   return titles[pathname] ?? 'Fight Club';
 }

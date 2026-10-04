@@ -10,6 +10,7 @@ import { ProfilePage } from '../features/profile/ProfilePage';
 import { StandingsPage } from '../features/standings/StandingsPage';
 import { WalletPage } from '../features/wallet/WalletPage';
 import { AdminHomePage } from '../features/admin/AdminHomePage';
+import { AdminHelpPage } from '../features/admin/AdminHelpPage';
 import { PeoplePage } from '../features/admin/PeoplePage';
 import { TokensPage } from '../features/admin/TokensPage';
 import { EventDetailPage as AdminEventDetailPage } from '../features/admin/events/EventDetailPage';
@@ -55,6 +56,14 @@ export const routeTree: RouteObject[] = [
             element: (
               <RequireAdmin>
                 <AdminHomePage />
+              </RequireAdmin>
+            ),
+          },
+          {
+            path: '/admin/help',
+            element: (
+              <RequireAdmin>
+                <AdminHelpPage />
               </RequireAdmin>
             ),
           },
