@@ -58,7 +58,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
 | T26 | Brand tokens, fonts & migration aliases | C | low | — | todo | | |
-| T27 | Restyle sweep: admin, auth, wallet, help, install, notifications | C | low | T26 | in-progress | | |
+| T27 | Restyle sweep: admin, auth, wallet, help, install, notifications | C | low | T26 | done | 2026-10-14 | 5f4a68b |
 
 **Run 2 — Brand kit** (Tier B): logo, PWA icons, UI kit and shell.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |

@@ -35,4 +35,4 @@ wallet's duplicated amount. Purely mechanical: same layout, new tokens.
 Layout changes, other folders, the UI kit (T29).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Replaced all 18 legacy color aliases (gold → text, blue → steel, loss → red-text) across admin, auth, wallet, help, install, and notifications screens. Fixed wallet ledger labels to remove duplicated amount and drop quotes around notes. Updated all input focus states and TokenRequestSheet status colors. All tests, lint, typecheck, and build pass. Verified grep returns nothing for legacy colors in target folders.
