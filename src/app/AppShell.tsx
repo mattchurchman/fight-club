@@ -40,3 +40,12 @@ export function BareLayout() {
     </div>
   );
 }
+
+/** Full-height, no Header/TabBar — the pick deck owns its own top strip (docs/tasks/T31). */
+export function DeckLayout() {
+  return (
+    <div className="safe-top safe-bottom mx-auto flex h-dvh max-w-[640px] flex-col bg-bg">
+      <Outlet />
+    </div>
+  );
+}

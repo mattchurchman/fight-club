@@ -46,4 +46,14 @@ the app keeps working (T32/T33 replace them).
 New slide designs (T32), review slide (T33), e2e changes (T34).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Built `FightCardList`, `/event/:id/picks` (via new `DeckLayout`), `PickDeckPage`, `PickDeck` (scroll-snap
+container, `IntersectionObserver`-tracked index, `?fight=` sync via `replace`, arrow-key + visually-hidden
+prev/next nav) and `deckProgress.ts`. `EventPage` now calls `usePickDraft` directly to feed the list/button
+and `PickBuilder` is unused but left in place per the task. Slides reuse `BoutCard` pick mode and the review
+slide reuses `BudgetMeter`/`FirstBloodPicker` unchanged, as specced.
+Deviation: added an optional `lockBoutId` prop to `FightCardList` (beyond the 4 listed) so a row can show
+the 🔒 badge from the spec's "if picked" line — no DECISIONS.md entry, it's additive and doesn't change any
+existing prop's contract.
+Follow-up: `BudgetMeter`'s `sticky bottom-16` offset (sized for the tab bar) leaves an empty gap at the
+bottom of the review slide now that the deck has no tab bar — cosmetic only, worth fixing when T33 gives
+the review slide its own design.

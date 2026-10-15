@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Button } from '../../components/ui/Button.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { PicksSection } from '../live/PicksSection.tsx';
-import { PickBuilder } from '../picks/PickBuilder.tsx';
+import { usePickDraft } from '../picks/usePickDraft.ts';
 import { BoutCard } from './BoutCard.tsx';
 import { EventHeader } from './EventHeader.tsx';
 import { EventSwitcher } from './EventSwitcher.tsx';
+import { FightCardList } from './FightCardList.tsx';
 import { selectDefaultEventId, useBouts, useEvent, useEvents } from './hooks.ts';
 
 function BoutListSkeleton() {
@@ -19,15 +21,17 @@ function BoutListSkeleton() {
   );
 }
 
-/** Renders the default event at `/`, or a specific one at `/event/:id` (docs/tasks/T13). */
+/** Renders the default event at `/`, or a specific one at `/event/:id` (docs/tasks/T13, T31). */
 export function EventPage() {
   const { id: routeId } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { upcoming, recent, loading: eventsLoading } = useEvents();
   const defaultId = useMemo(() => selectDefaultEventId(upcoming, recent), [upcoming, recent]);
   const activeId = routeId ?? defaultId;
 
   const event = useEvent(activeId);
   const bouts = useBouts(activeId);
+  const draft = usePickDraft(activeId, event, bouts);
 
   if (eventsLoading) {
     return (
@@ -50,7 +54,7 @@ export function EventPage() {
     <div className="flex flex-col">
       <EventSwitcher upcoming={upcoming} recent={recent} activeId={activeId} />
       {event ? <EventHeader event={event} /> : <Skeleton className="mx-4 mt-4 h-24" />}
-      {bouts === undefined ? (
+      {bouts === undefined || draft.loading ? (
         <BoutListSkeleton />
       ) : bouts.length === 0 ? (
         <EmptyState
@@ -59,7 +63,35 @@ export function EventPage() {
         />
       ) : event ? (
         <>
-          <PickBuilder event={event} bouts={bouts} />
+          {draft.readOnly ? (
+            draft.entry ? (
+              <FightCardList
+                bouts={bouts}
+                picks={draft.draft.picks}
+                lockBoutId={draft.draft.lockBoutId}
+                readOnly
+              />
+            ) : (
+              <EmptyState title="No entry" description="You didn't pick this one." />
+            )
+          ) : (
+            <>
+              <FightCardList
+                bouts={bouts}
+                picks={draft.draft.picks}
+                lockBoutId={draft.draft.lockBoutId}
+                readOnly={false}
+                onSelect={(boutId) => navigate(`/event/${event.id}/picks?fight=${boutId}`)}
+              />
+              <div className="p-4">
+                <Link to={`/event/${event.id}/picks`}>
+                  <Button type="button" className="w-full">
+                    {draft.entry ? 'Edit picks' : 'Make your picks'}
+                  </Button>
+                </Link>
+              </div>
+            </>
+          )}
           <PicksSection event={event} bouts={bouts} />
         </>
       ) : (

@@ -1,10 +1,11 @@
 import type { RouteObject } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
-import { AppShell, BareLayout } from './AppShell';
+import { AppShell, BareLayout, DeckLayout } from './AppShell';
 import { RootLayout } from './RootLayout';
 import { RequireAdmin, RequireReady } from './RouteGuards';
 import { EventPage } from '../features/events/EventPage';
 import { LivePage } from '../features/live/LivePage';
+import { PickDeckPage } from '../features/picks/PickDeckPage';
 import { MyProfilePage } from '../features/profile/MyProfilePage';
 import { ProfilePage } from '../features/profile/ProfilePage';
 import { StandingsPage } from '../features/standings/StandingsPage';
@@ -100,6 +101,14 @@ export const routeTree: RouteObject[] = [
             ),
           },
         ],
+      },
+      {
+        element: (
+          <RequireReady>
+            <DeckLayout />
+          </RequireReady>
+        ),
+        children: [{ path: '/event/:id/picks', element: <PickDeckPage /> }],
       },
       {
         element: <BareLayout />,

@@ -70,7 +70,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 **Run 3 — Pick deck** (Tier B): one fight per screen, swiped horizontally, plus a review slide.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T31 | Fights tab card list & pick-deck route | B | medium | T30 | todo | | |
+| T31 | Fights tab card list & pick-deck route | B | medium | T30 | done | 2026-10-14 | |
 | T32 | Fight slide | B | high | T31 | todo | | |
 | T33 | Review slide, submit & locked view | B | high | T32 | todo | | |
 | T34 | Pick flow tests & e2e update | B | low | T33 | todo | | |
