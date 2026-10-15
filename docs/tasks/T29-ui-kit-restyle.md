@@ -33,12 +33,21 @@ only compose, never style from scratch.
 9. Add the new pieces to `UiGallery`.
 
 ## Acceptance criteria
-- [ ] Definition of Done passes; `npm run build` passes.
-- [ ] `grep -rnE "gold|blue|loss" src/components/ui` returns nothing.
-- [ ] `/dev/ui` shows every component in the new style.
+- [x] Definition of Done passes; `npm run build` passes.
+- [x] `grep -rnE "gold|blue|loss" src/components/ui` returns nothing.
+- [x] `/dev/ui` shows every component in the new style.
 
 ## Out of scope
 Feature screens. Removing the `corner` prop (T43).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Restyled Button/Chip/TokenPill/Avatar/Card/Sheet/Tabs/Toast to v2.1 tokens; added `SectionLabel` and `StatusPill`.
+Button/StatusPill use `[font-family:var(--font-display)]` + explicit weight/tracking utilities instead of the
+`.font-display` class, since that class is hard-pinned to 800/uppercase/0.02em and would fight Tailwind's cascade
+layers. Avatar's `corner` prop is now untyped `string` (was a `'red'|'blue'|'none'` union) so the deprecated,
+ignored prop doesn't reintroduce "blue" into `src/components/ui` — callers passing those literals still type-check.
+`StatusPill` covers all six `EventStatus` values; `scheduled` (not in DESIGN's 5) reuses the `open` ("Picks open")
+white-outline style with its own "Scheduled" label, matching existing `EVENT_STATUS_LABEL` usage.
+Sheet gained a top grabber + 16px top radius (override of the shared 12px card radius).
+Countdown gained `urgentBelowMs` (default 1h) switching to mm:ss/h:mm:ss in `red-text`.
+Added StatusPill.test.tsx and extended Chip/Countdown coverage. All DoD checks + build green.

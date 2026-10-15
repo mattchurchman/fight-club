@@ -68,11 +68,12 @@ export function Sheet({ open, onClose, title, children, className }: SheetProps)
         aria-label={title}
         tabIndex={-1}
         className={clsx(
-          'safe-bottom relative w-full max-w-[640px] rounded-t-card border-t border-line',
+          'safe-bottom relative w-full max-w-[640px] rounded-t-[16px] border-t border-line',
           'bg-surface p-4 focus:outline-none',
           className,
         )}
       >
+        <div aria-hidden="true" className="mx-auto mb-3 h-1 w-10 rounded-full bg-line" />
         {title ? <h2 className="mb-3 font-display text-lg uppercase">{title}</h2> : null}
         {children}
       </div>

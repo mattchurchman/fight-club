@@ -16,9 +16,9 @@ export function Chip({ selected = false, onSelect, className, children, ...rest 
       onClick={onSelect}
       className={clsx(
         'min-h-11 rounded-chip border px-4 text-sm font-medium transition-colors',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text',
         selected
-          ? 'border-gold bg-gold/15 text-gold'
+          ? 'border-text bg-text text-bg'
           : 'border-line bg-surface-2 text-muted hover:text-text',
         className,
       )}

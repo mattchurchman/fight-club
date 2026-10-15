@@ -28,11 +28,14 @@ export function Tabs({ items, value, onChange, className }: TabsProps) {
             aria-selected={active}
             onClick={() => onChange(item.value)}
             className={clsx(
-              'min-h-9 rounded-chip px-3 text-sm font-medium transition-colors',
-              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
-              active ? 'bg-surface text-text' : 'text-muted hover:text-text',
+              'relative min-h-9 rounded-chip px-3 text-sm font-medium transition-colors',
+              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text',
+              active ? 'text-text' : 'text-muted hover:text-text',
             )}
           >
+            {active ? (
+              <span aria-hidden="true" className="absolute inset-x-2 top-0 h-[3px] rounded-full bg-red" />
+            ) : null}
             {item.label}
           </button>
         );

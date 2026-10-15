@@ -12,6 +12,8 @@ import { Countdown } from '../../components/ui/Countdown';
 import { TokenPill } from '../../components/ui/TokenPill';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Tabs } from '../../components/ui/Tabs';
+import { SectionLabel } from '../../components/ui/SectionLabel';
+import { StatusPill } from '../../components/ui/StatusPill';
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -103,6 +105,19 @@ export function UiGallery() {
           value={tab}
           onChange={setTab}
         />
+      </Section>
+
+      <Section title="SectionLabel">
+        <SectionLabel action={<Button variant="ghost">See all</Button>}>Upcoming events</SectionLabel>
+      </Section>
+
+      <Section title="StatusPill">
+        <StatusPill status="scheduled" />
+        <StatusPill status="open" />
+        <StatusPill status="locked" />
+        <StatusPill status="live" />
+        <StatusPill status="final" />
+        <StatusPill status="cancelled" />
       </Section>
     </div>
   );

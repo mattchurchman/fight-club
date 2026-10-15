@@ -26,7 +26,7 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 
 const variantClasses: Record<ToastVariant, string> = {
   success: 'border-win/40 text-win',
-  error: 'border-loss/40 text-loss',
+  error: 'border-red-text/40 text-red-text',
   info: 'border-line text-text',
 };
 

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 
-type Corner = 'red' | 'blue' | 'none';
-
 interface AvatarProps {
   name: string;
   src?: string;
-  corner?: Corner;
+  /** @deprecated v2.1 — removed in T43 */
+  corner?: string;
   size?: number;
   className?: string;
 }
@@ -19,22 +18,15 @@ function getInitials(name: string): string {
   return (first + last).toUpperCase();
 }
 
-const ringClasses: Record<Corner, string> = {
-  red: 'ring-red',
-  blue: 'ring-blue',
-  none: 'ring-line',
-};
-
-export function Avatar({ name, src, corner = 'none', size = 40, className }: AvatarProps) {
+export function Avatar({ name, src, size = 40, className }: AvatarProps) {
   const [failed, setFailed] = useState(false);
   const showImage = Boolean(src) && !failed;
 
   return (
     <span
       className={clsx(
-        'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full',
-        'bg-surface-2 font-semibold text-text ring-2',
-        ringClasses[corner],
+        'octagon inline-flex shrink-0 items-center justify-center overflow-hidden',
+        'bg-surface-2 text-text',
         className,
       )}
       style={{ width: size, height: size, fontSize: size * 0.4 }}
@@ -43,11 +35,13 @@ export function Avatar({ name, src, corner = 'none', size = 40, className }: Ava
         <img
           src={src}
           alt={name}
-          className="size-full object-cover"
+          className="octagon size-full object-cover"
           onError={() => setFailed(true)}
         />
       ) : (
-        <span aria-label={name}>{getInitials(name)}</span>
+        <span aria-label={name} className="font-display">
+          {getInitials(name)}
+        </span>
       )}
     </span>
   );
