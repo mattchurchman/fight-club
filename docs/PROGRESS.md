@@ -94,7 +94,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
 | T42 | Share posters restyle | B | medium | T29 | done | 2026-10-15 | 35ed2cf |
-| T43 | Remove legacy aliases, help copy & final QA | B | medium | T27–T42 | todo | | |
+| T43 | Remove legacy aliases, help copy & final QA | B | medium | T27–T42 | done | 2026-10-15 | 943ba49 |
 
 Deferred to a later revision (owner, 2026-10-14): profile photo upload & fight nicknames; event winner takeover screen &
 the passing championship belt.
