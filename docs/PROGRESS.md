@@ -230,7 +230,7 @@ the passing championship belt.
 ### Run 1 — Brand base (Tier C)
 | ID | Task | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T26 | Brand tokens, fonts & migration aliases | low | — | done | 2026-10-14 | |
+| T26 | Brand tokens, fonts & migration aliases | low | — | done | 2026-10-14 | 386b258 |
 | T27 | Restyle sweep: admin, auth, wallet, help, install, notifications | low | T26 | todo | | |
 
 ### Run 2 — Brand kit (Tier B)
