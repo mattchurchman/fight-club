@@ -79,4 +79,44 @@ describe('FightCardList', () => {
     render(<FightCardList bouts={[bout({ id: 'b1' })]} readOnly />);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
+
+  it('shows a winning bout score as a positive total with a check', () => {
+    render(
+      <FightCardList
+        bouts={[bout({ id: 'b1' })]}
+        picks={{ b1: { winner: 'A', method: 'KO', stake: 200 } }}
+        scores={{ b1: 396 }}
+        readOnly
+      />,
+    );
+    const score = screen.getByText('+396 ✓');
+    expect(score).toBeInTheDocument();
+    expect(score).toHaveClass('text-win');
+  });
+
+  it('shows a losing bout score as a muted total with a cross', () => {
+    render(
+      <FightCardList
+        bouts={[bout({ id: 'b1' })]}
+        picks={{ b1: { winner: 'A', method: 'KO', stake: 200 } }}
+        scores={{ b1: -50 }}
+        readOnly
+      />,
+    );
+    const score = screen.getByText('-50 ✗');
+    expect(score).toBeInTheDocument();
+    expect(score).not.toHaveClass('text-win');
+  });
+
+  it('omits the score when the bout has not been scored yet', () => {
+    render(
+      <FightCardList
+        bouts={[bout({ id: 'b1' })]}
+        picks={{ b1: { winner: 'A', method: 'KO', stake: 200 } }}
+        scores={{ b1: null }}
+        readOnly
+      />,
+    );
+    expect(screen.getByText('✓ A · KO · 200')).toBeInTheDocument();
+  });
 });

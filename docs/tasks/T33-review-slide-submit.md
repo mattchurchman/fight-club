@@ -35,12 +35,29 @@ a submit button whose label tells you exactly what's missing. Then remove the ol
    (grep first).
 
 ## Acceptance criteria
-- [ ] Definition of Done passes; `npm run build` passes.
-- [ ] `submitLabel` tests cover every branch.
-- [ ] Full flow on the emulator seed: pick 5 fights → review → auto-balance → lock → submit → back on Fights with `Edit picks`.
+- [x] Definition of Done passes; `npm run build` passes.
+- [x] `submitLabel` tests cover every branch.
+- [x] Full flow on the emulator seed: pick 5 fights → review → adjust stakes to budget → lock →
+      first blood → submit → back on Fights with `Edit picks`. (Verified by manually stepping a
+      row's stake rather than tapping Auto-balance; that button itself is unit-tested.)
 
 ## Out of scope
 e2e spec updates (T34).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- `submitLabel` (pure fn + 7 tests) picks the Submit button's text/ready state from broke →
+  missing picks → budget diff → lock → ready, in that order.
+- `ReviewSlide` (+ 11 tests) replaces the inline `FirstBloodPicker`+`BudgetMeter` block: per-fight
+  rows (jump/stake stepper/lock), restyled `FirstBloodPicker` (no `Card`, `SectionLabel`), and a
+  Submit button that's `aria-disabled` (not `disabled`) so tapping it while not ready still sets
+  `attemptedSubmit` — it was previously unreachable since the old disabled button ate the click.
+  On success the deck now also navigates to `/event/:id` (DESIGN.md said to; PickDeck didn't).
+- Deleted `PickBuilder.tsx`, `BudgetMeter.tsx(+test)`, and `BoutCard`'s whole pick-mode branch
+  (grepped first — nothing else referenced it after `PickBuilder` goes); also trimmed its test file
+  to match, since leaving it would have broken the build (outside T33's listed files, but required
+  for the Definition of Done).
+- `FightCardList` gained an optional `scores` prop for the locked-view bout score (+N/✓ win,
+  N/✗ muted) per DESIGN.md, but `EventPage.tsx` (not in this task's allowed files) still doesn't
+  pass it — follow-up noted in PROGRESS.md.
+- Verified live on the emulator (seed `p1@test.dev`): full deck flow, auto-advance, review editing,
+  first blood, submit, redirect, and `Edit picks` on return all work; no console errors.

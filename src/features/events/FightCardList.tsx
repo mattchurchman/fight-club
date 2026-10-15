@@ -14,12 +14,21 @@ interface FightCardListProps {
   /** Draft or submitted picks, keyed by bout id; a row's summary only shows once a pick is complete. */
   picks?: Record<string, Partial<Pick>>;
   lockBoutId?: string | null;
+  /** This entry's bout score, keyed by bout id; a row adds `+N`/`N` once its bout is final (docs/tasks/T33 §6). */
+  scores?: Record<string, number | null>;
   readOnly: boolean;
   onSelect?: (boutId: string) => void;
 }
 
 /** Compact one-row-per-fight list; tapping a row opens the pick deck on that fight (docs/tasks/T31). */
-export function FightCardList({ bouts, picks, lockBoutId, readOnly, onSelect }: FightCardListProps) {
+export function FightCardList({
+  bouts,
+  picks,
+  lockBoutId,
+  scores,
+  readOnly,
+  onSelect,
+}: FightCardListProps) {
   const mainCard = bouts.filter((bout) => bout.isMainCard);
 
   return (
@@ -29,6 +38,7 @@ export function FightCardList({ bouts, picks, lockBoutId, readOnly, onSelect }: 
         const complete =
           pick?.winner !== undefined && pick?.method !== undefined && typeof pick.stake === 'number';
         const winnerName = pick?.winner === 'A' ? bout.a.name : pick?.winner === 'B' ? bout.b.name : null;
+        const score = scores?.[bout.id];
 
         const content = (
           <>
@@ -43,6 +53,14 @@ export function FightCardList({ bouts, picks, lockBoutId, readOnly, onSelect }: 
                 <p className="truncate text-xs text-muted">
                   ✓ {surname(winnerName)} · {METHOD_LABEL[pick!.method!]} · {pick!.stake}
                   {lockBoutId === bout.id ? ' · 🔒' : ''}
+                  {score !== undefined && score !== null ? (
+                    <>
+                      {' · '}
+                      <span className={score > 0 ? 'font-semibold text-win' : 'font-semibold'}>
+                        {score > 0 ? `+${score}` : score} {score > 0 ? '✓' : '✗'}
+                      </span>
+                    </>
+                  ) : null}
                 </p>
               ) : null}
             </div>

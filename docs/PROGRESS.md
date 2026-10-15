@@ -72,7 +72,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 |---|---|---|---|---|---|---|---|
 | T31 | Fights tab card list & pick-deck route | B | medium | T30 | done | 2026-10-14 | 88d1c80 |
 | T32 | Fight slide | B | high | T31 | done | 2026-10-14 | 1655e18 |
-| T33 | Review slide, submit & locked view | B | high | T32 | todo | | |
+| T33 | Review slide, submit & locked view | B | high | T32 | done | 2026-10-14 | PENDING |
 | T34 | Pick flow tests & e2e update | B | low | T33 | todo | | |
 
 **Run 4 — Live tab** (Tier B): now / me / standings / results.
@@ -229,6 +229,11 @@ the passing championship belt.
   `pwa-assets.config.ts`. T27's renamed classes now resolve correctly; nothing in T27 itself needed changing.
   20 files still carry pre-T27 `text-gold`/`bg-blue`/`text-loss` usages — those render fine through the
   legacy aliases and are unchanged, real migration is T27-style sweep work for later tasks.
+- T33: `FightCardList` takes an optional `scores` prop (bout id → total) to show the locked-view
+  score per DESIGN.md, but `EventPage.tsx` isn't in T33's allowed files, so nothing passes
+  `entry.score?.byBout` into it yet — the final-event card list still shows no score. Whichever
+  task next touches `EventPage.tsx` (T40 "Past events & final event view" looks like the fit)
+  should wire it through.
 - Also noted: this file has two separate "Milestone 6" tables with disagreeing status rows (an apparent merge
   artifact from the `facelift updates` commit, `4f3d727`) — worth a cleanup pass so there's one source of truth
   per task row. (Both T26 rows are now updated to `done` with the real commit hash.)

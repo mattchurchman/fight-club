@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { Method } from '@shared/index.ts';
 import { DEFAULTS } from '@shared/index.ts';
 import { useToast } from '../../components/ui/Toast.tsx';
+import { useSession } from '../auth/SessionProvider.tsx';
 import type { BoutWithId, EventWithId } from '../events/hooks.ts';
-import { BudgetMeter } from './BudgetMeter.tsx';
 import { DeckTopBar } from './DeckTopBar.tsx';
 import { isPickComplete } from './deckProgress.ts';
 import { FightSlide } from './FightSlide.tsx';
-import { FirstBloodPicker } from './FirstBloodPicker.tsx';
 import { previewPickScore } from './preview.ts';
+import { ReviewSlide } from './ReviewSlide.tsx';
+import { submitLabel } from './submitLabel.ts';
 import type { UsePickDraftResult } from './usePickDraft.ts';
 
 interface PickDeckProps {
@@ -23,8 +24,7 @@ interface PickDeckProps {
 
 /**
  * The deck shell (docs/tasks/T31): one horizontally-snapped `FightSlide` per active fight (T32)
- * plus a review slide, still reusing `BudgetMeter`/`FirstBloodPicker` there until T33 replaces
- * that with the real review/submit design.
+ * plus a `ReviewSlide` (T33).
  */
 export function PickDeck({
   event,
@@ -35,6 +35,8 @@ export function PickDeck({
   onAttemptSubmit,
 }: PickDeckProps) {
   const { show } = useToast();
+  const { profile } = useSession();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const active = useMemo(
@@ -112,17 +114,32 @@ export function PickDeck({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [activeIndex, goTo]);
 
+  const fightComplete = active.map((bout) => isPickComplete(draft.draft.picks[bout.id]));
+  const lockBoutId = draft.draft.lockBoutId;
+  const hasLock =
+    lockBoutId !== null &&
+    active.some((bout) => bout.id === lockBoutId) &&
+    isPickComplete(draft.draft.picks[lockBoutId]);
+
+  const labelInfo = submitLabel({
+    broke: !!profile && profile.balance < event.buyIn,
+    missingPicks: fightComplete.filter((complete) => !complete).length,
+    budgetDiff: draft.allocated - draft.budget,
+    hasLock,
+    hasEntry: !!draft.entry,
+  });
+
   async function handleSubmit() {
     onAttemptSubmit();
+    if (!labelInfo.ready) return;
     try {
       await draft.submit();
       show(draft.entry ? 'Picks updated.' : 'Picks in. Good luck.', { variant: 'success' });
+      navigate(`/event/${event.id}`);
     } catch {
       show('Picks locked. No take-backs.', { variant: 'error' });
     }
   }
-
-  const fightComplete = active.map((bout) => isPickComplete(draft.draft.picks[bout.id]));
 
   return (
     <>
@@ -189,31 +206,32 @@ export function PickDeck({
           ref={(el) => {
             slideRefs.current[active.length] = el;
           }}
-          className="flex w-full shrink-0 snap-center snap-always flex-col gap-3 overflow-y-auto p-4"
+          className="flex w-full shrink-0 snap-center snap-always flex-col gap-4 overflow-y-auto p-4"
         >
-          {event.firstBloodEnabled ? (
-            <FirstBloodPicker
-              bouts={bouts}
-              activeIds={draft.activeBoutIds}
-              value={draft.draft.firstBlood}
-              readOnly={draft.readOnly}
-              errorMessage={
-                draft.validation.errors.find((error) => error.code.startsWith('FIRST_BLOOD'))
-                  ?.message
-              }
-              onChange={draft.setFirstBlood}
-            />
-          ) : null}
-          {!draft.readOnly ? (
-            <BudgetMeter
-              allocated={draft.allocated}
-              budget={draft.budget}
-              onAutoBalance={draft.autoBalance}
-              onSubmit={() => void handleSubmit()}
-              submitting={draft.submitting}
-              submitDisabledReason={draft.validation.errors[0]?.message ?? null}
-            />
-          ) : null}
+          <ReviewSlide
+            bouts={active}
+            picks={draft.draft.picks}
+            lockBoutId={lockBoutId}
+            readOnly={draft.readOnly}
+            minStake={DEFAULTS.minStake}
+            maxStake={DEFAULTS.maxStake}
+            stakeStep={DEFAULTS.stakeStep}
+            onJumpToBout={(boutId) => goTo(active.findIndex((bout) => bout.id === boutId))}
+            onChangeStake={draft.setStake}
+            onToggleLock={draft.setLock}
+            firstBloodEnabled={event.firstBloodEnabled}
+            firstBlood={draft.draft.firstBlood}
+            firstBloodError={
+              draft.validation.errors.find((error) => error.code.startsWith('FIRST_BLOOD'))
+                ?.message
+            }
+            onChangeFirstBlood={draft.setFirstBlood}
+            onAutoBalance={draft.autoBalance}
+            submitLabel={labelInfo.label}
+            submitReady={labelInfo.ready}
+            submitting={draft.submitting}
+            onSubmit={() => void handleSubmit()}
+          />
         </div>
       </div>
       <div className="sr-only">

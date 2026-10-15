@@ -1,6 +1,6 @@
 import type { Corner, FirstBloodPick } from '@shared/index.ts';
-import { Card } from '../../components/ui/Card.tsx';
 import { Chip } from '../../components/ui/Chip.tsx';
+import { SectionLabel } from '../../components/ui/SectionLabel.tsx';
 import type { BoutWithId } from '../events/hooks.ts';
 
 interface FirstBloodPickerProps {
@@ -25,11 +25,9 @@ export function FirstBloodPicker({
   const selectedBout = active.find((bout) => bout.id === value?.boutId) ?? null;
 
   return (
-    <Card className="mx-4 flex flex-col gap-3">
-      <div>
-        <p className="font-display text-sm uppercase tracking-wide text-text">First Blood</p>
-        <p className="text-xs text-muted">Who draws first blood — independent of who wins.</p>
-      </div>
+    <div className="flex flex-col gap-3">
+      <SectionLabel>First blood</SectionLabel>
+      <p className="text-xs text-muted">Who draws first blood — independent of who wins.</p>
       <div className="flex flex-wrap gap-2">
         {active.map((bout) => (
           <Chip
@@ -61,6 +59,6 @@ export function FirstBloodPicker({
         </div>
       ) : null}
       {errorMessage ? <p className="text-xs text-loss">{errorMessage}</p> : null}
-    </Card>
+    </div>
   );
 }
