@@ -78,7 +78,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 **Run 4 — Live tab** (Tier B): now / me / standings / results.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T35 | Live derivations: current fight, swings, rank moves | B | high | T29 | in-progress | | |
+| T35 | Live derivations: current fight, swings, rank moves | B | high | T29 | done | 2026-10-14 | d6fa174 |
 | T36 | Live page v2: status strip, In the Cage, your row | B | medium | T35 | todo | | |
 | T37 | Leaderboard v2, results list & PlayerSheet | B | medium | T36 | todo | | |
 | T38 | Result flash | B | medium | T37 | todo | | |
