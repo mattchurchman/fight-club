@@ -19,7 +19,7 @@ export function WalletPage() {
       {/* Balance */}
       <div className="border-b border-line bg-surface px-4 py-8 text-center">
         <div className="mb-2 text-sm uppercase text-muted">Your balance</div>
-        <div className="font-display text-5xl text-gold tabular-nums">{balance}</div>
+        <div className="font-display text-5xl text-text tabular-nums">{balance}</div>
         {isBroke && <div className="mt-4 text-sm text-muted">You're broke. Beg the admin.</div>}
       </div>
 

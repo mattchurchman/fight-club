@@ -18,7 +18,7 @@ describe('formatLedgerLabelFull', () => {
       balanceAfter: 400,
     };
 
-    expect(formatLedgerLabelFull(row, 'UFC 320')).toBe('Buy-in · UFC 320 -100');
+    expect(formatLedgerLabelFull(row, 'UFC 320')).toBe('Buy-in · UFC 320');
   });
 
   it('formats payout with event name and positive amount', () => {
@@ -33,7 +33,7 @@ describe('formatLedgerLabelFull', () => {
       balanceAfter: 750,
     };
 
-    expect(formatLedgerLabelFull(row, 'UFC 320')).toBe('Payout · UFC 320 +350');
+    expect(formatLedgerLabelFull(row, 'UFC 320')).toBe('Payout · UFC 320');
   });
 
   it('formats grant with note', () => {
@@ -48,7 +48,7 @@ describe('formatLedgerLabelFull', () => {
       balanceAfter: 900,
     };
 
-    expect(formatLedgerLabelFull(row)).toBe("Grant from admin · 'lol pay me back' +500");
+    expect(formatLedgerLabelFull(row)).toBe('Grant from admin · lol pay me back');
   });
 
   it('formats without event name', () => {
@@ -63,6 +63,6 @@ describe('formatLedgerLabelFull', () => {
       balanceAfter: 500,
     };
 
-    expect(formatLedgerLabelFull(row)).toBe('Refund +100');
+    expect(formatLedgerLabelFull(row)).toBe('Refund');
   });
 });

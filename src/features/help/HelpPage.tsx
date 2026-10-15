@@ -50,7 +50,7 @@ export function HelpPage() {
         <p>
           It's a double-or-nothing bet: get it right and that fight's score is{' '}
           <strong className="text-win">doubled</strong>. Get it wrong and you lose{' '}
-          <strong className="text-loss">half your stake</strong> on that fight — not just zero. Pick
+          <strong className="text-red-text">half your stake</strong> on that fight — not just zero. Pick
           your safest bet, not your riskiest.
         </p>
       </Section>
@@ -195,7 +195,7 @@ export function HelpPage() {
           <strong className="text-text">On Android:</strong> open this site in Chrome, then use the
           browser menu's <strong className="text-text">Install app</strong> option.
         </p>
-        <Link to="/install" className="font-semibold text-gold underline underline-offset-2">
+        <Link to="/install" className="font-semibold text-text underline underline-offset-2">
           Full install steps →
         </Link>
       </Section>

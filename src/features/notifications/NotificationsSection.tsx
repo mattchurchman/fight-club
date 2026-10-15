@@ -20,7 +20,7 @@ export function NotificationsSection({ uid }: { uid: string }) {
       {state === 'needsInstall' && (
         <p className="text-sm text-muted">
           Install the app to your Home Screen first, then come back to enable notifications.{' '}
-          <Link to="/install" className="text-gold underline underline-offset-2">
+          <Link to="/install" className="text-text underline underline-offset-2">
             Install
           </Link>
         </p>

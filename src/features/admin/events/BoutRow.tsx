@@ -16,7 +16,7 @@ const WINNERS: { value: Winner; label: string }[] = [
 ];
 const METHODS: readonly ResultMethod[] = ['KO', 'SUB', 'DEC', 'DQ', 'OTHER'];
 const inputClass =
-  'min-h-9 rounded-chip border border-line bg-surface-2 px-3 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
+  'min-h-9 rounded-chip border border-line bg-surface-2 px-3 text-sm text-text placeholder-muted focus:border-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text';
 
 interface BoutRowProps {
   bout: BoutWithId;
@@ -76,7 +76,7 @@ export function BoutRow({
   };
 
   return (
-    <Card className={clsx('flex flex-col gap-3', bout.isMainEvent && 'ring-1 ring-gold/60')}>
+    <Card className={clsx('flex flex-col gap-3', bout.isMainEvent && 'ring-1 ring-text/60')}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-text">

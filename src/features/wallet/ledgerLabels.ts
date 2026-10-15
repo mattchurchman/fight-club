@@ -17,7 +17,7 @@ export interface LedgerLabel {
 export function formatLedgerLabel(row: LedgerRow): LedgerLabel {
   const typeLabel = ledgerTypeLabels[row.type];
   const amountStr = row.amount >= 0 ? `+${row.amount}` : `${row.amount}`;
-  const noteStr = row.note ? ` · '${row.note}'` : '';
+  const noteStr = row.note ? ` · ${row.note}` : '';
 
   return {
     type: typeLabel,
@@ -30,6 +30,6 @@ export function formatLedgerLabelFull(
   row: LedgerRow,
   eventName?: string,
 ): string {
-  const { type, amount, note } = formatLedgerLabel(row);
-  return `${type}${note || ''}${eventName ? ` · ${eventName}` : ''} ${amount}`;
+  const { type, note } = formatLedgerLabel(row);
+  return `${type}${note || ''}${eventName ? ` · ${eventName}` : ''}`.trim();
 }

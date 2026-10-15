@@ -31,6 +31,6 @@ describe('TokenRequest form validation', () => {
       balanceAfter: 400,
     };
 
-    expect(formatLedgerLabelFull(row, 'UFC 320')).toBe('Buy-in · UFC 320 -100');
+    expect(formatLedgerLabelFull(row, 'UFC 320')).toBe('Buy-in · UFC 320');
   });
 });

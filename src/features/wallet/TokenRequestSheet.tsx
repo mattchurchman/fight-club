@@ -20,9 +20,9 @@ interface TokenRequestSheetProps {
 }
 
 const statusColors: Record<TokenRequestStatus, string> = {
-  pending: 'bg-blue/15 text-blue border-blue',
+  pending: 'bg-steel/15 text-steel border-steel',
   approved: 'bg-green-500/15 text-green-500 border-green-500',
-  denied: 'bg-red/15 text-red border-red',
+  denied: 'bg-red-fill/15 text-red-text border-red-text',
 };
 
 export function TokenRequestSheet({ open, onClose, requests, onSuccess }: TokenRequestSheetProps) {
@@ -107,7 +107,7 @@ export function TokenRequestSheet({ open, onClose, requests, onSuccess }: TokenR
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {hasPending && (
-            <div className="rounded-lg border border-blue/30 bg-blue/10 p-3 text-sm text-blue">
+            <div className="rounded-lg border border-steel/30 bg-steel/10 p-3 text-sm text-steel">
               You have a pending request. Wait for approval before requesting more.
             </div>
           )}
@@ -137,7 +137,7 @@ export function TokenRequestSheet({ open, onClose, requests, onSuccess }: TokenR
                   className={clsx(
                     'min-h-11 rounded-chip border px-4 text-sm',
                     'bg-surface-2 text-text placeholder-muted',
-                    'border-line focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
+                    'border-line focus:border-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text',
                     hasPending && 'opacity-50',
                   )}
                 />
@@ -161,7 +161,7 @@ export function TokenRequestSheet({ open, onClose, requests, onSuccess }: TokenR
               maxLength={100}
               className={clsx(
                 'w-full rounded-lg border border-line bg-surface-2 p-3 text-sm',
-                'text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
+                'text-text placeholder-muted focus:border-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text',
                 hasPending && 'opacity-50',
               )}
               rows={3}

@@ -20,7 +20,7 @@ import {
 import { applyEspnRefresh, previewEspnRefresh, type EspnRefreshPreview } from './espnRefresh.ts';
 
 const confirmInputClass =
-  'min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
+  'min-h-11 rounded-chip border border-line bg-surface-2 px-4 text-sm text-text placeholder-muted focus:border-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text';
 
 interface ActionsPanelProps {
   eventId: string;

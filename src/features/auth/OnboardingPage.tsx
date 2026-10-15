@@ -122,7 +122,7 @@ export function OnboardingPage() {
                 className={clsx(
                   'text-xs',
                   availability === 'available' ? 'text-win' : 'text-muted',
-                  (availability === 'taken' || availability === 'invalid') && 'text-loss',
+                  (availability === 'taken' || availability === 'invalid') && 'text-red-text',
                 )}
               >
                 {hint}
@@ -142,7 +142,7 @@ export function OnboardingPage() {
           </label>
 
           {error ? (
-            <p className="text-sm text-loss" role="alert">
+            <p className="text-sm text-red-text" role="alert">
               {error}
             </p>
           ) : null}
