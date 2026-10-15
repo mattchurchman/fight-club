@@ -224,3 +224,47 @@ the passing championship belt.
   `tokenRequests.notifiedAt` — neither file was in T24's allowed list. `jobs/notify.ts` reads/writes
   them via a local intersection type instead. Worth folding into the real types if another task
   touches either field.
+
+## Milestone 6 — v2.1: "The Minimal" facelift, pick deck, live tab, history
+
+### Run 1 — Brand base (Tier C)
+| ID | Task | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T26 | Brand tokens, fonts & migration aliases | low | — | done | 2026-10-14 | |
+| T27 | Restyle sweep: admin, auth, wallet, help, install, notifications | low | T26 | todo | | |
+
+### Run 2 — Brand kit (Tier B)
+| ID | Task | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T28 | Logo, PWA icons & brand components | medium | T26 | todo | | |
+| T29 | UI kit restyle | medium | T28 | todo | | |
+| T30 | App shell & polish pass | medium | T29 | todo | | |
+
+### Run 3 — Pick deck (Tier B)
+| ID | Task | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T31 | Fights tab card list & pick-deck route | medium | T30 | todo | | |
+| T32 | Fight slide | high | T31 | todo | | |
+| T33 | Review slide, submit & locked view | high | T32 | todo | | |
+| T34 | Pick flow tests & e2e update | low | T33 | todo | | |
+
+### Run 4 — Live tab (Tier B)
+| ID | Task | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T35 | Live derivations: current fight, swings, rank moves | high | T29 | todo | | |
+| T36 | Live page v2: status strip, In the Cage, your row | medium | T35 | todo | | |
+| T37 | Leaderboard v2, results list & PlayerSheet | medium | T36 | todo | | |
+| T38 | Result flash | medium | T37 | todo | | |
+
+### Run 5 — Social & history (Tier B)
+| ID | Task | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T39 | Trash talk opens with picks | medium | T31, T36 | todo | | |
+| T40 | Past events & final event view | medium | T37 | todo | | |
+| T41 | Profiles everywhere | medium | T40 | todo | | |
+
+### Run 6 — Finish (Tier B)
+| ID | Task | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|
+| T42 | Share posters restyle | medium | T29 | todo | | |
+| T43 | Remove legacy aliases, help copy & final QA | medium | T27–T42 | todo | | |
