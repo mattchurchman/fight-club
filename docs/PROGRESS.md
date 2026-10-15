@@ -80,7 +80,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 |---|---|---|---|---|---|---|---|
 | T35 | Live derivations: current fight, swings, rank moves | B | high | T29 | done | 2026-10-14 | d6fa174 |
 | T36 | Live page v2: status strip, In the Cage, your row | B | medium | T35 | done | 2026-10-14 | 63ec8d0 |
-| T37 | Leaderboard v2, results list & PlayerSheet | B | medium | T36 | todo | | |
+| T37 | Leaderboard v2, results list & PlayerSheet | B | medium | T36 | done | 2026-10-15 | 9dd2173 |
 | T38 | Result flash | B | medium | T37 | todo | | |
 
 **Run 5 — Social & history** (Tier B).
