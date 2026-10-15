@@ -4,6 +4,7 @@ import { AppShell, BareLayout, DeckLayout } from './AppShell';
 import { RootLayout } from './RootLayout';
 import { RequireAdmin, RequireReady } from './RouteGuards';
 import { EventPage } from '../features/events/EventPage';
+import { EventsArchivePage } from '../features/events/EventsArchivePage';
 import { LivePage } from '../features/live/LivePage';
 import { PickDeckPage } from '../features/picks/PickDeckPage';
 import { MyProfilePage } from '../features/profile/MyProfilePage';
@@ -46,6 +47,7 @@ export const routeTree: RouteObject[] = [
         children: [
           { path: '/', element: <EventPage /> },
           { path: '/event/:id', element: <EventPage /> },
+          { path: '/events', element: <EventsArchivePage /> },
           { path: '/live', element: <LivePage /> },
           { path: '/standings', element: <StandingsPage /> },
           { path: '/wallet', element: <WalletPage /> },

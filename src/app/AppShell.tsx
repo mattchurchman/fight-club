@@ -5,6 +5,7 @@ import { TabBar } from './TabBar';
 const titles: Record<string, string> = {
   '/': 'Fights',
   '/live': 'Live',
+  '/events': 'Past Events',
   '/standings': 'Standings',
   '/wallet': 'Wallet',
   '/me': 'Me',

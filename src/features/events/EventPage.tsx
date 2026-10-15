@@ -1,12 +1,18 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import type { Bout } from '@shared/index.ts';
 import { Button } from '../../components/ui/Button.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { useSession } from '../auth/SessionProvider.tsx';
 import { ChatPanel } from '../chat/ChatPanel.tsx';
 import { TrashTalkButton } from '../chat/TrashTalkButton.tsx';
-import { useComments } from '../live/hooks.ts';
+import { resultsFeed } from '../live/derive.ts';
+import { useComments, useEntries } from '../live/hooks.ts';
+import { LiveLeaderboard } from '../live/LiveLeaderboard.tsx';
 import { PicksSection } from '../live/PicksSection.tsx';
+import { PlayerSheet } from '../live/PlayerSheet.tsx';
+import { ResultsList } from '../live/ResultsList.tsx';
 import { usePickDraft } from '../picks/usePickDraft.ts';
 import { BoutCard } from './BoutCard.tsx';
 import { EventHeader } from './EventHeader.tsx';
@@ -30,6 +36,7 @@ function BoutListSkeleton() {
 export function EventPage() {
   const { id: routeId } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useSession();
   const { upcoming, recent, loading: eventsLoading } = useEvents();
   const defaultId = useMemo(() => selectDefaultEventId(upcoming, recent), [upcoming, recent]);
   const activeId = routeId ?? defaultId;
@@ -39,7 +46,19 @@ export function EventPage() {
   const draft = usePickDraft(activeId, event, bouts);
   const comments = useComments(activeId);
   const [chatOpen, setChatOpen] = useState(false);
+  const [openUid, setOpenUid] = useState<string | null>(null);
   const showTrashTalk = !!event && TRASH_TALK_STATUSES.has(event.status);
+  const isFinal = event?.status === 'final';
+  const entries = useEntries(activeId, isFinal);
+  const boutsById = useMemo(
+    () => Object.fromEntries((bouts ?? []).map((bout) => [bout.id, bout])) as Record<string, Bout>,
+    [bouts],
+  );
+  const feed = useMemo(
+    () => (isFinal && entries ? resultsFeed(boutsById, entries, user?.uid ?? null) : []),
+    [isFinal, entries, boutsById, user?.uid],
+  );
+  const openEntry = entries?.find((entry) => entry.uid === openUid) ?? null;
 
   if (eventsLoading) {
     return (
@@ -71,7 +90,18 @@ export function EventPage() {
         />
       ) : event ? (
         <>
-          {draft.readOnly ? (
+          {isFinal ? (
+            entries === undefined ? (
+              <Skeleton className="mx-4 h-40" />
+            ) : entries.length === 0 ? (
+              <EmptyState title="No entries" description="Nobody picked this one." />
+            ) : (
+              <>
+                <LiveLeaderboard entries={entries} bouts={bouts} moves={{}} final onTap={setOpenUid} />
+                <ResultsList feed={feed} />
+              </>
+            )
+          ) : draft.readOnly ? (
             draft.entry ? (
               <FightCardList
                 bouts={bouts}
@@ -124,6 +154,12 @@ export function EventPage() {
           picksSecret={event.status === 'open'}
         />
       ) : null}
+      <PlayerSheet
+        entry={openEntry}
+        bouts={bouts ?? []}
+        open={openEntry != null}
+        onClose={() => setOpenUid(null)}
+      />
     </div>
   );
 }

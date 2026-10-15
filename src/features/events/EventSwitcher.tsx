@@ -26,6 +26,11 @@ export function EventSwitcher({ upcoming, recent, activeId }: EventSwitcherProps
           {event.number ? `UFC ${event.number}` : event.name}
         </Chip>
       ))}
+      {recent.length > 0 ? (
+        <Chip onSelect={() => navigate('/events')} className="shrink-0">
+          All events
+        </Chip>
+      ) : null}
     </div>
   );
 }

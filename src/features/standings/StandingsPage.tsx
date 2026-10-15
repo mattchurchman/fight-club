@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
+import { SectionLabel } from '../../components/ui/SectionLabel.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { Tabs } from '../../components/ui/Tabs.tsx';
 import { useUsersById } from '../profile/hooks.ts';
@@ -32,6 +34,17 @@ export function StandingsPage() {
 
   return (
     <div className="flex flex-col gap-3 py-4">
+      <div className="px-4">
+        <SectionLabel
+          action={
+            <Link to="/events" className="text-sm font-medium text-muted hover:text-text">
+              Past events →
+            </Link>
+          }
+        >
+          Standings
+        </SectionLabel>
+      </div>
       {seasonIds.length > 1 && (
         <div className="px-4">
           <Tabs

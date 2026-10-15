@@ -30,11 +30,20 @@ the results, and everyone's picks.
 4. Links: StandingsPage `SectionLabel` action `Past events →`; EventSwitcher gets a trailing `All events` chip → `/events`.
 
 ## Acceptance criteria
-- [ ] Definition of Done passes; `npm run build` passes.
-- [ ] `/events` lists the seeded final event with its winner; opening it shows standings + payouts, results and the reveal.
+- [x] Definition of Done passes; `npm run build` passes.
+- [x] `/events` lists the seeded final event with its winner; opening it shows standings + payouts, results and the reveal.
 
 ## Out of scope
 Winner takeover screen and belt (deferred by the owner).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- `usePastEvents(uid)` reuses `useEventHistory`'s query shape (`status == 'final'` + `orderBy startsAt desc`,
+  no new index), then one-shot reads each event's rank-1 entries and the viewer's own entry.
+- `EventsArchivePage` at `/events`; `EventPage` final branch reuses `LiveLeaderboard` (payout column),
+  `ResultsList` and `PlayerSheet` from T37/T35 instead of the pick-deck locked view, plus `PicksSection`'s
+  reveal grid already mounted below.
+- `EventSwitcher` gets a trailing "All events" chip (only when there's at least one final event);
+  `StandingsPage` gets a "Past events →" link next to a new "Standings" `SectionLabel`.
+- Added `EventsArchivePage.test.tsx` (loading/empty/row content/tied winners/link href) since page-level
+  hooks here hit Firestore directly and aren't otherwise unit-testable, matching how other pages in this
+  app are untested beyond their presentational sub-components.

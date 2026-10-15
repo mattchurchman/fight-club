@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Timestamp } from 'firebase/firestore';
-import { collection, doc, onSnapshot, orderBy, query, where } from 'firebase/firestore';
-import type { Bout, Event, EventStatus } from '@shared/index.ts';
+import { collection, doc, getDoc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import type { Bout, Entry, Event, EventStatus } from '@shared/index.ts';
 import { db } from '../../lib/firebase.ts';
 
 export interface EventWithId extends Event<Timestamp> {
@@ -107,4 +107,73 @@ export function useBouts(eventId: string | null): BoutWithId[] | undefined {
   }, [eventId]);
 
   return bouts;
+}
+
+export interface PastEventRow {
+  id: string;
+  name: string;
+  subtitle: string | null;
+  number: number | null;
+  startsAtMs: number;
+  pot: number;
+  /** Display names of every rank-1 entry (a tie shows more than one). */
+  winnerNames: string[];
+  /** The viewer's rank in this event, or null if they didn't play it. */
+  selfRank: number | null;
+}
+
+/**
+ * Every final event, newest first (docs/tasks/T40). Reuses the query shape `useEventHistory`
+ * already runs (status == 'final' + orderBy startsAt desc) so no new index is needed, then
+ * one-shot reads each event's rank-1 entries and the viewer's own entry. Fine at this app's
+ * event-count scale (same note as T21's `useEventHistory`).
+ */
+export function usePastEvents(uid: string | null): PastEventRow[] | undefined {
+  const [rows, setRows] = useState<PastEventRow[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (!uid) return undefined;
+    let cancelled = false;
+
+    void (async () => {
+      const eventsSnap = await getDocs(
+        query(collection(db, 'events'), where('status', '==', 'final'), orderBy('startsAt', 'desc')),
+      );
+      const events = eventsSnap.docs.map((d) => ({ id: d.id, ...(d.data() as Event<Timestamp>) }));
+
+      const [winnerSnaps, selfSnaps] = await Promise.all([
+        Promise.all(
+          events.map((event) =>
+            getDocs(query(collection(db, 'events', event.id, 'entries'), where('rank', '==', 1))),
+          ),
+        ),
+        Promise.all(events.map((event) => getDoc(doc(db, 'events', event.id, 'entries', uid)))),
+      ]);
+
+      if (cancelled) return;
+      setRows(
+        events.map((event, i) => {
+          const selfSnap = selfSnaps[i]!;
+          const selfEntry = selfSnap.exists() ? (selfSnap.data() as Entry<Timestamp>) : null;
+          return {
+            id: event.id,
+            name: event.name,
+            subtitle: event.subtitle,
+            number: event.number,
+            startsAtMs: event.startsAt.toMillis(),
+            pot: event.pot,
+            winnerNames: winnerSnaps[i]!.docs.map((d) => (d.data() as Entry<Timestamp>).displayName),
+            selfRank: selfEntry?.rank ?? null,
+          };
+        }),
+      );
+    })();
+
+    return () => {
+      cancelled = true;
+      setRows(undefined);
+    };
+  }, [uid]);
+
+  return rows;
 }
