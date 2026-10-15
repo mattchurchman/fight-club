@@ -41,4 +41,13 @@ means for them, and their own standing — before the full leaderboard.
 Leaderboard/results/PlayerSheet (T37), flash (T38), chat (T39).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Built `StatusStrip` (pill + `Fight X of Y` from `fightOrder`/`currentBout`, Pot/`Pot paid`), `InTheCage`
+(fighters side by side with odds, avatars of who picked each side with 🔒 on the lock pick, swing lines
+from `swingLines` with "At least" caption, "Up next"/"In the cage" heading), and `YourRow` (rank, points,
+`useRankMoves`-driven ▲/▼). `LivePage` now composes Status → InTheCage → YourRow → `LiveLeaderboard` →
+Share, keeps Trash Talk/chat as-is, and the pre-lock branch adds a read-only `FightCardList` under the
+countdown (text unchanged for e2e). Removed the `LastResultBanner` mount; kept the file per T37.
+Added unit tests for all three new components. `npm run test:e2e`'s happy-path spec (lock → results →
+finalize, hitting `/live` at each stage) passes against the emulator with no changes needed.
+Follow-up: final-state strip wording ("Pot paid", no amount) wasn't in the spec's literal ASCII mock —
+revisit if T37/T40 want the pot amount shown post-payout too.
