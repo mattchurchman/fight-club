@@ -93,7 +93,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 **Run 6 — Finish** (Tier B).
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T42 | Share posters restyle | B | medium | T29 | todo | | |
+| T42 | Share posters restyle | B | medium | T29 | done | 2026-10-15 | 35ed2cf |
 | T43 | Remove legacy aliases, help copy & final QA | B | medium | T27–T42 | todo | | |
 
 Deferred to a later revision (owner, 2026-10-14): profile photo upload & fight nicknames; event winner takeover screen &
@@ -279,5 +279,5 @@ the passing championship belt.
 ### Run 6 — Finish (Tier B)
 | ID | Task | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T42 | Share posters restyle | medium | T29 | todo | | |
+| T42 | Share posters restyle | medium | T29 | done | 2026-10-15 | 35ed2cf |
 | T43 | Remove legacy aliases, help copy & final QA | medium | T27–T42 | todo | | |
