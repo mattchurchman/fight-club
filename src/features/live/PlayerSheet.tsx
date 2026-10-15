@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { Link } from 'react-router-dom';
 import type { BoutScore } from '@shared/index.ts';
 import { Avatar } from '../../components/ui/Avatar.tsx';
 import { Sheet } from '../../components/ui/Sheet.tsx';
@@ -7,11 +8,10 @@ import type { EntryWithId } from './hooks.ts';
 import { boutPickOutcome } from './reveal.ts';
 import type { PickOutcome } from './reveal.ts';
 
-const OUTCOME_ICON: Record<PickOutcome, string> = {
+const OUTCOME_ICON: Record<Exclude<PickOutcome, 'pending'>, string> = {
   correct: '✓',
   wrong: '✗',
   push: '↺',
-  pending: '…',
 };
 
 function BreakdownLine({ score }: { score: BoutScore }) {
@@ -26,17 +26,20 @@ function BreakdownLine({ score }: { score: BoutScore }) {
 interface PlayerSheetProps {
   entry: EntryWithId | null;
   bouts: BoutWithId[];
+  /** Maps uid → username so the footer can link to a profile; omitted uids hide the link. */
+  usernameByUid?: Record<string, string>;
   open: boolean;
   onClose: () => void;
 }
 
 /** Tap-through detail sheet for one player's picks and scoring breakdown (docs/tasks/T15). */
-export function PlayerSheet({ entry, bouts, open, onClose }: PlayerSheetProps) {
+export function PlayerSheet({ entry, bouts, usernameByUid, open, onClose }: PlayerSheetProps) {
   if (!entry) return null;
 
   const firstBloodBout = entry.firstBlood
     ? bouts.find((bout) => bout.id === entry.firstBlood?.boutId)
     : undefined;
+  const username = usernameByUid?.[entry.uid];
 
   return (
     <Sheet open={open} onClose={onClose} title={entry.displayName}>
@@ -72,17 +75,20 @@ export function PlayerSheet({ entry, bouts, open, onClose }: PlayerSheetProps) {
                 className="flex items-center justify-between gap-2 border-b border-line pb-2 text-sm"
               >
                 <div className="flex min-w-0 items-center gap-1.5">
-                  <span
-                    aria-hidden="true"
-                    className={clsx(
-                      'font-semibold',
-                      outcome === 'correct' && 'text-win',
-                      outcome === 'wrong' && 'text-loss',
-                      outcome === 'push' && 'text-muted',
-                    )}
-                  >
-                    {OUTCOME_ICON[outcome]}
-                  </span>
+                  {outcome === 'pending' ? (
+                    <span className="text-[10px] uppercase tracking-wide text-muted">Pending</span>
+                  ) : (
+                    <span
+                      aria-hidden="true"
+                      className={clsx(
+                        'font-semibold',
+                        outcome === 'correct' && 'text-win',
+                        (outcome === 'wrong' || outcome === 'push') && 'text-muted',
+                      )}
+                    >
+                      {OUTCOME_ICON[outcome]}
+                    </span>
+                  )}
                   {entry.lockBoutId === bout.id ? <span aria-hidden="true">🔒</span> : null}
                   <span className="truncate text-text">{fighterName}</span>
                   <span className="shrink-0 text-muted">· {pick.method}</span>
@@ -117,6 +123,12 @@ export function PlayerSheet({ entry, bouts, open, onClose }: PlayerSheetProps) {
               : '—'}
             {entry.score ? ` · ${entry.score.firstBlood >= 0 ? '+' : ''}${entry.score.firstBlood} pts` : ''}
           </p>
+        ) : null}
+
+        {username ? (
+          <Link to={`/u/${username}`} className="self-start text-sm font-semibold text-text underline">
+            View profile
+          </Link>
         ) : null}
       </div>
     </Sheet>

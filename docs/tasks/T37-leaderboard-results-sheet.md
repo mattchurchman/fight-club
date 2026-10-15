@@ -40,4 +40,14 @@ results list of finished fights, and clean up the player sheet.
 Result flash (T38). Profile page changes (T41).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Leaderboard now reads fight order from `fightOrder()` (not `bouts` array order) for the F1…F5 header and
+per-fight marks (✓ win / ✗ muted / – push / · pending, text glyphs). Rank-move glyphs added (▲ win / ▼ muted);
+your row uses a `border-text`/`ring-text` outline (not gold — `--color-gold` is already aliased to `--color-text`
+since T26). Final events add a payout column (`Coin` + amount, `—` for none) via a `payout` field threaded
+through a local `LiveLeaderboardEntry` type — `leaderboard.ts` wasn't in this task's allowed files, so
+`LeaderboardEntryLike` itself wasn't extended; real `EntryWithId` objects already carry `payout`. Added
+`ResultsList` and wired it + leaderboard's `moves`/`final` props into `LivePage`. `PlayerSheet` now shows
+"Pending" text instead of a `…` glyph, uses muted (not loss) for a wrong pick to match the mark legend, and
+gets a `usernameByUid`-gated "View profile" link. Deleted `LastResultBanner`/`lastResult.ts` (unused — never
+imported by `LivePage` since T36). Note: `MODEL_TIERS.md` effort was "medium"; this session ran at low effort.
+Tier B (Sonnet) matched as required.

@@ -9,9 +9,11 @@ import { selectDefaultEventId, useBouts, useEvent, useEvents } from '../events/h
 import { FightCardList } from '../events/FightCardList.tsx';
 import { ShareButton } from '../share/ShareButton.tsx';
 import { ChatPanel } from '../chat/ChatPanel.tsx';
+import { useUsersById } from '../profile/hooks.ts';
 import { currentBout, resultsFeed, swingLines } from './derive.ts';
 import { LiveLeaderboard } from './LiveLeaderboard.tsx';
 import { PlayerSheet } from './PlayerSheet.tsx';
+import { ResultsList } from './ResultsList.tsx';
 import { StatusStrip } from './StatusStrip.tsx';
 import { InTheCage } from './InTheCage.tsx';
 import { YourRow } from './YourRow.tsx';
@@ -60,6 +62,11 @@ export function LivePage() {
     lastResultKey,
   );
   const selfRow = user ? leaderboardRows.find((row) => row.uid === user.uid) ?? null : null;
+  const { byId: usersById } = useUsersById();
+  const usernameByUid = useMemo(
+    () => Object.fromEntries(Object.entries(usersById).map(([uid, u]) => [uid, u.username])),
+    [usersById],
+  );
 
   if (eventsLoading || event === undefined) {
     return (
@@ -108,7 +115,14 @@ export function LivePage() {
         <EmptyState title="No entries" description="Nobody picked this one." />
       ) : (
         <>
-          <LiveLeaderboard entries={entries} bouts={bouts} onTap={setOpenUid} />
+          <LiveLeaderboard
+            entries={entries}
+            bouts={bouts}
+            moves={rankMovesByUid}
+            final={event.status === 'final'}
+            onTap={setOpenUid}
+          />
+          <ResultsList feed={feed} />
           <ShareButton event={event} bouts={bouts} entries={entries} selfUid={user?.uid ?? null} />
         </>
       )}
@@ -130,6 +144,7 @@ export function LivePage() {
       <PlayerSheet
         entry={openEntry}
         bouts={bouts ?? []}
+        usernameByUid={usernameByUid}
         open={openEntry != null}
         onClose={() => setOpenUid(null)}
       />
