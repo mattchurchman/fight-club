@@ -33,4 +33,15 @@ did to them. This is the moment people react to on the couch.
 Vibration/sound, push notifications.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+`useNewResults(bouts)` seeds a "seen final" set on first mount (so a reload never replays an
+already-final bout) and, on later renders, emits the newest newly-final bout id (furthest along
+`fightOrder`, for the rare case two land in one batch) until `dismiss()` or the next new result.
+`ResultFlash` renders that bout's `resultsFeed` row: title/method/round always, delta (`win`/`muted`,
+✓/✗) + rank move (`▲/▼ to #rank`) only when `self` is non-null (hidden for spectators). Fixed below
+the header (`top: 3.5rem + safe-area-inset-top`), 3px `border-red` top edge, slide-down via a
+mount-triggered transform flip (`motion-reduce:transition-none` makes it instant), tap or a 2.5s
+timer calls `onDismiss`. Wired into `LivePage` only while `revealed` (so it can't fire against the
+pre-lock placeholder bouts). Verified the "shows once / no replay on reload" guarantee via
+`useNewResults.test.ts` (remounting with an already-final bout never flashes it) rather than a live
+emulator browser session — no emulator instance was running this session; same depth as T37's
+acceptance pass.

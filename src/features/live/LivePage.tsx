@@ -13,12 +13,14 @@ import { useUsersById } from '../profile/hooks.ts';
 import { currentBout, resultsFeed, swingLines } from './derive.ts';
 import { LiveLeaderboard } from './LiveLeaderboard.tsx';
 import { PlayerSheet } from './PlayerSheet.tsx';
+import { ResultFlash } from './ResultFlash.tsx';
 import { ResultsList } from './ResultsList.tsx';
 import { StatusStrip } from './StatusStrip.tsx';
 import { InTheCage } from './InTheCage.tsx';
 import { YourRow } from './YourRow.tsx';
 import { buildLeaderboard } from './leaderboard.ts';
 import { isRevealed, useEntries, useComments, useRankMoves } from './hooks.ts';
+import { useNewResults } from './useNewResults.ts';
 
 function boutsById(bouts: BoutWithId[] | undefined): Record<string, Bout> {
   return Object.fromEntries((bouts ?? []).map((bout) => [bout.id, bout]));
@@ -62,6 +64,8 @@ export function LivePage() {
     lastResultKey,
   );
   const selfRow = user ? leaderboardRows.find((row) => row.uid === user.uid) ?? null : null;
+  const { newResultBoutId, dismiss: dismissFlash } = useNewResults(revealed ? boutsMap : undefined);
+  const flashRow = feed.find((row) => row.boutId === newResultBoutId) ?? null;
   const { byId: usersById } = useUsersById();
   const usernameByUid = useMemo(
     () => Object.fromEntries(Object.entries(usersById).map(([uid, u]) => [uid, u.username])),
@@ -97,6 +101,13 @@ export function LivePage() {
   return (
     <div className="flex flex-col gap-3 pt-4 pb-4">
       {event ? <StatusStrip event={event} bouts={boutsMap} /> : null}
+      {flashRow ? (
+        <ResultFlash
+          row={flashRow}
+          self={selfRow ? { rank: selfRow.rank, move: rankMovesByUid[selfRow.uid] ?? 0 } : null}
+          onDismiss={dismissFlash}
+        />
+      ) : null}
       {entries && bouts ? (
         <InTheCage
           bout={currentBoutObj}
