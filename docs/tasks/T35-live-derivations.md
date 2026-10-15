@@ -37,11 +37,18 @@ how ranks moved since the last result, and a results feed. No UI in this task.
    sharing rank, no-entry viewer, and fight-order with a cancelled bout.
 
 ## Acceptance criteria
-- [ ] Definition of Done passes.
-- [ ] `projectOutcome` totals equal `scoreEntry` totals when the hypothetical matches a real result with method `OTHER`.
+- [x] Definition of Done passes.
+- [x] `projectOutcome` totals equal `scoreEntry` totals when the hypothetical matches a real result with method `OTHER`.
 
 ## Out of scope
 Components (T36–T38). Changing `shared/`.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Built all six functions in `derive.ts` plus `useRankMoves` in `hooks.ts`. `fightOrder` is
+`mainCardBoutIds(bouts).reverse()`; `resultsFeed`'s "most recent first" is `mainCardBoutIds`
+directly (its reverse cancels `fightOrder`'s own). `swingLines` ended up needing an `EventRules`
+param the step list didn't list, since it calls `projectOutcome`, which needs one for
+`scoreEntry` — "self"'s *current* total comes straight off each entry's live `score.total`
+(kept current by jobs as results land), only the projected side is recomputed. `newLeader` is
+null on a tie at rank 1, before or after, rather than guessing which tied leader to name.
+19 new tests in `derive.test.ts`. Full suite (489), lint, typecheck and build all green.

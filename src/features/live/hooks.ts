@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Timestamp } from 'firebase/firestore';
 import { collection, onSnapshot, orderBy, query, limit } from 'firebase/firestore';
 import type { Comment, Entry, EventStatus } from '@shared/index.ts';
 import { db } from '../../lib/firebase.ts';
+import { rankMoves } from './derive.ts';
 
 export interface EntryWithId extends Entry<Timestamp> {
   id: string;
@@ -58,4 +59,31 @@ export function useComments(eventId: string | null): CommentWithId[] | undefined
   }, [eventId]);
 
   return comments;
+}
+
+/**
+ * Rank movement since the last finished bout (docs/tasks/T35). Keeps the previous rank
+ * snapshot in a ref and only diffs against it when `lastResultKey` (the latest finished
+ * bout's id) changes, so a mid-event listener re-render doesn't recompute or flicker moves.
+ */
+export function useRankMoves(
+  rows: readonly { uid: string; rank: number }[],
+  lastResultKey: string | null,
+): Record<string, number> {
+  const prevRanksRef = useRef<Record<string, number> | null>(null);
+  const lastKeyRef = useRef<string | null>(null);
+  const [moves, setMoves] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (lastResultKey === lastKeyRef.current) return;
+    lastKeyRef.current = lastResultKey;
+
+    const next: Record<string, number> = {};
+    for (const row of rows) next[row.uid] = row.rank;
+
+    setMoves(prevRanksRef.current ? rankMoves(prevRanksRef.current, next) : {});
+    prevRanksRef.current = next;
+  }, [rows, lastResultKey]);
+
+  return moves;
 }
