@@ -65,7 +65,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 |---|---|---|---|---|---|---|---|
 | T28 | Logo, PWA icons & brand components | B | medium | T26 | done | 2026-10-14 | d396d46 |
 | T29 | UI kit restyle | B | medium | T28 | done | 2026-10-14 | d44b733 |
-| T30 | App shell & polish pass | B | medium | T29 | todo | | |
+| T30 | App shell & polish pass | B | medium | T29 | in-progress | | |
 
 **Run 3 — Pick deck** (Tier B): one fight per screen, swiped horizontally, plus a review slide.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
@@ -213,10 +213,6 @@ the passing championship belt.
 - T21: `useSeasonIds` (Standings tab) and `useEventHistory` (profile) both one-shot-scan the whole
   `events` collection / one `getDoc` per final event. Fine at this app's event-count scale; revisit with
   a real index or a denormalized per-user event list if that collection ever grows large.
-- T24: `NotificationsSection` (the `/me` "Enable notifications" toggle) isn't wired into `/me` —
-  `src/features/auth/MePage.tsx` and `src/features/profile/MyProfilePage.tsx` weren't in T24's allowed
-  files (same gap T18 hit for `AdminHomePage.tsx`). Add `<NotificationsSection uid={user.uid} />` to one
-  of them.
 - T24: lifecycle's weekday 3 h cadence can miss the 45-75 min lock-reminder window for an event that
   locks on a weekday (a weekend-locking numbered event is covered by the dense 15-min cadence). No
   dedicated cron was added — see DECISIONS.md 2026-09-30 (Actions-minutes budget).

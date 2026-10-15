@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
-import { signOut } from 'firebase/auth';
 import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { Avatar } from '../../components/ui/Avatar.tsx';
-import { Button } from '../../components/ui/Button.tsx';
 import { Card } from '../../components/ui/Card.tsx';
 import { TokenPill } from '../../components/ui/TokenPill.tsx';
-import { auth, db } from '../../lib/firebase.ts';
+import { db } from '../../lib/firebase.ts';
 import { useSession } from './SessionProvider.tsx';
 
 // Module-scoped so a re-mount of this page (tab switch) doesn't re-write lastSeenAt; a full
@@ -24,7 +22,7 @@ export function MePage() {
   if (!user || !profile) return null;
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="p-4">
       <Card className="flex flex-col items-center gap-3 py-6 text-center">
         <Avatar name={profile.displayName} src={profile.photoURL ?? undefined} size={72} />
         <div>
@@ -33,10 +31,6 @@ export function MePage() {
         </div>
         <TokenPill balance={profile.balance} />
       </Card>
-
-      <Button variant="secondary" onClick={() => signOut(auth)}>
-        Sign out
-      </Button>
     </div>
   );
 }

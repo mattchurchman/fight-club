@@ -24,13 +24,20 @@ export function TabBar() {
             end={to === '/'}
             className={({ isActive }) =>
               clsx(
-                'flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 py-2 text-xs font-medium',
-                isActive ? 'text-red' : 'text-muted hover:text-text',
+                'relative flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 py-2 text-xs font-medium',
+                isActive ? 'text-text' : 'text-muted hover:text-text',
               )
             }
           >
-            <Icon className="size-5" />
-            {label}
+            {({ isActive }) => (
+              <>
+                {isActive ? (
+                  <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-red" />
+                ) : null}
+                <Icon className="size-5" />
+                {label}
+              </>
+            )}
           </NavLink>
         ))}
       </div>

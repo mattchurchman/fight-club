@@ -22,7 +22,7 @@ export function AppShell() {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-[640px] flex-col bg-bg">
-      <Header title={titleFor(location.pathname)} />
+      <Header section={titleFor(location.pathname)} />
       <main className="flex-1">
         <Outlet />
       </main>

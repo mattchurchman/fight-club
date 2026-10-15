@@ -1,18 +1,8 @@
-import clsx from 'clsx';
-import type { EventStatus } from '@shared/index.ts';
 import { Countdown } from '../../components/ui/Countdown.tsx';
+import { StatusPill } from '../../components/ui/StatusPill.tsx';
 import { TokenPill } from '../../components/ui/TokenPill.tsx';
 import type { EventWithId } from './hooks.ts';
-import { EVENT_STATUS_LABEL, formatEventDateTime } from './format.ts';
-
-const STATUS_TONE: Record<EventStatus, string> = {
-  scheduled: 'border-line bg-surface-2 text-muted',
-  open: 'border-line bg-surface-2 text-muted',
-  locked: 'border-gold/40 bg-gold/10 text-gold',
-  live: 'border-loss/40 bg-loss/10 text-loss',
-  final: 'border-line bg-surface-2 text-text',
-  cancelled: 'border-loss/40 bg-loss/10 text-loss',
-};
+import { formatEventDateTime } from './format.ts';
 
 interface EventHeaderProps {
   event: EventWithId;
@@ -21,24 +11,19 @@ interface EventHeaderProps {
 export function EventHeader({ event }: EventHeaderProps) {
   const showCountdown = event.status === 'open';
   const showPot = event.status === 'locked' || event.status === 'live' || event.status === 'final';
+  const label = event.name.split(':')[0]!.trim();
+  const headline = event.subtitle ?? event.name;
 
   return (
     <div className="flex flex-col gap-2 border-b border-line p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
+          <p className="label">{label}</p>
           <h2 className="truncate font-display text-2xl uppercase tracking-wide text-text">
-            {event.name}
+            {headline}
           </h2>
-          {event.subtitle ? <p className="truncate text-sm text-muted">{event.subtitle}</p> : null}
         </div>
-        <span
-          className={clsx(
-            'shrink-0 rounded-chip border px-3 py-1 text-xs font-semibold',
-            STATUS_TONE[event.status],
-          )}
-        >
-          {EVENT_STATUS_LABEL[event.status]}
-        </span>
+        <StatusPill status={event.status} className="shrink-0" />
       </div>
 
       <p className="text-sm text-muted">{formatEventDateTime(event.startsAt.toMillis())}</p>
@@ -46,7 +31,7 @@ export function EventHeader({ event }: EventHeaderProps) {
       {showCountdown || showPot ? (
         <div className="flex flex-wrap items-center gap-4">
           {showCountdown ? (
-            <Countdown target={event.lockAt.toMillis()} className="text-sm font-semibold text-text" />
+            <Countdown target={event.lockAt.toMillis()} className="text-sm font-semibold" />
           ) : null}
           {showPot ? (
             <div className="flex items-center gap-3">

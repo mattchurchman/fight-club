@@ -39,4 +39,13 @@ a real status pill, an urgent countdown, Sign out moved to the bottom of Me, and
 Pick UI (T31–T33), Live tab (T35–T38), profile body restyle (T41).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Header now takes a plain `section` string (dropped unused `subtitle` prop), shows `<Mark/>` linking
+to `/` plus the section label at 56px height. TabBar's active tab is `text` color with a 3px red top
+bar (via NavLink's render-prop children) instead of just red text. EventHeader splits `name` on `:`
+for the label line, uses `subtitle` (falling back to `name`) as the headline so it never repeats, and
+renders `<StatusPill>` instead of the old inline chip; `EVENT_STATUS_LABEL`/local status-tone map are
+now unused here (still used elsewhere, left in `format.ts`). EventSwitcher/Chip already matched the
+spec (radius 8, inverted selection) — no change needed. Moved Sign out out of `MePage` (now just the
+account card) into `MyProfilePage`, rendered last below `ProfileBody`, with `NotificationsSection`
+above it. Removed the matching T24 backlog line. `NotificationsSection`'s own heading wasn't touched
+(outside allowed files) so it isn't on `SectionLabel` yet.
