@@ -26,8 +26,8 @@
     "bootstrap:admin": "npm run job -- jobs/bootstrap-admin.ts"
   },
   "dependencies": {
-    "@fontsource/anton": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
+    "@fontsource/montserrat": "^5.3.0",
     "clsx": "^2.1.1",
     "firebase": "^12.19.0",
     "html-to-image": "^1.11.13",

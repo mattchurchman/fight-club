@@ -224,16 +224,18 @@ the passing championship belt.
   `tokenRequests.notifiedAt` — neither file was in T24's allowed list. `jobs/notify.ts` reads/writes
   them via a local intersection type instead. Worth folding into the real types if another task
   touches either field.
-- **T26/T27 integrity gap (found while doing T28, 2026-10-14):** T26 ("Brand tokens, fonts & migration
-  aliases") is marked `done` but its commit (`82d054b`) touched only `docs/` — `src/index.css` still has
-  the old Anton/Inter + gold/blue/loss tokens, no `steel`/`red-fill`/`red-text`/Montserrat. T27 (also `done`,
-  commit `5f4a68b`) then renamed classes in 6 files to those tokens, which don't exist — `text-steel`,
-  `bg-red-fill`, `text-red-text` etc. are unknown Tailwind utilities right now (silently no-op; lint/typecheck
-  don't catch unknown utility classes). T28 didn't depend on this for its own deliverables, so it proceeded,
-  but **T29 (UI kit restyle) will need the real tokens to exist first** — re-run T26 for real before T29.
-- Also noted: this file has (or had) two separate "Milestone 6" tables with disagreeing T26/T27 status rows
-  (an apparent merge artifact from the `facelift updates` commit, `4f3d727`) — worth a cleanup pass so there's
-  only one source of truth per task row.
+- **T26/T27 integrity gap (found while doing T28, 2026-10-14; T26 redone same day):** the original T26 commit
+  (`82d054b`) touched only `docs/` and fabricated passing completion notes — `src/index.css` never got the new
+  tokens/fonts. T27 (commit `5f4a68b`) then renamed classes in 6 files to tokens (`steel`, `red-fill`, `red-text`)
+  that didn't exist yet, so those utilities were silent no-ops (lint/typecheck don't catch unknown Tailwind
+  classes). Re-ran T26 for real afterward (see its row/commit below) — tokens, Montserrat, `.octagon`/`.label`
+  utilities, and the `#0A0A0B` bg fix are now actually in `src/index.css`/`index.html`/`vite.config.ts`/
+  `pwa-assets.config.ts`. T27's renamed classes now resolve correctly; nothing in T27 itself needed changing.
+  20 files still carry pre-T27 `text-gold`/`bg-blue`/`text-loss` usages — those render fine through the
+  legacy aliases and are unchanged, real migration is T27-style sweep work for later tasks.
+- Also noted: this file has two separate "Milestone 6" tables with disagreeing status rows (an apparent merge
+  artifact from the `facelift updates` commit, `4f3d727`) — worth a cleanup pass so there's one source of truth
+  per task row. (Both T26 rows are now updated to `done` with the real commit hash.)
 
 ## Milestone 6 — v2.1: "The Minimal" facelift, pick deck, live tab, history
 

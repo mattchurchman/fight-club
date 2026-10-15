@@ -4,7 +4,7 @@ import { defineConfig, minimal2023Preset } from '@vite-pwa/assets-generator/conf
 // own safe-zone margin around the mark, so the generator's default 30%-white-padding box (meant
 // for logos with transparent backgrounds) just adds an unwanted white border — most visible as a
 // ring around the icon on the iOS home screen, which doesn't bleed to the edge like Apple expects.
-const BRAND_BG = '#0B0B0D';
+const BRAND_BG = '#0A0A0B';
 
 export default defineConfig({
   preset: {

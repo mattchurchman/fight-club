@@ -37,4 +37,16 @@ names (`gold`, `blue`, `loss`) keep working through temporary aliases, so no fea
 Editing any component or feature file. Icons (T28).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- Swapped `@fontsource/anton` for `@fontsource/montserrat` (600/700/800/900); `grep -rn anton src package.json` is clean.
+- Rewrote `src/index.css` `@theme`: v2.1 tokens (`bg surface surface-2 line steel text muted red red-fill red-text win`)
+  + three legacy aliases (`gold→text`, `blue→steel`, `loss→red-text`) each commented `removed in T43`.
+- `.font-display` is now Montserrat 800 uppercase, tracking 0.02em. Added `@utility octagon` and `@utility label`
+  (Montserrat 600 11px uppercase tracking 0.2em muted) per DESIGN "Shape & motifs" / "Type".
+  Radii: card 12px, chip 8px.
+  (Previous `done` T26 commit, 82d054b, only touched docs — no actual token work landed; this redoes it for real,
+  requested by the owner after T28 flagged the gap.)
+- `#0B0B0D` → `#0A0A0B` in `index.html`, `vite.config.ts` manifest colors, `pwa-assets.config.ts` `BRAND_BG`;
+  regenerated PWA PNGs/favicon against the corrected background.
+- 20 files still reference `text-gold`/`bg-blue`/`text-loss` etc. — they render fine through the aliases; real
+  migration is T27+'s job per DESIGN.md's map, unchanged by this task.
+- Definition of Done green (lint, typecheck, 402 tests, build).

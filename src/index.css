@@ -1,25 +1,35 @@
 @import 'tailwindcss';
-@import '@fontsource/anton';
+@import '@fontsource/montserrat/600.css';
+@import '@fontsource/montserrat/700.css';
+@import '@fontsource/montserrat/800.css';
+@import '@fontsource/montserrat/900.css';
 @import '@fontsource/inter';
 
 @theme {
-  --color-bg: #0b0b0d;
-  --color-surface: #16161a;
-  --color-surface-2: #1f1f25;
-  --color-line: #2a2a31;
-  --color-text: #f4f4f5;
-  --color-muted: #a1a1aa;
-  --color-red: #e5383b;
-  --color-blue: #3a86ff;
-  --color-gold: #f5c518;
+  --color-bg: #0a0a0b;
+  --color-surface: #141416;
+  --color-surface-2: #1e1e21;
+  --color-line: #2c2c30;
+  --color-steel: #4a4a50;
+  --color-text: #f5f5f5;
+  --color-muted: #9a9aa0;
+  --color-red: #e8221b;
+  --color-red-fill: #d41d17;
+  --color-red-text: #ff4136;
   --color-win: #22c55e;
-  --color-loss: #ef4444;
 
-  --font-display: 'Anton', sans-serif;
+  /* legacy alias — removed in T43 */
+  --color-gold: #f5f5f5;
+  /* legacy alias — removed in T43 */
+  --color-blue: #4a4a50;
+  /* legacy alias — removed in T43 */
+  --color-loss: #ff4136;
+
+  --font-display: 'Montserrat', sans-serif;
   --font-sans: 'Inter', sans-serif;
 
-  --radius-card: 16px;
-  --radius-chip: 999px;
+  --radius-card: 12px;
+  --radius-chip: 8px;
 }
 
 :root {
@@ -34,6 +44,22 @@ body {
 
 .font-display {
   font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+@utility octagon {
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+@utility label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-muted);
 }
 
 .tabular-nums {
