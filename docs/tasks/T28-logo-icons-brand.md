@@ -43,4 +43,16 @@ rest of v2.1 uses (`Mark`, `Lockup`, `Coin`).
 Header (T30), TokenPill (T29), posters (T42).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- Copied `icon-source.svg` → `icon.svg`, regenerated PWA PNGs/favicon via `npm run generate-pwa-assets` (config already had
+  `padding: 0` + brand bg from a prior ad-hoc fix, so no white border).
+- Added `src/components/brand/{Brand.tsx,index.ts}` exporting `Lockup`, `Mark`, `Coin` (inline, `currentColor`).
+- LoginPage: swapped the text title for `<Lockup className="w-40 mx-auto" />` + a label-style tagline (no `SectionLabel`
+  component exists yet — that's T29 — so I used the codebase's existing ad hoc label pattern
+  `text-xs font-medium uppercase tracking-wide text-muted`).
+- NotInvitedPage: same lockup, `w-28`, above the EmptyState.
+- Favicon in `index.html` now points at `/brand/mark.svg`; `favicon.ico` fallback kept. CSP `img-src 'self'` already covers it.
+- **Found while loading context, not part of this task's files:** T26 (marked `done`) only touched `docs/` — no
+  token/font work landed in `src/index.css` (still Anton/Inter, no `steel`/`red-fill`/`red-text`/Montserrat). T27
+  (also `done`) then renamed classes in 6 files to those non-existent tokens, so `text-steel`/`bg-red-fill`/etc.
+  are currently no-ops (unknown Tailwind utilities, not caught by lint/typecheck). Flagged to the user; not fixed
+  here (`src/index.css` isn't in T28's allowed files). See PROGRESS.md backlog.

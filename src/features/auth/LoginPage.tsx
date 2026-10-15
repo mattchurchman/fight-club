@@ -10,6 +10,7 @@ import {
   signInWithPopup,
   signInWithRedirect,
 } from 'firebase/auth';
+import { Lockup } from '../../components/brand/index.ts';
 import { Button } from '../../components/ui/Button.tsx';
 import { Card } from '../../components/ui/Card.tsx';
 import { useToast } from '../../components/ui/Toast.tsx';
@@ -96,8 +97,8 @@ export function LoginPage() {
   return (
     <div className="flex min-h-dvh flex-col justify-center gap-6 p-6">
       <div className="text-center">
-        <h1 className="font-display text-3xl uppercase text-text">Fight Club</h1>
-        <p className="text-sm text-muted">Invite only. Sign in to continue.</p>
+        <Lockup className="mx-auto w-40" />
+        <p className="mt-3 text-xs font-medium uppercase tracking-wide text-muted">Invite only</p>
       </div>
 
       <Card className="flex flex-col gap-4">

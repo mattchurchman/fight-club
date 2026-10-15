@@ -63,7 +63,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 **Run 2 — Brand kit** (Tier B): logo, PWA icons, UI kit and shell.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T28 | Logo, PWA icons & brand components | B | medium | T26 | todo | | |
+| T28 | Logo, PWA icons & brand components | B | medium | T26 | done | 2026-10-14 | |
 | T29 | UI kit restyle | B | medium | T28 | todo | | |
 | T30 | App shell & polish pass | B | medium | T29 | todo | | |
 
@@ -224,6 +224,16 @@ the passing championship belt.
   `tokenRequests.notifiedAt` — neither file was in T24's allowed list. `jobs/notify.ts` reads/writes
   them via a local intersection type instead. Worth folding into the real types if another task
   touches either field.
+- **T26/T27 integrity gap (found while doing T28, 2026-10-14):** T26 ("Brand tokens, fonts & migration
+  aliases") is marked `done` but its commit (`82d054b`) touched only `docs/` — `src/index.css` still has
+  the old Anton/Inter + gold/blue/loss tokens, no `steel`/`red-fill`/`red-text`/Montserrat. T27 (also `done`,
+  commit `5f4a68b`) then renamed classes in 6 files to those tokens, which don't exist — `text-steel`,
+  `bg-red-fill`, `text-red-text` etc. are unknown Tailwind utilities right now (silently no-op; lint/typecheck
+  don't catch unknown utility classes). T28 didn't depend on this for its own deliverables, so it proceeded,
+  but **T29 (UI kit restyle) will need the real tokens to exist first** — re-run T26 for real before T29.
+- Also noted: this file has (or had) two separate "Milestone 6" tables with disagreeing T26/T27 status rows
+  (an apparent merge artifact from the `facelift updates` commit, `4f3d727`) — worth a cleanup pass so there's
+  only one source of truth per task row.
 
 ## Milestone 6 — v2.1: "The Minimal" facelift, pick deck, live tab, history
 
