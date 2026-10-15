@@ -65,7 +65,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 |---|---|---|---|---|---|---|---|
 | T28 | Logo, PWA icons & brand components | B | medium | T26 | done | 2026-10-14 | d396d46 |
 | T29 | UI kit restyle | B | medium | T28 | done | 2026-10-14 | d44b733 |
-| T30 | App shell & polish pass | B | medium | T29 | in-progress | | |
+| T30 | App shell & polish pass | B | medium | T29 | done | 2026-10-14 | 5d44fbd |
 
 **Run 3 — Pick deck** (Tier B): one fight per screen, swiped horizontally, plus a review slide.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
