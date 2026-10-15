@@ -32,4 +32,17 @@ pick flow stays protected.
 Any app code changes. If the e2e reveals a bug, fix only if ≤10 lines in `src/features/picks/**`; otherwise log it.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- Rewrote the e2e picks step for the deck: click `Make your picks`, then for each fight slide
+  (scoped by `.snap-center` index to avoid matching later/earlier slides) pick fighter A, `KO`,
+  stake `200`, and `Next fight →`/`Review picks →`.
+- Used a 200 stake (not the 100 the task sketch suggested): 5 main-card bouts × 200 ==
+  `DEFAULTS.budget` (1000), so Auto-balance — which only fills bouts with *no* stake set
+  (`usePickDraft.autoBalance`) — stays a true no-op and Submit is ready immediately. 100/bout left
+  500 unallocated with every bout already staked, so Auto-balance never topped it up.
+- Scoped the Lock/First-blood/Auto-balance/Submit clicks to the review slide's own buttons —
+  off-screen `FightSlide`s stay mounted with their own "Make this my lock" buttons that also
+  case-insensitively match `/Lock/`.
+- Live-tab assertions needed `{ exact: true }`: the leaderboard row name and the new
+  "`<name>'s picks`" section heading both contain the player's display name.
+- Added `ReviewSlide` component test for the missing-pick submit-button state — already present
+  from T33, no change needed.

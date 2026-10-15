@@ -65,29 +65,32 @@ test('admin invites a player; they pick, lock, score and get paid', async ({ bro
 
   await test.step('player makes picks', async () => {
     await playerPage.goto('/');
-    // CSS attribute match, not getByRole name: the disabled submit button's own label also
-    // starts with "Pick" ("Pick a winner, a method and a stake") when nothing is picked yet.
-    const pickButtons = playerPage.locator('button[aria-label^="Pick "]');
-    await expect(pickButtons.first()).toBeVisible();
-    const pickCount = await pickButtons.count();
-    expect(pickCount).toBe(seed.mainCard.length * 2);
-    // Fighter A (red corner) is always the first "Pick …" button in each bout card.
-    for (let i = 0; i < pickCount; i += 2) {
-      await pickButtons.nth(i).click();
+    await playerPage.getByRole('button', { name: 'Make your picks' }).click();
+
+    // The deck renders every fight slide at once (horizontally snapped) plus a review slide;
+    // scope each lookup to the current slide so later fights' same-named buttons aren't matched.
+    const slides = playerPage.locator('.snap-center');
+    for (let i = 0; i < seed.mainCard.length; i++) {
+      const slide = slides.nth(i);
+      // Fighter A (red corner) is always the first "Pick …" button in the slide.
+      await slide.locator('button[aria-label^="Pick "]').first().click();
+      await slide.getByRole('button', { name: 'KO', exact: true }).click();
+      // 200 × 5 main-card bouts == the 1000-point budget (shared/constants.ts DEFAULTS.budget),
+      // so Auto-balance below is a no-op and the entry is ready to submit as soon as it's picked.
+      await slide.getByRole('button', { name: '200', exact: true }).click();
+      const isLast = i === seed.mainCard.length - 1;
+      await slide.getByRole('button', { name: isLast ? 'Review picks →' : 'Next fight →' }).click();
     }
 
-    const koChips = playerPage.getByRole('button', { name: 'KO', exact: true });
-    const koCount = await koChips.count();
-    for (let i = 0; i < koCount; i++) {
-      await koChips.nth(i).click();
-    }
-
-    await playerPage.getByRole('button', { name: /Lock/, exact: false }).first().click();
+    // Fight slides stay mounted off-screen, each with its own "Make this my lock" button, so
+    // scope the lock click to the review row's aria-label (`Lock <fighter>`) to avoid matching those.
+    const reviewSlide = slides.nth(seed.mainCard.length);
+    await reviewSlide.getByRole('button', { name: /^Lock /, exact: false }).first().click();
     // First-blood bout chips are the only buttons whose label is "<fighter A> / <fighter B>".
-    await playerPage.getByRole('button', { name: / \/ /, exact: false }).first().click();
+    await reviewSlide.getByRole('button', { name: / \/ /, exact: false }).first().click();
 
-    await playerPage.getByRole('button', { name: 'Auto-balance' }).click();
-    await playerPage.getByRole('button', { name: 'Submit picks' }).click();
+    await reviewSlide.getByRole('button', { name: 'Auto-balance' }).click();
+    await reviewSlide.getByRole('button', { name: 'Submit picks' }).click();
     await expect(playerPage.getByText('Picks in. Good luck.')).toBeVisible();
   });
 
@@ -103,7 +106,8 @@ test('admin invites a player; they pick, lock, score and get paid', async ({ bro
 
     await playerPage.goto('/live');
     await expect(playerPage.getByText('Picks lock in')).toHaveCount(0);
-    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME)).toBeVisible();
+    // exact: the leaderboard row's name and the "<name>'s picks" section heading both contain it.
+    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME, { exact: true })).toBeVisible();
   });
 
   const { scoreboardPath, statusPath } = await writeAllCornerAWinsFixtures(seed.espnEventId, seed.mainCard);
@@ -112,7 +116,7 @@ test('admin invites a player; they pick, lock, score and get paid', async ({ bro
     runLifecycle(['--live', '--now', lockNowIso, '--fixture', scoreboardPath, '--fixture', statusPath]);
 
     await playerPage.goto('/live');
-    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME)).toBeVisible();
+    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME, { exact: true })).toBeVisible();
     await expect(playerPage.getByText(/^\+\d+$/)).toBeVisible();
   });
 
