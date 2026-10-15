@@ -9,6 +9,8 @@ interface DeckTopBarProps {
   fightComplete: boolean[];
   allocated: number;
   budget: number;
+  /** Once true, incomplete fights get a red dot (docs/tasks/T32 §5). */
+  attemptedSubmit: boolean;
 }
 
 /** Slim strip replacing the header/tab bar inside the pick deck (docs/DESIGN.md "Pick deck"). */
@@ -19,6 +21,7 @@ export function DeckTopBar({
   fightComplete,
   allocated,
   budget,
+  attemptedSubmit,
 }: DeckTopBarProps) {
   const onReview = activeIndex >= fightsCount;
   const reviewComplete = fightComplete.every(Boolean);
@@ -49,11 +52,19 @@ export function DeckTopBar({
       </div>
       <div className="flex gap-1" role="presentation">
         {fightComplete.map((complete, i) => (
-          <span
-            key={i}
-            aria-hidden="true"
-            className={clsx('h-1 flex-1 rounded-full', complete ? 'bg-gold' : 'bg-surface-2')}
-          />
+          <span key={i} aria-hidden="true" className="relative h-1 flex-1 rounded-full">
+            <span
+              className={clsx(
+                'block h-1 w-full rounded-full',
+                complete ? 'bg-gold' : 'bg-surface-2',
+              )}
+            />
+            {attemptedSubmit && !complete ? (
+              <span className="absolute inset-x-0 -top-1.5 flex justify-center">
+                <span className="size-1 rounded-full bg-red-text" />
+              </span>
+            ) : null}
+          </span>
         ))}
         <span
           aria-hidden="true"

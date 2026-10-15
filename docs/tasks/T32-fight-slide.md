@@ -36,12 +36,22 @@ No errors until the player tries to submit.
 6. Slides scroll vertically inside themselves if taller than the viewport (short phones); fighter panels stay on top.
 
 ## Acceptance criteria
-- [ ] Definition of Done passes; `npm run build` passes.
-- [ ] A fresh entry shows `—` for stake and no red text anywhere.
-- [ ] At 375×667: the whole slide fits without page scroll; tap targets ≥44px.
+- [x] Definition of Done passes; `npm run build` passes.
+- [x] A fresh entry shows `—` for stake and no red text anywhere.
+- [ ] At 375×667: the whole slide fits without page scroll; tap targets ≥44px. (tap targets sized
+  ≥44px throughout; viewport fit not verified in a live browser — see completion notes)
 
 ## Out of scope
 Review slide & submit (T33).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Added `FighterPanel`, `StakePicker` and `FightSlide`; `PickDeck` now renders `FightSlide` per
+active fight instead of `BoutCard`. `attemptedSubmit` lives in `PickDeckPage` and is set by
+`PickDeck.handleSubmit` (the existing BudgetMeter submit, still used by the T31 review slide);
+`FightSlide`/`DeckTopBar` only show red error text/dots once it's true. Auto-advance fires via
+`setTimeout` when a method is chosen on a fight that already had winner+stake, skipped under
+`prefers-reduced-motion`, cleared on unmount. `StakePicker` presets are 50/100/150/200/300/400
+per the task spec (wider than `Stepper`'s 50/100/200/400); `Stepper.tsx` itself is untouched —
+`autoBalance.ts` still reuses its pure `clampStep` helper, which isn't UI. Did not verify the
+375×667 layout in a live browser (no seeded session handy); relied on T31's existing
+per-slide `overflow-y-auto` for the "scrolls inside itself" rule and 44px tap targets throughout.

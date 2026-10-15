@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { useBouts, useEvent } from '../events/hooks.ts';
@@ -19,6 +20,9 @@ export function PickDeckPage() {
   const event = useEvent(id ?? null);
   const bouts = useBouts(id ?? null);
   const draft = usePickDraft(id ?? null, event, bouts);
+  // False until the player's first submit attempt (T33 builds the real Submit action); once
+  // true, slides show their own validation reason instead of staying silent (docs/tasks/T32 §5).
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
   if (!id) return <Navigate to="/" replace />;
   if (event === undefined || bouts === undefined || draft.loading) return <DeckSkeleton />;
@@ -26,6 +30,13 @@ export function PickDeckPage() {
   if (event.status !== 'open') return <Navigate to={`/event/${id}`} replace />;
 
   return (
-    <PickDeck event={event} bouts={bouts} draft={draft} initialBoutId={searchParams.get('fight')} />
+    <PickDeck
+      event={event}
+      bouts={bouts}
+      draft={draft}
+      initialBoutId={searchParams.get('fight')}
+      attemptedSubmit={attemptedSubmit}
+      onAttemptSubmit={() => setAttemptedSubmit(true)}
+    />
   );
 }
