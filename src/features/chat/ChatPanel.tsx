@@ -9,6 +9,7 @@ import { SectionLabel } from '../../components/ui/SectionLabel.tsx';
 import { Sheet } from '../../components/ui/Sheet.tsx';
 import { db } from '../../lib/firebase.ts';
 import type { CommentWithId } from '../live/hooks.ts';
+import { UserLink } from '../profile/UserLink.tsx';
 
 const QUICK_EMOJIS = ['🔥', '😂', '🩸', '💀', '🐐'] as const;
 const MAX_CHARS = 280;
@@ -134,10 +135,14 @@ export function ChatPanel({
           )}
           {comments?.map((comment) => (
             <div key={comment.id} className="flex gap-2">
-              <Avatar name={comment.displayName} size={32} className="mt-0.5 flex-shrink-0" />
+              <UserLink uid={comment.uid} className="mt-0.5 flex-shrink-0">
+                <Avatar name={comment.displayName} size={32} />
+              </UserLink>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-semibold text-text">{comment.displayName}</p>
+                  <UserLink uid={comment.uid} className="text-sm font-semibold text-text">
+                    {comment.displayName}
+                  </UserLink>
                   {comment.uid === user?.uid && (
                     <button
                       type="button"

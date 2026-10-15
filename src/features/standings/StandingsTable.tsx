@@ -37,7 +37,7 @@ export function StandingsTable({ rows, usersById }: StandingsTableProps) {
               <p
                 className={clsx(
                   'text-xs font-medium tabular-nums',
-                  row.netTokens > 0 ? 'text-win' : row.netTokens < 0 ? 'text-loss' : 'text-muted',
+                  row.netTokens > 0 ? 'text-win' : 'text-muted',
                 )}
               >
                 {row.netTokens > 0 ? '+' : ''}

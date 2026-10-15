@@ -1,54 +1,43 @@
-import { useState } from 'react';
+import clsx from 'clsx';
 import { BADGE_DEFINITIONS } from '@shared/badges.ts';
-import { Card } from '../../components/ui/Card.tsx';
+import { useToast } from '../../components/ui/Toast.tsx';
 
 interface BadgesRowProps {
   earned: string[];
 }
 
-/**
- * Displays all badges: earned in color, unearned greyed out.
- * Tap to see the description.
- */
+/** All badges as octagon tiles: earned ones in `text`, unearned dimmed to `opacity-30` (the name
+ * underneath stays fully readable either way). Tap shows the description in a toast. */
 export function BadgesRow({ earned }: BadgesRowProps) {
-  const [selected, setSelected] = useState<string | null>(null);
-
+  const { show: showToast } = useToast();
   const badges = Object.values(BADGE_DEFINITIONS);
 
   return (
-    <>
-      <div className="flex flex-wrap gap-3 px-4">
-        {badges.map((badge) => {
-          const isEarned = earned.includes(badge.id);
-          return (
-            <button
-              key={badge.id}
-              onClick={() => setSelected(selected === badge.id ? null : badge.id)}
-              className={`flex flex-col items-center gap-1 rounded-lg p-2 transition-all ${
-                isEarned
-                  ? 'bg-surface'
-                  : 'bg-surface-variant opacity-50'
-              }`}
-              title={badge.name}
+    <div className="flex flex-wrap gap-3 px-4">
+      {badges.map((badge) => {
+        const isEarned = earned.includes(badge.id);
+        return (
+          <button
+            key={badge.id}
+            type="button"
+            onClick={() => showToast(`${badge.emoji} ${badge.name} — ${badge.description}`)}
+            className="flex min-h-11 w-16 flex-col items-center gap-1.5"
+          >
+            <span
+              className={clsx(
+                'octagon flex size-14 items-center justify-center bg-surface-2 text-2xl',
+                isEarned ? 'text-text' : 'opacity-30',
+              )}
+              aria-hidden="true"
             >
-              <span className="text-2xl">{badge.emoji}</span>
-              <span className="text-xs font-semibold text-text">{badge.name}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {selected && (
-        <Card className="mx-4 bg-surface-variant p-3">
-          <div className="flex gap-2">
-            <span className="text-2xl">{BADGE_DEFINITIONS[selected]?.emoji}</span>
-            <div>
-              <p className="font-semibold text-text">{BADGE_DEFINITIONS[selected]?.name}</p>
-              <p className="text-sm text-muted">{BADGE_DEFINITIONS[selected]?.description}</p>
-            </div>
-          </div>
-        </Card>
-      )}
-    </>
+              {badge.emoji}
+            </span>
+            <span className="text-center text-[10px] font-semibold uppercase tracking-wide text-muted">
+              {badge.name}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }
