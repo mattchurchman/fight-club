@@ -88,7 +88,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 |---|---|---|---|---|---|---|---|
 | T39 | Trash talk opens with picks | B | medium | T31, T36 | done | 2026-10-15 | 8ab5c61 |
 | T40 | Past events & final event view | B | medium | T37 | done | 2026-10-15 | 9b78284 |
-| T41 | Profiles everywhere | B | medium | T40 | todo | | |
+| T41 | Profiles everywhere | B | medium | T40 | done | 2026-10-15 | 8b3d8f8 |
 
 **Run 6 — Finish** (Tier B).
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
@@ -274,7 +274,7 @@ the passing championship belt.
 |---|---|---|---|---|---|---|
 | T39 | Trash talk opens with picks | medium | T31, T36 | done | 2026-10-15 | 8ab5c61 |
 | T40 | Past events & final event view | medium | T37 | done | 2026-10-15 | 9b78284 |
-| T41 | Profiles everywhere | medium | T40 | todo | | |
+| T41 | Profiles everywhere | medium | T40 | done | 2026-10-15 | 8b3d8f8 |
 
 ### Run 6 — Finish (Tier B)
 | ID | Task | Effort | Depends | Status | Date | Commit |
