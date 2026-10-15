@@ -211,6 +211,12 @@ describe('comments', () => {
     await assertFails(addDoc(collection(asPlayer1(env), path), comment({ uid: UID.p2 })));
   });
 
+  it('lets a member post and read before lock — trash talk opens with picks (T39)', async () => {
+    const openPath = `events/${EVT.open}/comments`;
+    await assertSucceeds(addDoc(collection(asPlayer1(env), openPath), comment()));
+    await assertSucceeds(getDocs(collection(asPlayer2(env), openPath)));
+  });
+
   it('denies text over 280 characters and empty text with no emoji', async () => {
     const db = asPlayer1(env);
     await assertFails(addDoc(collection(db, path), comment({ text: 'x'.repeat(281) })));

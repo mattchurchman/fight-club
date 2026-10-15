@@ -86,7 +86,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 **Run 5 — Social & history** (Tier B).
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T39 | Trash talk opens with picks | B | medium | T31, T36 | todo | | |
+| T39 | Trash talk opens with picks | B | medium | T31, T36 | done | 2026-10-15 | PENDING |
 | T40 | Past events & final event view | B | medium | T37 | todo | | |
 | T41 | Profiles everywhere | B | medium | T40 | todo | | |
 
@@ -272,7 +272,7 @@ the passing championship belt.
 ### Run 5 — Social & history (Tier B)
 | ID | Task | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|
-| T39 | Trash talk opens with picks | medium | T31, T36 | todo | | |
+| T39 | Trash talk opens with picks | medium | T31, T36 | done | 2026-10-15 | PENDING |
 | T40 | Past events & final event view | medium | T37 | todo | | |
 | T41 | Profiles everywhere | medium | T40 | todo | | |
 

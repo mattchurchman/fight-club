@@ -9,6 +9,7 @@ import { selectDefaultEventId, useBouts, useEvent, useEvents } from '../events/h
 import { FightCardList } from '../events/FightCardList.tsx';
 import { ShareButton } from '../share/ShareButton.tsx';
 import { ChatPanel } from '../chat/ChatPanel.tsx';
+import { TrashTalkButton } from '../chat/TrashTalkButton.tsx';
 import { useUsersById } from '../profile/hooks.ts';
 import { currentBout, resultsFeed, swingLines } from './derive.ts';
 import { LiveLeaderboard } from './LiveLeaderboard.tsx';
@@ -94,6 +95,17 @@ export function LivePage() {
           <p className="text-sm text-muted">Reveal happens the moment picks lock. No peeking.</p>
         </div>
         {bouts ? <FightCardList bouts={bouts} readOnly /> : <Skeleton className="mx-4 h-40" />}
+        <div className="safe-bottom fixed bottom-16 left-0 right-0 z-30 flex justify-center px-4">
+          <TrashTalkButton count={comments?.length ?? 0} onClick={() => setChatOpen(true)} />
+        </div>
+        <ChatPanel
+          eventId={activeId}
+          comments={comments}
+          bouts={bouts ?? undefined}
+          open={chatOpen}
+          onClose={() => setChatOpen(false)}
+          picksSecret
+        />
       </div>
     );
   }
@@ -137,13 +149,8 @@ export function LivePage() {
           <ShareButton event={event} bouts={bouts} entries={entries} selfUid={user?.uid ?? null} />
         </>
       )}
-      <div className="safe-bottom fixed bottom-16 left-0 right-0 z-30 flex justify-center gap-2 px-4">
-        <button
-          onClick={() => setChatOpen(true)}
-          className="rounded-full bg-gold px-4 py-2 text-sm font-semibold text-background shadow-lg hover:opacity-90"
-        >
-          💬 Trash Talk
-        </button>
+      <div className="safe-bottom fixed bottom-16 left-0 right-0 z-30 flex justify-center px-4">
+        <TrashTalkButton count={comments?.length ?? 0} onClick={() => setChatOpen(true)} />
       </div>
       <ChatPanel
         eventId={activeId}

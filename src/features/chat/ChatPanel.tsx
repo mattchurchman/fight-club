@@ -5,7 +5,7 @@ import { useSession } from '../auth/SessionProvider.tsx';
 import { useToast } from '../../components/ui/Toast.tsx';
 import { Avatar } from '../../components/ui/Avatar.tsx';
 import { Button } from '../../components/ui/Button.tsx';
-import { Card } from '../../components/ui/Card.tsx';
+import { SectionLabel } from '../../components/ui/SectionLabel.tsx';
 import { Sheet } from '../../components/ui/Sheet.tsx';
 import { db } from '../../lib/firebase.ts';
 import type { CommentWithId } from '../live/hooks.ts';
@@ -19,9 +19,18 @@ interface ChatPanelProps {
   bouts: Array<{ id: string; a: { name: string }; b: { name: string } }> | undefined;
   open: boolean;
   onClose: () => void;
+  /** Event hasn't locked yet: picks stay secret, but the chat itself is open (docs/tasks/T39). */
+  picksSecret?: boolean;
 }
 
-export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanelProps) {
+export function ChatPanel({
+  eventId,
+  comments,
+  bouts,
+  open,
+  onClose,
+  picksSecret = false,
+}: ChatPanelProps) {
   const { user, profile } = useSession();
   const { show: showToast } = useToast();
   const [text, setText] = useState('');
@@ -111,8 +120,10 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title="Trash Talk">
-      <div className="flex h-full flex-col gap-3">
+    <Sheet open={open} onClose={onClose} title="Trash talk" className="flex h-[80vh] flex-col">
+      <div className="flex min-h-0 flex-1 flex-col gap-3">
+        <SectionLabel className="px-4">Trash talk</SectionLabel>
+
         <div
           ref={messagesContainerRef}
           onScroll={handleScroll}
@@ -122,20 +133,16 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
             <p className="py-8 text-center text-sm text-muted">No messages yet. Start the trash talk!</p>
           )}
           {comments?.map((comment) => (
-            <Card key={comment.id} className="flex gap-2 p-2">
-              <Avatar
-                name={comment.displayName}
-                size={32}
-                className="flex-shrink-0"
-              />
-              <div className="flex-1">
+            <div key={comment.id} className="flex gap-2">
+              <Avatar name={comment.displayName} size={32} className="mt-0.5 flex-shrink-0" />
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-semibold text-text">{comment.displayName}</p>
+                  <p className="text-sm font-semibold text-text">{comment.displayName}</p>
                   {comment.uid === user?.uid && (
                     <button
                       type="button"
                       onClick={() => handleDelete(comment.id)}
-                      className="text-xs text-muted hover:text-text"
+                      className="min-h-6 text-xs text-muted hover:text-text"
                       aria-label="Delete message"
                     >
                       ✕
@@ -146,16 +153,19 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
                 {comment.emoji && <p className="text-lg">{comment.emoji}</p>}
                 {comment.boutId && bouts && (
                   <p className="text-xs text-muted">
-                    on {bouts.find((b) => b.id === comment.boutId)?.a.name}
+                    on {bouts.find((b) => b.id === comment.boutId)?.a.name} /{' '}
+                    {bouts.find((b) => b.id === comment.boutId)?.b.name}
                   </p>
                 )}
               </div>
-            </Card>
+            </div>
           ))}
           <div ref={messagesEndRef} />
         </div>
 
         <form onSubmit={handleSubmit} className="border-t border-line px-4 py-3 space-y-2">
+          {picksSecret ? <p className="text-xs text-muted">Picks stay secret until lock.</p> : null}
+
           {/* Quick emoji buttons */}
           <div className="flex gap-2">
             {QUICK_EMOJIS.map((emoji) => (
@@ -165,7 +175,7 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
                 onClick={() => handleEmojiTap(emoji)}
                 disabled={isSubmitting}
                 className={clsx(
-                  'text-xl transition-colors',
+                  'min-h-8 min-w-8 text-xl transition-colors',
                   selectedEmoji === emoji ? 'opacity-100' : 'opacity-50 hover:opacity-75'
                 )}
                 aria-label={text.trim() ? `Attach ${emoji} to your message` : `Send ${emoji} reaction`}
@@ -180,7 +190,7 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
             <select
               value={selectedBoutId || ''}
               onChange={(e) => setSelectedBoutId(e.target.value || null)}
-              className="w-full rounded border border-line bg-surface px-2 py-1 text-xs text-text"
+              className="w-full min-h-11 rounded border border-line bg-surface-2 px-2 py-1 text-xs text-text"
             >
               <option value="">General chat</option>
               {bouts.map((bout) => (
@@ -198,7 +208,7 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
               onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
               placeholder="Say something..."
               rows={2}
-              className="w-full rounded border border-line bg-surface px-3 py-2 text-sm text-text placeholder-muted resize-none"
+              className="w-full rounded border border-line bg-surface-2 px-3 py-2 text-sm text-text placeholder-muted resize-none"
               disabled={isSubmitting}
             />
             <div className="flex items-center justify-between">
@@ -208,7 +218,7 @@ export function ChatPanel({ eventId, comments, bouts, open, onClose }: ChatPanel
               <Button
                 type="submit"
                 disabled={!text.trim() || isSubmitting}
-                className="px-4 py-1 text-xs"
+                className="h-9 px-4 text-xs"
               >
                 {isSubmitting ? '...' : 'Send'}
               </Button>

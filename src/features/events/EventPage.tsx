@@ -1,8 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../../components/ui/Button.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { ChatPanel } from '../chat/ChatPanel.tsx';
+import { TrashTalkButton } from '../chat/TrashTalkButton.tsx';
+import { useComments } from '../live/hooks.ts';
 import { PicksSection } from '../live/PicksSection.tsx';
 import { usePickDraft } from '../picks/usePickDraft.ts';
 import { BoutCard } from './BoutCard.tsx';
@@ -10,6 +13,8 @@ import { EventHeader } from './EventHeader.tsx';
 import { EventSwitcher } from './EventSwitcher.tsx';
 import { FightCardList } from './FightCardList.tsx';
 import { selectDefaultEventId, useBouts, useEvent, useEvents } from './hooks.ts';
+
+const TRASH_TALK_STATUSES = new Set(['open', 'locked', 'live']);
 
 function BoutListSkeleton() {
   return (
@@ -32,6 +37,9 @@ export function EventPage() {
   const event = useEvent(activeId);
   const bouts = useBouts(activeId);
   const draft = usePickDraft(activeId, event, bouts);
+  const comments = useComments(activeId);
+  const [chatOpen, setChatOpen] = useState(false);
+  const showTrashTalk = !!event && TRASH_TALK_STATUSES.has(event.status);
 
   if (eventsLoading) {
     return (
@@ -92,6 +100,11 @@ export function EventPage() {
               </div>
             </>
           )}
+          {showTrashTalk ? (
+            <div className="px-4 pb-2">
+              <TrashTalkButton count={comments?.length ?? 0} onClick={() => setChatOpen(true)} />
+            </div>
+          ) : null}
           <PicksSection event={event} bouts={bouts} />
         </>
       ) : (
@@ -101,6 +114,16 @@ export function EventPage() {
           ))}
         </div>
       )}
+      {event ? (
+        <ChatPanel
+          eventId={activeId}
+          comments={comments}
+          bouts={bouts}
+          open={chatOpen}
+          onClose={() => setChatOpen(false)}
+          picksSecret={event.status === 'open'}
+        />
+      ) : null}
     </div>
   );
 }

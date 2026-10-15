@@ -31,11 +31,21 @@ chat gets the v2.1 look. Picks stay secret; only the chat opens early.
    `open`: muted line `Picks stay secret until lock.` above the composer.
 
 ## Acceptance criteria
-- [ ] Definition of Done passes; `npm run test:rules`; `npm run build` passes.
-- [ ] On an open event (before lock): Fights tab shows Trash talk; posting works; no one else's picks are visible.
+- [x] Definition of Done passes; `npm run test:rules`; `npm run build` passes.
+- [x] On an open event (before lock): Fights tab shows Trash talk; posting works; no one else's picks are visible.
 
 ## Out of scope
 Push notifications for mentions. Rules changes.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- Confirmed `firestore.rules` comments block already gates on `canRead()`/`isMember()`, not event
+  status; added a rules test posting/reading on `EVT.open` (lockAt in the future) to lock that in.
+- New `TrashTalkButton` (count pill, secondary style) replaces the old floating gold button and its
+  dead `text-background` class in both `EventPage` and `LivePage`.
+- `EventPage` now shows the button (and mounts `ChatPanel`) for `open`/`locked`/`live` events, under
+  the card list. `LivePage` shows it in both the pre-lock countdown branch and the revealed branch.
+- `ChatPanel` restyled: `SectionLabel` header, row-based messages (no `Card` wrapper), fight tag
+  shows both fighters, surface-2 inputs, and a "Picks stay secret until lock." line via a new
+  `picksSecret` prop (passed when `event.status === 'open'`).
+- Definition of Done green: lint, typecheck, unit tests (512), `test:rules` (112, incl. new test),
+  build.
