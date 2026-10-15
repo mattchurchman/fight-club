@@ -37,7 +37,7 @@ export function H2HSection({ docs, profileUid, viewerUid, usersById }: H2HSectio
   return (
     <div className="flex flex-col gap-3">
       {versusRecord && (
-        <Card className="border-gold bg-gold/10 text-center">
+        <Card className="border-text bg-surface-2 text-center">
           <p className="font-display text-lg uppercase text-text">
             {formatH2HRecord(versusRecord, nameOf(usersById, profileUid))}
           </p>

@@ -59,9 +59,9 @@ export function UiGallery() {
       </Section>
 
       <Section title="Avatar">
-        <Avatar name="Matt Churchman" corner="red" />
-        <Avatar name="Jane Doe" corner="blue" />
-        <Avatar name="No Image" src="/does-not-exist.png" corner="none" />
+        <Avatar name="Matt Churchman" />
+        <Avatar name="Jane Doe" />
+        <Avatar name="No Image" src="/does-not-exist.png" />
       </Section>
 
       <Section title="Sheet">

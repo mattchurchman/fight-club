@@ -4,8 +4,6 @@ import clsx from 'clsx';
 interface AvatarProps {
   name: string;
   src?: string;
-  /** @deprecated v2.1 — removed in T43 */
-  corner?: string;
   size?: number;
   className?: string;
 }

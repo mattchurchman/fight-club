@@ -58,7 +58,7 @@ export function FirstBloodPicker({
           </Chip>
         </div>
       ) : null}
-      {errorMessage ? <p className="text-xs text-loss">{errorMessage}</p> : null}
+      {errorMessage ? <p className="text-xs text-red-text">{errorMessage}</p> : null}
     </div>
   );
 }

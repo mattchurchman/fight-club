@@ -13,38 +13,25 @@ import {
 
 interface FighterHalfProps {
   fighter: BoutFighterSnapshot;
-  corner: 'red' | 'blue';
   odds: number | null;
   isWinner: boolean;
   faded: boolean;
 }
 
-function FighterHalf({ fighter, corner, odds, isWinner, faded }: FighterHalfProps) {
+function FighterHalf({ fighter, odds, isWinner, faded }: FighterHalfProps) {
   const implied = formatImpliedPct(odds);
   const className = clsx(
     'relative flex flex-1 flex-col items-center gap-1.5 rounded-xl p-2 text-center transition-opacity',
-    isWinner && 'bg-gold/10 ring-1 ring-gold',
+    isWinner && 'ring-2 ring-text',
     faded && 'opacity-50',
   );
 
   return (
     <div className={className}>
-      <Avatar
-        name={fighter.name}
-        src={fighter.headshotUrl ?? undefined}
-        corner={corner}
-        size={56}
-      />
+      <Avatar name={fighter.name} src={fighter.headshotUrl ?? undefined} size={56} />
       <p className="line-clamp-2 text-sm font-semibold text-text">{fighter.name}</p>
       <p className="text-xs text-muted">{fighter.record}</p>
-      <p
-        className={clsx(
-          'text-sm font-semibold tabular-nums',
-          corner === 'red' ? 'text-red' : 'text-blue',
-        )}
-      >
-        {formatOdds(odds)}
-      </p>
+      <p className="text-sm font-semibold tabular-nums text-text">{formatOdds(odds)}</p>
       {implied ? <p className="text-[11px] tabular-nums text-muted">{implied}</p> : null}
     </div>
   );
@@ -59,10 +46,10 @@ export function BoutCard({ bout }: BoutCardProps) {
   const outcomeLabel = result ? drawOrNoContestLabel(result.winner) : null;
 
   return (
-    <Card className={clsx(bout.isMainEvent && 'ring-1 ring-gold/60')}>
+    <Card className={clsx(bout.isMainEvent && 'ring-1 ring-red/60')}>
       <div className="flex flex-col gap-2">
         {bout.isMainEvent ? (
-          <div className="self-center rounded-chip bg-gold px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-bg">
+          <div className="self-center rounded-chip bg-red-fill px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
             Main Event
           </div>
         ) : null}
@@ -72,7 +59,6 @@ export function BoutCard({ bout }: BoutCardProps) {
         <div className="flex items-start gap-2">
           <FighterHalf
             fighter={a}
-            corner="red"
             odds={odds.a}
             isWinner={result?.winner === 'A'}
             faded={result != null && result.winner === 'B'}
@@ -80,7 +66,6 @@ export function BoutCard({ bout }: BoutCardProps) {
           <p className="pt-6 text-xs font-bold uppercase text-muted">vs</p>
           <FighterHalf
             fighter={b}
-            corner="blue"
             odds={odds.b}
             isWinner={result?.winner === 'B'}
             faded={result != null && result.winner === 'A'}
@@ -88,14 +73,14 @@ export function BoutCard({ bout }: BoutCardProps) {
         </div>
         {status === 'live' ? (
           <div className="flex justify-center">
-            <span className="inline-flex items-center gap-1.5 rounded-chip border border-loss/40 bg-loss/10 px-3 py-1 text-xs font-semibold text-loss">
-              <span className="size-1.5 animate-pulse rounded-full bg-loss" aria-hidden="true" />
+            <span className="inline-flex items-center gap-1.5 rounded-chip border border-red-text/40 bg-red-text/10 px-3 py-1 text-xs font-semibold text-red-text">
+              <span className="size-1.5 animate-pulse rounded-full bg-red-text" aria-hidden="true" />
               Live
             </span>
           </div>
         ) : status === 'cancelled' ? (
           <div className="flex justify-center">
-            <span className="rounded-chip border border-loss/40 bg-loss/10 px-3 py-1 text-xs font-semibold text-loss">
+            <span className="rounded-chip border border-line bg-surface-2 px-3 py-1 text-xs font-semibold text-muted">
               {BOUT_STATUS_LABEL.cancelled}
             </span>
           </div>

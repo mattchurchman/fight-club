@@ -64,7 +64,7 @@ export function ResultFlash({ row, self, onDismiss }: ResultFlashProps) {
             {row.selfDelta} {won ? '✓' : '✗'}
           </span>
           {self.move !== 0 ? (
-            <span className={clsx('ml-2', self.move > 0 ? 'text-win' : 'text-loss')}>
+            <span className={clsx('ml-2', self.move > 0 ? 'text-win' : 'text-muted')}>
               {self.move > 0 ? `▲${self.move}` : `▼${Math.abs(self.move)}`} to #{self.rank}
             </span>
           ) : null}

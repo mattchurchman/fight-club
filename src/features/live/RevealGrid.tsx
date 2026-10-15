@@ -29,7 +29,7 @@ function PickerColumn({ corner, boutId, pickers, onTap }: PickerColumnProps) {
           aria-label={`${entry.displayName}'s pick`}
           className="relative flex min-h-11 min-w-11 items-center justify-center"
         >
-          <Avatar name={entry.displayName} src={entry.photoURL ?? undefined} corner={corner} size={40} />
+          <Avatar name={entry.displayName} src={entry.photoURL ?? undefined} size={40} />
           {entry.lockBoutId === boutId ? (
             <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 text-xs">
               🔒
@@ -68,7 +68,7 @@ export function RevealGrid({ bouts, entries, comments }: RevealGridProps) {
               </p>
               <div className="flex h-1.5 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
                 <div className="bg-red" style={{ width: `${consensus.aPct}%` }} />
-                <div className="bg-blue" style={{ width: `${consensus.bPct}%` }} />
+                <div className="bg-steel" style={{ width: `${consensus.bPct}%` }} />
               </div>
               <p className="sr-only">
                 {consensus.aPct}% picked {bout.a.name}, {consensus.bPct}% picked {bout.b.name}
@@ -78,7 +78,7 @@ export function RevealGrid({ bouts, entries, comments }: RevealGridProps) {
                 <PickerColumn corner="blue" boutId={bout.id} pickers={bPickers} onTap={setOpenUid} />
               </div>
               {contrarian ? (
-                <p className="text-center text-xs font-semibold text-gold">
+                <p className="text-center text-xs font-semibold text-text">
                   {contrarianLabel(contrarian, bout)}
                 </p>
               ) : null}

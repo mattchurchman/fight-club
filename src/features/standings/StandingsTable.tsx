@@ -49,7 +49,7 @@ export function StandingsTable({ rows, usersById }: StandingsTableProps) {
 
         const className = clsx(
           'flex items-center gap-3 rounded-card border p-3',
-          isMe ? 'border-gold bg-gold/10' : 'border-line bg-surface',
+          isMe ? 'border-text border-l-2 border-l-red bg-surface-2' : 'border-line bg-surface',
         );
 
         return username ? (

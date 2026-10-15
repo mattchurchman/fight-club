@@ -91,7 +91,7 @@ export function LivePage() {
       <div className="flex flex-col gap-4 pt-4 pb-4">
         <div className="flex flex-col items-center gap-2 px-6 py-12 text-center">
           <p className="font-display text-xl uppercase text-text">Picks lock in</p>
-          <Countdown target={event.lockAt.toMillis()} prefix="" className="font-display text-3xl text-gold" />
+          <Countdown target={event.lockAt.toMillis()} prefix="" className="font-display text-3xl text-red" />
           <p className="text-sm text-muted">Reveal happens the moment picks lock. No peeking.</p>
         </div>
         {bouts ? <FightCardList bouts={bouts} readOnly /> : <Skeleton className="mx-4 h-40" />}

@@ -30,12 +30,22 @@ at phone size before the next fight night.
 7. Full checks: Definition of Done, `npm run build`, `npm run test:rules`, `npm run test:e2e`.
 
 ## Acceptance criteria
-- [ ] Greps in steps 1 and 3 return nothing; no aliases in `index.css`.
-- [ ] All checks in step 7 pass.
-- [ ] QA checklist recorded.
+- [x] Greps in steps 1 and 3 return nothing; no aliases in `index.css`.
+- [x] All checks in step 7 pass.
+- [x] QA checklist recorded.
 
 ## Out of scope
 New features. Anything in "Deferred to a later revision" in PROGRESS.md.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Swept every `gold`/`blue`/`loss` usage (BoutCard, DeckTopBar, RevealGrid, LivePage, H2HSection,
+StandingsTable, ChatPanel, LoginPage, FirstBloodPicker) to real tokens per the DESIGN.md mapping
+table; removed the three `@theme` aliases from `index.css`. Removed `Avatar`'s deprecated `corner`
+prop and all its callers (kept `PickerColumn`'s own `corner` layout prop, unrelated). Deleted 7
+unreferenced `src/pages/*Placeholder.tsx` files (kept `NotFoundPlaceholder`, still routed).
+Rewrote HelpPage's "Making picks" section for the deck flow (swipe, review slide, auto-balance).
+QA at 375×667 via dev server + emulator seed: login, Fights card list + deck (pick + outline/✓
+YOUR PICK render correctly), Live (pre-lock countdown now red), Standings (empty state only — no
+finalized event to show the isMe highlight), Help (new copy), Wallet. All clean, no stray
+gold/blue/loss. Full checks green: lint, typecheck, 520 unit tests, 112 rules tests, build, 1 e2e
+test. No new backlog items.

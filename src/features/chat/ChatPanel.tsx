@@ -217,7 +217,7 @@ export function ChatPanel({
               disabled={isSubmitting}
             />
             <div className="flex items-center justify-between">
-              <span className={clsx('text-xs', text.length >= MAX_CHARS - 20 ? 'text-gold' : 'text-muted')}>
+              <span className={clsx('text-xs', text.length >= MAX_CHARS - 20 ? 'text-red-text' : 'text-muted')}>
                 {text.length}/{MAX_CHARS}
               </span>
               <Button

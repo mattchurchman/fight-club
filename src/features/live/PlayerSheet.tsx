@@ -50,7 +50,7 @@ export function PlayerSheet({ entry, bouts, usernameByUid, open, onClose }: Play
             <p
               className={clsx(
                 'font-display text-xl tabular-nums',
-                entry.score.total >= 0 ? 'text-win' : 'text-loss',
+                entry.score.total >= 0 ? 'text-win' : 'text-muted',
               )}
             >
               {entry.score.total >= 0 ? '+' : ''}
@@ -100,7 +100,7 @@ export function PlayerSheet({ entry, bouts, usernameByUid, open, onClose }: Play
                       boutScore
                         ? boutScore.total >= 0
                           ? 'text-win'
-                          : 'text-loss'
+                          : 'text-muted'
                         : 'text-muted',
                     )}
                   >

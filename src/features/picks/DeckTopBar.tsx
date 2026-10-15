@@ -43,7 +43,7 @@ export function DeckTopBar({
         <span
           className={clsx(
             'min-w-11 text-right text-sm font-semibold tabular-nums',
-            atBudget ? 'text-gold' : 'text-text',
+            atBudget ? 'text-win' : 'text-text',
           )}
         >
           {allocated} / {budget}
@@ -56,7 +56,7 @@ export function DeckTopBar({
             <span
               className={clsx(
                 'block h-1 w-full rounded-full',
-                complete ? 'bg-gold' : 'bg-surface-2',
+                complete ? 'bg-text' : 'bg-surface-2',
               )}
             />
             {attemptedSubmit && !complete ? (
@@ -68,7 +68,7 @@ export function DeckTopBar({
         ))}
         <span
           aria-hidden="true"
-          className={clsx('h-1 flex-1 rounded-full', reviewComplete ? 'bg-gold' : 'bg-surface-2')}
+          className={clsx('h-1 flex-1 rounded-full', reviewComplete ? 'bg-text' : 'bg-surface-2')}
         />
       </div>
     </div>

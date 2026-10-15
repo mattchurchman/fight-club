@@ -30,14 +30,21 @@ export function HelpPage() {
 
       <Section emoji="🥊" title="Making picks">
         <p>
-          On the <strong className="text-text">Fights</strong> tab, pick a winner, a method (KO, SUB,
-          or DEC), and a stake for every main-card bout.
+          Tap <strong className="text-text">Make your picks</strong> on the{' '}
+          <strong className="text-text">Fights</strong> tab to open the pick deck — one fight per
+          screen. Swipe through and, for each, choose a winner, a method (KO, SUB, or DEC), and a
+          stake.
         </p>
         <p>
           You have a fixed budget of points to split across all the fights (usually{' '}
           <strong className="text-text">1000</strong>, in chunks of 25, 50–400 per fight) — bet more on
-          picks you're confident in. The app won't let you submit until your stakes add up exactly
-          right.
+          picks you're confident in.
+        </p>
+        <p>
+          The last slide is a <strong className="text-text">review</strong> of every fight, where you
+          can jump back to any of them, choose your Lock of the Night, and use{' '}
+          <strong className="text-text">auto-balance</strong> to spread any leftover points evenly.
+          The app won't let you submit until your stakes add up exactly right.
         </p>
         <p>You can change your picks as many times as you want, right up until the card locks.</p>
       </Section>

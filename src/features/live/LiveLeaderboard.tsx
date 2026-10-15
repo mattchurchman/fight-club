@@ -130,7 +130,7 @@ export function LiveLeaderboard({ entries, bouts, moves, final, onTap }: LiveLea
             <p
               className={clsx(
                 'w-14 shrink-0 text-right font-display text-sm tabular-nums',
-                row.score.total >= 0 ? 'text-win' : 'text-loss',
+                row.score.total >= 0 ? 'text-win' : 'text-muted',
               )}
             >
               {row.score.total >= 0 ? '+' : ''}
