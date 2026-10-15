@@ -71,7 +71,7 @@ Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
 | T31 | Fights tab card list & pick-deck route | B | medium | T30 | done | 2026-10-14 | 88d1c80 |
-| T32 | Fight slide | B | high | T31 | todo | | |
+| T32 | Fight slide | B | high | T31 | done | 2026-10-14 | 1655e18 |
 | T33 | Review slide, submit & locked view | B | high | T32 | todo | | |
 | T34 | Pick flow tests & e2e update | B | low | T33 | todo | | |
 
