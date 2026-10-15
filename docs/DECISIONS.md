@@ -183,3 +183,11 @@ own `workflow_dispatch` choice for manual testing. Consequence: the weekend dens
 min) reliably hits the window; the weekday cadence (every 3 h) can miss it for an event that locks
 on a weekday. Logged as a PROGRESS.md backlog item rather than solved — numbered events all lock on
 weekends per ARCHITECTURE.md, so this only bites a weekday-locking Fight Night/special event.
+
+## 2026-10-14 — v2.1 revision: rebrand, pick deck, live tab, history (planning)
+Owner reviewed the app on phones and approved the "Concept 2 — The Minimal" brand: octagon logo, Montserrat + Inter,
+black/charcoal/white with one red accent. Red/blue corner coding is dropped (owner: little value); gold is dropped, tokens
+are white with an octagon coin. Red now means *you / action / live*, never "wrong" (wrong = muted + ✗). The pick builder
+becomes a horizontally swiped one-fight-per-screen deck with a review slide; the Live tab is rebuilt around "in the cage /
+you / standings / results". Trash talk opens when picks open (no rules change: comment create was never time-gated).
+Logo SVGs were generated from Montserrat outlines and committed under `public/brand/`. Task files gain an Effort field.

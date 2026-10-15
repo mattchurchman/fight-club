@@ -49,6 +49,56 @@ Status values: `todo` · `in-progress` · `done` · `BLOCKED: <reason>`.
 | T24 | Push notifications 👤 | B | T10, T11, T12 | done | 2026-09-30 | fed82f1 |
 | T25 | Fight-night trash talk | C | T15 | done | 2026-09-30 | 53221d5 |
 
+## Milestone 6 — v2.1: "The Minimal" facelift, pick deck, live tab, history
+Plan of record: `docs/DESIGN.md` (v2.1). Tasks are grouped into **runs**; inside a run the tier is the same,
+so between tasks you only clear the context (and change effort when the column changes).
+Kickoff: `Run the next task. Model tier: <X>. Effort: <effort>`
+
+**Run 1 — Brand base** (Tier C): new tokens/fonts reskin the whole app at once; mechanical sweep of low-traffic screens.
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T26 | Brand tokens, fonts & migration aliases | C | low | — | todo | | |
+| T27 | Restyle sweep: admin, auth, wallet, help, install, notifications | C | low | T26 | todo | | |
+
+**Run 2 — Brand kit** (Tier B): logo, PWA icons, UI kit and shell.
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T28 | Logo, PWA icons & brand components | B | medium | T26 | todo | | |
+| T29 | UI kit restyle | B | medium | T28 | todo | | |
+| T30 | App shell & polish pass | B | medium | T29 | todo | | |
+
+**Run 3 — Pick deck** (Tier B): one fight per screen, swiped horizontally, plus a review slide.
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T31 | Fights tab card list & pick-deck route | B | medium | T30 | todo | | |
+| T32 | Fight slide | B | high | T31 | todo | | |
+| T33 | Review slide, submit & locked view | B | high | T32 | todo | | |
+| T34 | Pick flow tests & e2e update | B | low | T33 | todo | | |
+
+**Run 4 — Live tab** (Tier B): now / me / standings / results.
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T35 | Live derivations: current fight, swings, rank moves | B | high | T29 | todo | | |
+| T36 | Live page v2: status strip, In the Cage, your row | B | medium | T35 | todo | | |
+| T37 | Leaderboard v2, results list & PlayerSheet | B | medium | T36 | todo | | |
+| T38 | Result flash | B | medium | T37 | todo | | |
+
+**Run 5 — Social & history** (Tier B).
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T39 | Trash talk opens with picks | B | medium | T31, T36 | todo | | |
+| T40 | Past events & final event view | B | medium | T37 | todo | | |
+| T41 | Profiles everywhere | B | medium | T40 | todo | | |
+
+**Run 6 — Finish** (Tier B).
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T42 | Share posters restyle | B | medium | T29 | todo | | |
+| T43 | Remove legacy aliases, help copy & final QA | B | medium | T27–T42 | todo | | |
+
+Deferred to a later revision (owner, 2026-10-14): profile photo upload & fight nicknames; event winner takeover screen &
+the passing championship belt.
+
 👤 = has a USER ACTION REQUIRED step (see the task file / docs/SETUP.md).
 
 ## Backlog (follow-ups discovered along the way)

@@ -1,6 +1,6 @@
 # Txx — <Title>
 
-**Tier:** A|B|C · **Size:** S|M|L (L = most of one context window) · **Depends on:** Txx, Tyy
+**Tier:** A|B|C · **Effort:** low|medium|high · **Size:** S|M|L (L = most of one context window) · **Depends on:** Txx, Tyy
 **USER ACTION REQUIRED:** none | <steps or pointer to SETUP.md section>
 
 ## Goal

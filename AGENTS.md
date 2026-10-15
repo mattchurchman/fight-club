@@ -16,11 +16,13 @@ Stack: Vite + React + TypeScript SPA, Firebase (Auth, Firestore, Hosting, FCM) o
 1. Read `docs/PROGRESS.md`. Your task is the one the user names, or else the **first row with
    status `todo` whose dependencies are all `done`**.
 2. Open **only** that task file: `docs/tasks/Txx-*.md`.
-3. **Model-tier check.** Each task declares a required tier (A, B or C, where A is the strongest). See `docs/MODEL_TIERS.md`.
+3. **Model-tier & effort check.** Each task declares a required tier (A, B or C, where A is the strongest) and,
+   from T26 on, an effort (low, medium, high). See `docs/MODEL_TIERS.md`.
    - If the user's kickoff message states a tier **≥ required**, continue. If it is higher than required,
      mention in one line that a cheaper tier would do, then continue.
    - If the user stated a **lower** tier, or stated none, **stop** and say:
-     `This task (Txx) is designed for a Tier <X> model. Please switch to a Tier <X> model, clear the context, and send: "Run the next task. Model tier: <X>". Reply "continue" to proceed on the current model anyway.`
+     `This task (Txx) is designed for a Tier <X> model at <effort> effort. Please switch to a Tier <X> model, set effort to <effort>, clear the context, and send: "Run the next task. Model tier: <X>. Effort: <effort>". Reply "continue" to proceed on the current model anyway.`
+   - Effort is advisory: if the stated effort differs from the task's, say so in one line and continue.
 4. If the task has **USER ACTION REQUIRED** items that are not yet confirmed done, list them
    (copy the exact steps) and wait for the user to confirm before doing dependent work.
 5. Set the task row to `in-progress` in `docs/PROGRESS.md`.
@@ -37,13 +39,15 @@ Stack: Vite + React + TypeScript SPA, Firebase (Auth, Firestore, Hosting, FCM) o
 
 ```
 ✅ Txx complete: <one-line summary>
-Next up: Tyy — <title> — requires a Tier <X> model.
+Next up: Tyy — <title> — Tier <X>, <effort> effort.
 <If Tyy has USER ACTION REQUIRED: list those steps here>
 Before continuing:
-  1. Switch your model to a Tier <X> model (see docs/MODEL_TIERS.md).
-  2. Clear the context or start a new session.
-  3. Send: "Run the next task. Model tier: <X>"
+  1. <Only if tier changes:> Switch your model to a Tier <X> model (see docs/MODEL_TIERS.md).
+  2. <Only if effort changes:> Set effort to <effort>.
+  3. Clear the context or start a new session (always).
+  4. Send: "Run the next task. Model tier: <X>. Effort: <effort>"
 ```
+If Tyy starts a new **run** (PROGRESS.md), add one line naming the run and its goal.
 
 **If blocked** (a spec is ambiguous, an external API differs from docs, or a check fails for reasons outside
 the task): don't guess on anything in `GAME_RULES.md` or `DATA_MODEL.md`. Add a `BLOCKED: <reason>`
@@ -77,6 +81,8 @@ note to the PROGRESS row, ask the user one precise question, and stop.
 - Tests use `fixtures/` and never hit live APIs. Only jobs run with `--live` touch the network.
 - Summarize failing output (test names and first error line). Don't paste full logs.
 - Keep completion notes ≤10 lines and the final message to the template above.
+- `docs/DESIGN.md` is long: load only the `##` sections your task names. Never open `docs/DESIGN_v2.0.md` (history).
+- Task files list exact paths. If a path no longer exists, grep for the symbol once, then note the drift in your completion notes.
 
 ## 4. Definition of Done (every task)
 
@@ -94,7 +100,7 @@ Dev/tooling: `typescript`, `vite`, `@vitejs/plugin-react`, `vite-plugin-pwa`, `@
 `tailwindcss` (+ its official Vite plugin), `vitest`, `@testing-library/react`, `@testing-library/jest-dom`,
 `jsdom`, `eslint` (+ `typescript-eslint`, `eslint-plugin-react-hooks`), `prettier`, `firebase-tools`,
 `@firebase/rules-unit-testing`, `firebase-admin` (jobs only), `tsx`, `@playwright/test` (T19 only),
-`@fontsource/*` fonts.
+`@fontsource/*` fonts (v2.1 uses `@fontsource/montserrat` + `@fontsource/inter`; `@fontsource/anton` is removed in T26).
 
 ## 6. Repo map (target)
 
