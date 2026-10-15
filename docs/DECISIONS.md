@@ -191,3 +191,12 @@ are white with an octagon coin. Red now means *you / action / live*, never "wron
 becomes a horizontally swiped one-fight-per-screen deck with a review slide; the Live tab is rebuilt around "in the cage /
 you / standings / results". Trash talk opens when picks open (no rules change: comment create was never time-gated).
 Logo SVGs were generated from Montserrat outlines and committed under `public/brand/`. Task files gain an Effort field.
+
+## 2026-10-15 — No inline-SVG fallback for the poster lockup (T42)
+T42 step 4 says to inline the lockup's raw SVG markup if the `<img>` renders blank in `html-to-image`'s capture.
+The only way to inject fetched SVG markup as real DOM (rather than another `<img>`) is `dangerouslySetInnerHTML`,
+which AGENTS.md §2 bans outright with no carve-out for trusted static assets. Decided: skip the inlining step and
+instead make the primary `<img>` path reliable — `sharePoster` now awaits `document.fonts.ready` and waits for
+every `<img>` under the capture node to finish loading (or erroring) before calling `toPng`, which is the usual
+real cause of a blank/fallback-font capture. Consequence: if the lockup still renders blank on a real device
+after this, the fix is a second `<img>` crossOrigin/cache-busting pass, not inline markup.

@@ -31,6 +31,8 @@ export function ShareButton({ event, bouts, entries, selfUid }: ShareButtonProps
   const mainCard = bouts.filter((bout) => bout.isMainCard);
   const isFinal = event.status === 'final';
   const self = entries.find((entry) => entry.uid === selfUid) ?? null;
+  const eventLabel = event.name.split(':')[0]!.trim();
+  const headline = event.subtitle ?? event.name;
 
   if (!isFinal && !self) return null;
 
@@ -65,7 +67,8 @@ export function ShareButton({ event, bouts, entries, selfUid }: ShareButtonProps
         {isFinal ? (
           <ResultsPoster
             ref={resultsRef}
-            eventName={event.name}
+            eventLabel={eventLabel}
+            headline={headline}
             rows={rows}
             callOfTheNight={callOfTheNight}
             selfUid={selfUid}
@@ -73,7 +76,8 @@ export function ShareButton({ event, bouts, entries, selfUid }: ShareButtonProps
         ) : self ? (
           <PicksPoster
             ref={picksRef}
-            eventName={event.name}
+            eventLabel={eventLabel}
+            headline={headline}
             displayName={self.displayName}
             bouts={mainCard}
             picks={self.picks}
