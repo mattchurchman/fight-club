@@ -41,7 +41,7 @@ function TermsCard({ event, eventId }: { event: EventWithId; eventId: string }) 
     setEnabling(true);
     setError('');
     try {
-      await setEventEnabled(eventId, !event.enabled);
+      await setEventEnabled(eventId, !event.enabled, event.status);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update');
     } finally {

@@ -8,6 +8,7 @@ import {
   canFinalize,
   canOverrideOdds,
   canRescore,
+  statusOnEnabledChange,
 } from './permissions.ts';
 
 const ALL: readonly EventStatus[] = ['scheduled', 'open', 'locked', 'live', 'final', 'cancelled'];
@@ -45,5 +46,23 @@ describe('admin event edit permissions', () => {
 
   it('allows cancelling anything not already settled', () => {
     only(canCancel, ['scheduled', 'open', 'locked', 'live']);
+  });
+});
+
+describe('statusOnEnabledChange', () => {
+  it('promotes a scheduled event to open when it is enabled', () => {
+    expect(statusOnEnabledChange('scheduled', true)).toBe('open');
+  });
+
+  it('leaves every other status alone when enabling', () => {
+    for (const status of ALL.filter((s) => s !== 'scheduled')) {
+      expect(statusOnEnabledChange(status, true)).toBeNull();
+    }
+  });
+
+  it('never rewinds a status when disabling', () => {
+    for (const status of ALL) {
+      expect(statusOnEnabledChange(status, false)).toBeNull();
+    }
   });
 });

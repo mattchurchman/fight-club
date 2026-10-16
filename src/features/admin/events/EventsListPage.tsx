@@ -16,7 +16,7 @@ function EventRow({ event }: { event: AdminEventWithId }) {
   const handleToggle = async () => {
     setBusy(true);
     try {
-      await setEventEnabled(event.id, !event.enabled);
+      await setEventEnabled(event.id, !event.enabled, event.status);
     } finally {
       setBusy(false);
     }
