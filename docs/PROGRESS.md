@@ -121,7 +121,7 @@ between tasks, kickoff `Run the next task. Model tier: <X>. Effort: <effort>`.
 **Run 3 — Rehearsal** (Tier B): the simulator, then a full QA pass using it.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T49 | Fight-night simulator (`npm run sim`) | B | high | — | done | 2026-10-15 | PENDING |
+| T49 | Fight-night simulator (`npm run sim`) | B | high | — | done | 2026-10-15 | aa3ea18 |
 | T50 | v2.2 QA pass with the simulator & e2e | B | medium | T44–T49 | todo | | |
 
 Deferred to a later revision (owner): profile photos & nicknames; winner takeover screen & championship belt.
