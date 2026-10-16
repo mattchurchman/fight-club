@@ -107,6 +107,12 @@ export function EventPage() {
                 bouts={bouts}
                 picks={draft.draft.picks}
                 lockBoutId={draft.draft.lockBoutId}
+                scores={Object.fromEntries(
+                  Object.entries(draft.entry.score?.byBout ?? {}).map(([id, s]) => [
+                    id,
+                    s?.total ?? null,
+                  ]),
+                )}
                 readOnly
               />
             ) : (

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Mark } from '../components/brand/index.ts';
+import { Lockup } from '../components/brand/index.ts';
 import { TokenPill } from '../components/ui/TokenPill';
 import { useSession } from '../features/auth/SessionProvider';
 import { AdminIcon, HelpIcon } from './icons';
@@ -17,7 +17,7 @@ export function Header({ section }: HeaderProps) {
       <div className="mx-auto flex h-14 max-w-[640px] items-center justify-between gap-3 px-4">
         <div className="flex min-w-0 items-center gap-2">
           <Link to="/" aria-label="Fight Club home" className="shrink-0">
-            <Mark className="size-7" />
+            <Lockup className="h-8 w-auto" />
           </Link>
           <span className="label truncate">{section}</span>
         </div>

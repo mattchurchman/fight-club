@@ -1,1 +1,1 @@
-export { Lockup, Mark, Coin } from './Brand.tsx';
+export { Lockup, Coin } from './Brand.tsx';

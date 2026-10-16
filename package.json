@@ -17,6 +17,7 @@
     "test:e2e": "tsc -b && vite build --mode e2e && firebase emulators:exec \"tsx e2e/seed.ts && playwright test\"",
     "emulators": "firebase emulators:start --import=.emulator-data --export-on-exit=.emulator-data",
     "seed": "FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 FIREBASE_PROJECT_ID=fight-club-4de90 npm run job -- jobs/seed-emulator.ts",
+    "sim": "FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 FIREBASE_PROJECT_ID=fight-club-4de90 npm run job -- jobs/simulate-night.ts",
     "deploy:rules": "firebase deploy --only firestore",
     "job": "tsx --env-file-if-exists=.env.local",
     "jobs:hello": "npm run job -- jobs/hello.ts",

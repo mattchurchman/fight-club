@@ -67,3 +67,18 @@ from the installed app on iOS 16.4+.
 
 ## S10. Running a job by hand
 GitHub repo → Actions → **Jobs** → *Run workflow* → pick `ingest`, `odds` or `lifecycle`. You can do this from the GitHub mobile app too.
+
+## S11. Rehearse a fight night (T49)
+Plays out a whole fight night against the local emulators — lock, each result, payout — through the real
+lifecycle code, so you can see the app during and after an event before a real one. Never touches production.
+1. `npm run emulators` (leave running in its own terminal).
+2. `npm run dev -- --host` (leave running in its own terminal; note the printed LAN URL).
+3. `npm run sim` (in a third terminal). It seeds the usual 3 friends plus 3 more, creates a sim event that
+   locks in 2 minutes, and gives everyone but `p1` an entry.
+4. Open the printed LAN URL on a phone on the same Wi-Fi and sign in as `p1@test.dev` / `password123` — make
+   your own picks before the 2 minutes are up (the simulator keeps going either way).
+5. Press Enter in the `npm run sim` terminal to step through: lock → each result in fight order → finalize.
+   Watch `/live` and `/wallet` update on the phone after each step.
+
+`npm run sim -- --auto 1` steps itself (1 second between steps) instead of waiting for Enter — good for a
+quick end-to-end check. `npm run sim -- --reset` wipes the sim event and its ledger rows first, to start over.

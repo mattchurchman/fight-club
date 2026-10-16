@@ -200,3 +200,13 @@ instead make the primary `<img>` path reliable — `sharePoster` now awaits `doc
 every `<img>` under the capture node to finish loading (or erroring) before calling `toPng`, which is the usual
 real cause of a blank/fallback-font capture. Consequence: if the lockup still renders blank on a real device
 after this, the fix is a second `<img>` crossOrigin/cache-busting pass, not inline markup.
+
+## 2026-10-15 — v2.2 revision: traced brand, name-based reveal, simulator (planning)
+Owner tested v2.1 on phones and preferred the original reference art over the font-built logo: the lockup is now a
+vector trace of that art (`public/brand/`), used for the home-screen icon and the in-app header; the FC mark stays only
+as the browser-tab icon, on a black tile so it shows on light browsers. One correction vs the reference: FIGHT was 4px
+right of the octagon's center and is now centered. The reveal grid switches from initials (indistinguishable once
+corner colors were removed, and initials collide) to name rows with 🔒 and 🩸 markers plus a "By person" toggle.
+A `npm run sim` rehearsal tool is added. AGENTS.md gains a proof-of-work rule after T26's first run committed only
+docs with notes claiming the code was done.
+

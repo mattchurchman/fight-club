@@ -74,13 +74,10 @@ export function FightSlide({
 
   return (
     <div className="flex flex-col gap-4">
-      {bout.isMainEvent ? (
-        <span className="self-center rounded-chip bg-red-fill px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
-          Main event
-        </span>
-      ) : null}
       <p className="label text-center">
-        {bout.weightClass} · {bout.rounds} Rounds
+        {bout.isMainEvent ? <span className="text-red-text">Main event</span> : null}
+        {bout.isMainEvent ? ' / ' : null}
+        {bout.weightClass} / {bout.rounds} rds
       </p>
 
       <div className="flex items-start gap-3">

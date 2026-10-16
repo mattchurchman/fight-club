@@ -2,10 +2,14 @@
 import type { Timestamp } from 'firebase/firestore';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { InTheCage } from './InTheCage.tsx';
+import { InTheCage, swingClause } from './InTheCage.tsx';
 import type { SwingLine } from './derive.ts';
 import type { EntryWithId } from './hooks.ts';
 import type { BoutWithId } from '../events/hooks.ts';
+
+vi.mock('../auth/SessionProvider.tsx', () => ({
+  useSession: () => ({ user: null }),
+}));
 
 const ts = { toMillis: () => 0 } as unknown as Timestamp;
 
@@ -65,10 +69,27 @@ describe('InTheCage', () => {
     expect(screen.getByText('Up next')).toBeInTheDocument();
     expect(screen.getByText('Green')).toBeInTheDocument();
     expect(screen.getByText('Ribovics')).toBeInTheDocument();
+    expect(screen.getByText('Tony')).toBeInTheDocument();
+    expect(screen.getByLabelText('Lock of the night')).toBeInTheDocument();
 
-    const tonyAvatar = screen.getByLabelText("View Tony's picks");
-    fireEvent.click(tonyAvatar);
+    fireEvent.click(screen.getByText('Tony'));
     expect(onTap).toHaveBeenCalledWith('u1');
+  });
+
+  it('shows at most 6 pickers per side, collapsing the rest into a "+N more" line', () => {
+    const entries = Array.from({ length: 8 }, (_, i) =>
+      entry({
+        uid: `u${i}`,
+        displayName: `Friend ${i}`,
+        picks: { bout_1: { winner: 'A', method: 'DEC', stake: 100 } },
+      }),
+    );
+    render(<InTheCage bout={bout()} entries={entries} swing={[]} hasResults={false} onTap={vi.fn()} />);
+
+    expect(screen.getByText('Friend 0')).toBeInTheDocument();
+    expect(screen.getByText('Friend 5')).toBeInTheDocument();
+    expect(screen.queryByText('Friend 6')).not.toBeInTheDocument();
+    expect(screen.getByText('+2 more')).toBeInTheDocument();
   });
 
   it('switches the heading to "In the cage" once results exist, and renders swing lines', () => {
@@ -81,5 +102,42 @@ describe('InTheCage', () => {
     expect(screen.getByText('In the cage')).toBeInTheDocument();
     expect(screen.getByText('If Green wins: you → 3rd (+160)')).toBeInTheDocument();
     expect(screen.getByText('If Ribovics wins: Tony takes 1st')).toBeInTheDocument();
+  });
+});
+
+describe('swingClause', () => {
+  it('says "you take 1st" without repeating your rank when you become the new leader', () => {
+    const line: SwingLine = {
+      side: 'A',
+      fighterName: 'Tim Green',
+      self: { rank: 1, delta: 390 },
+      newLeader: { uid: 'u1', name: 'Matt' },
+    };
+    expect(swingClause(line, 'u1')).toBe('you take 1st (+390)');
+  });
+
+  it('names the new leader when it is someone else, and still shows your own swing', () => {
+    const line: SwingLine = {
+      side: 'A',
+      fighterName: 'Tim Green',
+      self: { rank: 3, delta: 160 },
+      newLeader: { uid: 'u3', name: 'Tony' },
+    };
+    expect(swingClause(line, 'u1')).toBe('you → 3rd (+160), Tony takes 1st');
+  });
+
+  it('shows only your swing when there is no lead change', () => {
+    const line: SwingLine = { side: 'A', fighterName: 'Tim Green', self: { rank: 2, delta: -40 }, newLeader: null };
+    expect(swingClause(line, 'u1')).toBe('you → 2nd (-40)');
+  });
+
+  it('returns null for a spectator when there is no lead change', () => {
+    const line: SwingLine = { side: 'A', fighterName: 'Tim Green', self: null, newLeader: null };
+    expect(swingClause(line, null)).toBeNull();
+  });
+
+  it('names the new leader for a spectator', () => {
+    const line: SwingLine = { side: 'A', fighterName: 'Tim Green', self: null, newLeader: { uid: 'u3', name: 'Tony' } };
+    expect(swingClause(line, null)).toBe('Tony takes 1st');
   });
 });
