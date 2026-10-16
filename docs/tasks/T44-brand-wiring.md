@@ -33,4 +33,13 @@ Use the traced logo everywhere it belongs. The SVGs, PWA PNGs and `favicon.ico` 
 Regenerating icons (already done). Any other screen.
 
 ## Completion notes
-_(agent fills in: ≤10 lines, ending with `git diff --stat`)_
+Replaced Mark (32px tile icon) with Lockup (octagon lockup) in Header. Updated favicon link from mark.svg to favicon.svg in index.html. Deleted unused Mark component and its export. All tests pass; npm run build succeeds.
+
+```
+docs/PROGRESS.md               | 2 +-
+ index.html                     | 2 +-
+ src/app/Header.tsx             | 4 ++--
+ src/components/brand/Brand.tsx | 4 ----
+ src/components/brand/index.ts  | 2 +-
+ 5 files changed, 5 insertions(+), 9 deletions(-)
+```

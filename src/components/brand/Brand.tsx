@@ -6,10 +6,6 @@ export function Lockup({ className }: BrandProps) {
   return <img src="/brand/logo-lockup.svg" alt="Fight Club" className={className} />;
 }
 
-export function Mark({ className }: BrandProps) {
-  return <img src="/brand/mark.svg" alt="Fight Club home" className={className} />;
-}
-
 export function Coin({ className }: BrandProps) {
   return (
     <svg viewBox="0 0 100 100" className={className} fill="currentColor" aria-hidden="true">
