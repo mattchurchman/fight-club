@@ -37,3 +37,19 @@ export function canFinalize(status: EventStatus): boolean {
 export function canCancel(status: EventStatus): boolean {
   return status !== 'final' && status !== 'cancelled';
 }
+
+/**
+ * The status an event should land on when an admin flips `enabled`, or `null` to leave it alone.
+ *
+ * `jobs/ingest-events.ts` sets `status` once, at creation: `enabled ? 'open' : 'scheduled'`, and
+ * never revisits it. So an event ingested while disabled stays `scheduled` forever unless enabling
+ * it promotes it here — and a `scheduled` event is invisible twice over: `categorizeEvents`
+ * (src/features/events/hooks.ts) only lists open/locked/live/final to players, and the odds job
+ * only prices events matching `status == 'open'` (jobs/ingest-odds.ts#loadCandidateEvents).
+ *
+ * Only the `scheduled → open` promotion is automatic. Disabling never rewinds a status, and an
+ * event already past `open` (locked/live/final/cancelled) keeps the status its lifecycle gave it.
+ */
+export function statusOnEnabledChange(status: EventStatus, enabled: boolean): EventStatus | null {
+  return enabled && status === 'scheduled' ? 'open' : null;
+}

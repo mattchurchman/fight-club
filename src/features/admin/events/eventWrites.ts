@@ -3,14 +3,25 @@
 // (see `events`/`bouts` in firestore.rules), so these are plain merges — the transactional, money-
 // moving actions (rescore/finalize/cancel) live in `actions.ts` instead.
 import { doc, serverTimestamp, writeBatch } from 'firebase/firestore';
-import type { BoutResult, OddsSource, ResultMethod, Winner } from '@shared/index.ts';
+import type { BoutResult, EventStatus, OddsSource, ResultMethod, Winner } from '@shared/index.ts';
 import { db } from '../../../lib/firebase.ts';
 import { mainCardIdsInOrder } from './card.ts';
 import type { OrderedBout } from './card.ts';
+import { statusOnEnabledChange } from './permissions.ts';
 
-export async function setEventEnabled(eventId: string, enabled: boolean): Promise<void> {
+/** Enabling a still-`scheduled` event also promotes it — see `statusOnEnabledChange` for why. */
+export async function setEventEnabled(
+  eventId: string,
+  enabled: boolean,
+  currentStatus: EventStatus,
+): Promise<void> {
+  const nextStatus = statusOnEnabledChange(currentStatus, enabled);
   const batch = writeBatch(db);
-  batch.update(doc(db, 'events', eventId), { enabled, updatedAt: serverTimestamp() });
+  batch.update(doc(db, 'events', eventId), {
+    enabled,
+    ...(nextStatus ? { status: nextStatus } : {}),
+    updatedAt: serverTimestamp(),
+  });
   await batch.commit();
 }
 
