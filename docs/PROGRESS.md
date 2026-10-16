@@ -133,7 +133,7 @@ Same rules as Milestone 7: one task per session, clear context between tasks, ki
 
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T51 | Profile picture upload (octagon avatars) | B | high | — | todo | — | — |
+| T51 | Profile picture upload (octagon avatars) | B | high | — | done | 2026-10-15 | 5a62044 |
 
 ## Backlog (follow-ups discovered along the way)
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on
