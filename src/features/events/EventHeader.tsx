@@ -2,7 +2,7 @@ import { Countdown } from '../../components/ui/Countdown.tsx';
 import { StatusPill } from '../../components/ui/StatusPill.tsx';
 import { TokenPill } from '../../components/ui/TokenPill.tsx';
 import type { EventWithId } from './hooks.ts';
-import { formatEventDateTime } from './format.ts';
+import { formatEventDateTime, headlineSize } from './format.ts';
 
 interface EventHeaderProps {
   event: EventWithId;
@@ -16,35 +16,32 @@ export function EventHeader({ event }: EventHeaderProps) {
 
   return (
     <div className="flex flex-col gap-2 border-b border-line p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="label">{label}</p>
-          <h2 className="truncate font-display text-2xl uppercase tracking-wide text-text">
-            {headline}
-          </h2>
-        </div>
-        <StatusPill status={event.status} className="shrink-0" />
-      </div>
+      <p className="label">{label}</p>
+      <h2
+        className={`line-clamp-2 font-display uppercase tracking-wide text-text ${headlineSize(headline)}`}
+        style={{ textWrap: 'balance' }}
+      >
+        {headline}
+      </h2>
 
       <p className="text-sm text-muted">{formatEventDateTime(event.startsAt.toMillis())}</p>
 
-      {showCountdown || showPot ? (
-        <div className="flex flex-wrap items-center gap-4">
-          {showCountdown ? (
-            <Countdown target={event.lockAt.toMillis()} className="text-sm font-semibold" />
-          ) : null}
-          {showPot ? (
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-xs text-muted">
-                Buy-in <TokenPill balance={event.buyIn} />
-              </span>
-              <span className="flex items-center gap-1.5 text-xs text-muted">
-                Pot <TokenPill balance={event.pot} />
-              </span>
-            </div>
-          ) : null}
-        </div>
-      ) : null}
+      <div className="flex flex-wrap items-center gap-3">
+        <StatusPill status={event.status} className="shrink-0" />
+        {showCountdown ? (
+          <Countdown target={event.lockAt.toMillis()} className="text-sm font-semibold" />
+        ) : null}
+        {showPot ? (
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5 text-xs text-muted">
+              Buy-in <TokenPill balance={event.buyIn} />
+            </span>
+            <span className="flex items-center gap-1.5 text-xs text-muted">
+              Pot <TokenPill balance={event.pot} />
+            </span>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

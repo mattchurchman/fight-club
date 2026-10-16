@@ -109,9 +109,14 @@ describe('FightSlide', () => {
     expect(screen.getByText('If right +250 pts')).toHaveClass('text-win');
   });
 
-  it('shows the Main event tag only for the main event', () => {
+  it('shows "Main event" in the label line only for the main event', () => {
     render(<FightSlide {...baseProps()} bout={bout({ isMainEvent: true })} />);
     expect(screen.getByText('Main event')).toBeInTheDocument();
+  });
+
+  it('omits "Main event" from the label line for a non-main-event fight', () => {
+    render(<FightSlide {...baseProps()} bout={bout({ isMainEvent: false })} />);
+    expect(screen.queryByText('Main event')).not.toBeInTheDocument();
   });
 
   it('calls onSelectMethod for the tapped chip', () => {

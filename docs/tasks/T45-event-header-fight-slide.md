@@ -38,4 +38,21 @@ pushing the fighters down (so swiping between fights feels seamless), and locked
 Reveal grid (T46), Live tab (T47–T48).
 
 ## Completion notes
-_(agent fills in: ≤10 lines, ending with `git diff --stat`)_
+- EventHeader: headline now full-width on its own row (`headlineSize` helper bands by length, `line-clamp-2`,
+  `text-wrap: balance`, no truncate); StatusPill moved onto the countdown/pot row.
+- FightSlide: removed the separate "Main event" pill; label line is now `Main event / {weightClass} / {rounds} rds`
+  (red-text) for the main event, `{weightClass} / {rounds} rds` otherwise.
+- EventPage: the read-only `FightCardList` (locked/live/final with an entry) now passes `scores` from
+  `entry.score?.byBout`, closing the T33 backlog item (removed from PROGRESS.md).
+- `npm run lint && npm run typecheck && npm test && npm run build` all pass (524 tests).
+
+```
+ docs/PROGRESS.md                       |  7 +----
+ src/features/events/EventHeader.tsx    | 51 ++++++++++++++++------------------
+ src/features/events/EventPage.tsx      |  6 ++++
+ src/features/events/format.ts          |  7 +++++
+ src/features/events/format.test.ts     | 18 ++++++++++++ (new file)
+ src/features/picks/FightSlide.test.tsx |  7 ++++-
+ src/features/picks/FightSlide.tsx      |  9 ++----
+ 7 files changed, 65 insertions(+), 40 deletions(-)
+```

@@ -34,6 +34,13 @@ export function drawOrNoContestLabel(winner: Winner): string | null {
   return null;
 }
 
+/** Tailwind text-size class for the event headline, banded by character count (docs/DESIGN.md "Event header"). */
+export function headlineSize(text: string): 'text-2xl' | 'text-xl' | 'text-lg' {
+  if (text.length <= 18) return 'text-2xl';
+  if (text.length <= 26) return 'text-xl';
+  return 'text-lg';
+}
+
 export const EVENT_STATUS_LABEL: Record<EventStatus, string> = {
   scheduled: 'Scheduled',
   open: 'Open',
