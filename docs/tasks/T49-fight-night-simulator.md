@@ -42,14 +42,36 @@ see the app during and after an event before a real one. Never touches productio
 6. SETUP.md: the 4 commands from USER ACTION, what you'll see, and `npm run sim -- --reset` to start over.
 
 ## Acceptance criteria
-- [ ] Definition of Done passes; `sim-script.ts` test checks fight order, entry budgets and that every step is valid.
-- [ ] Against the emulators: a full `npm run sim -- --auto 1` ends with the event `final`, payouts in the ledger, and
+- [x] Definition of Done passes; `sim-script.ts` test checks fight order, entry budgets and that every step is valid.
+- [x] Against the emulators: a full `npm run sim -- --auto 1` ends with the event `final`, payouts in the ledger, and
       standings updated; running it again with `--reset` works.
-- [ ] Without emulator env vars the script exits with the refusal message and touches nothing.
+- [x] Without emulator env vars the script exits with the refusal message and touches nothing.
 
 ## Out of scope
 UI changes. Any production data. Changing lifecycle logic (if something can't be driven, log it and stop: lifecycle
 changes need Tier A).
 
 ## Completion notes
-_(agent fills in: ≤10 lines, ending with `git diff --stat`)_
+Built `jobs/lib/sim-script.ts` (pure: fight order, a scripted result per bout keyed by `Bout.order`,
+deterministic valid entries) + its test, and `jobs/simulate-night.ts` (impure: seeds p4–p6, creates
+`evt_sim` from the UFC 332 fixture with real odds so one upset lands, gives everyone but `p1` an
+entry, then steps lock → 5 results → finalize via real `jobs/lifecycle.ts` subprocess calls).
+Verified against the live emulators (pre-existing session, not started by this task): `npm run sim
+-- --reset --auto 1` and a follow-up `npm run sim -- --auto 1` both ran clean — event reached
+`final`, 5 buyin + 2 payout ledger rows posted, standings updated; the no-env-vars guard exits 1
+before touching anything.
+Backlog: `jobs/.generated/` (the empty-results fixture `simulate-night.ts` writes) isn't in
+`.gitignore` — that file wasn't in this task's allowed list. `--reset` wipes `evt_sim` and its
+ledger rows but not `seasons/*/standings`, so re-running with `--reset` keeps accumulating season
+stats for p2–p6 run over run; fine for a rehearsal tool, worth knowing before trusting season
+numbers right after a sim session.
+
+```
+ docs/PROGRESS.md            |   2 +-
+ docs/SETUP.md               |  15 ++
+ jobs/lib/sim-script.test.ts |  85 +++++++++
+ jobs/lib/sim-script.ts      |  82 +++++++++
+ jobs/simulate-night.ts      | 423 ++++++++++++++++++++++++++++++++++++++++++++
+ package.json                |   1 +
+ 6 files changed, 607 insertions(+), 1 deletion(-)
+```
