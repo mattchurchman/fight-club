@@ -124,7 +124,16 @@ between tasks, kickoff `Run the next task. Model tier: <X>. Effort: <effort>`.
 | T49 | Fight-night simulator (`npm run sim`) | B | high | — | done | 2026-10-15 | aa3ea18 |
 | T50 | v2.2 QA pass with the simulator & e2e | B | medium | T44–T49 | done | 2026-10-15 | dc69eb1 |
 
-Deferred to a later revision (owner): profile photos & nicknames; winner takeover screen & championship belt.
+Deferred to a later revision (owner): nicknames; winner takeover screen & championship belt.
+(Profile photos came out of this deferred list and are now T51.)
+
+## Milestone 8 — v2.3: player identity
+Same rules as Milestone 7: one task per session, clear context between tasks, kickoff
+`Run the next task. Model tier: <X>. Effort: <effort>`.
+
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T51 | Profile picture upload (octagon avatars) | B | high | — | todo | — | — |
 
 ## Backlog (follow-ups discovered along the way)
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on
@@ -267,3 +276,20 @@ Deferred to a later revision (owner): profile photos & nicknames; winner takeove
   load" baseline in the effect. Not reproduced as a `vitest` case; worth a closer look if it recurs.
 - T50: `npm run sim` writes `jobs/.generated/sim-no-results.json` but only `e2e/.generated/` is
   gitignored — `jobs/.generated/` isn't. Add it to `.gitignore` (outside T50's allowed files).
+- **T07/T18 (found 2026-10-15 while fixing the enable/status bug):** `jobs/ingest-events.ts` sets an event's
+  `status` once, at creation, so the admin Enable toggle had to learn to promote `scheduled → open` itself
+  (commit `e617e43`). Two things remain. (a) **Existing data isn't migrated:** an event enabled before that
+  commit is still `scheduled` in Firestore and stays invisible until someone toggles Disable → Enable on it.
+  (b) The reverse gap is untouched by design — an event ingested *enabled* and later disabled keeps
+  `status: 'open'`, so it leaves the player list via `enabled` alone. Fine today; revisit if `enabled` ever
+  stops being the player-list filter.
+- **Jobs cron drift (observed 2026-10-15):** GitHub Actions is delivering the `jobs.yml` schedules hours
+  late — the 15:17 UTC odds cron ran at 19:06, and the 09:17 ingest cron has landed as late as 15:xx. The
+  workflow maps `github.event.schedule` → job name, so the *right* job still runs, just late. It matters
+  because `planLock` freezes odds at lock: a card locking shortly after a missed odds window would freeze
+  on prices up to a day old. Consider running `odds` on every lifecycle invocation during fight week, or a
+  `workflow_dispatch` before lock, rather than trusting the daily cron.
+- **UFC 333 is missing bouts in Firestore (observed 2026-10-15):** the odds job saw only 5 bouts for event
+  `600061267` (`401911632`–`635`, `401929495`) while ESPN's scoreboard now lists 11 competitions for it.
+  `ingest-events.ts` re-runs daily and should add bouts as ESPN posts them — worth confirming the next
+  ingest actually backfills the other 6 rather than only ever writing the set it first saw.
