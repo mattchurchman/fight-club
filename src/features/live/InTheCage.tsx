@@ -22,13 +22,19 @@ function ordinal(n: number): string {
   return `${n}${ORDINAL_SUFFIX[(v - 20) % 10] ?? ORDINAL_SUFFIX[v] ?? ORDINAL_SUFFIX[0]}`;
 }
 
-/** Your swing first, then any lead change, per docs/DESIGN.md "Live tab". `null` when neither applies. */
-function swingClause(line: SwingLine): string | null {
+/**
+ * Your swing first, then any lead change, per docs/DESIGN.md "Live tab". `null` when neither applies.
+ * When you become the new leader, say "you take 1st" and don't also repeat your rank.
+ */
+export function swingClause(line: SwingLine, selfUid: string | null): string | null {
   const parts: string[] = [];
-  if (line.self) {
+  const youTakeLead = selfUid !== null && line.newLeader?.uid === selfUid;
+  if (youTakeLead && line.self) {
+    parts.push(`you take 1st (${line.self.delta >= 0 ? '+' : ''}${line.self.delta})`);
+  } else if (line.self) {
     parts.push(`you → ${ordinal(line.self.rank)} (${line.self.delta >= 0 ? '+' : ''}${line.self.delta})`);
   }
-  if (line.newLeader) {
+  if (line.newLeader && !youTakeLead) {
     parts.push(`${line.newLeader.name} takes 1st`);
   }
   return parts.length > 0 ? parts.join(', ') : null;
@@ -70,7 +76,7 @@ export function InTheCage({
   ];
 
   const lines = swing
-    .map((line) => ({ line, clause: swingClause(line) }))
+    .map((line) => ({ line, clause: swingClause(line, user?.uid ?? null) }))
     .filter((row): row is { line: SwingLine; clause: string } => row.clause !== null);
 
   return (

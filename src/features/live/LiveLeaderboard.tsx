@@ -91,7 +91,7 @@ export function LiveLeaderboard({ entries, bouts, moves, final, onTap }: LiveLea
               </span>
             ))}
           </div>
-          {final ? <span className="w-16 shrink-0" /> : null}
+          {final ? <span className="w-14 shrink-0" /> : null}
         </div>
       ) : null}
       {rows.map((row) => {
@@ -154,7 +154,7 @@ export function LiveLeaderboard({ entries, bouts, moves, final, onTap }: LiveLea
               })}
             </div>
             {final ? (
-              <span className="flex w-16 shrink-0 items-center justify-end gap-1 text-right text-sm font-semibold tabular-nums text-text">
+              <span className="flex w-14 shrink-0 items-center justify-end gap-1 text-right text-sm font-semibold tabular-nums text-text">
                 {payout != null ? (
                   <>
                     <Coin className="size-3.5 text-text" />

@@ -35,4 +35,21 @@ leaderboard's payout column is cut off, and the floating Trash Talk button cover
 Anything else on Live.
 
 ## Completion notes
-_(agent fills in: ≤10 lines, ending with `git diff --stat`)_
+- `swingClause` now takes `selfUid`, exported, and says `you take 1st (+N)` without repeating your rank
+  when `line.newLeader.uid === selfUid`; added 5 unit tests (self leader, other leader, no leader, two
+  spectator cases).
+- `LiveLeaderboard`'s payout column (row + header spacer) is now `w-14` instead of `w-16` to stop it
+  being pushed off-card at 375px; name/points/marks were already `min-w-0 flex-1 truncate` / `shrink-0`.
+- `LivePage`'s two scroll containers (pre-lock and revealed) changed `pb-4` → `pb-24` so the floating
+  Trash Talk button (44px + safe-area) never covers the last leaderboard row. `EventPage`'s Trash Talk
+  button isn't floating there, so it needed no change (out of scope per task).
+- `npm run lint && npm run typecheck && npm test && npm run build` all pass (541 tests).
+
+```
+ docs/PROGRESS.md                      |  2 +-
+ src/features/live/InTheCage.test.tsx  | 39 ++++++++++++++++++++++++++++++++++-
+ src/features/live/InTheCage.tsx       | 16 +++++++++-----
+ src/features/live/LiveLeaderboard.tsx |  4 ++--
+ src/features/live/LivePage.tsx        |  4 ++--
+ 5 files changed, 54 insertions(+), 11 deletions(-)
+```
