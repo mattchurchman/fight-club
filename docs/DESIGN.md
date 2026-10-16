@@ -58,17 +58,21 @@ real tokens using this map; T43 deletes the aliases.
 - Motion: 150–250ms ease-out; every animation off under `prefers-reduced-motion`.
 
 ## Brand assets
-In `public/brand/` (outlined paths, no font dependency — don't edit by hand).
-Four marks, each with one job:
+In `public/brand/`. The lockup is a **vector trace of the owner's reference art** (v2.2) — the source of truth. Don't
+redraw, re-font or "improve" it; only scale it. One deliberate fix vs the reference: FIGHT is centered on the octagon
+(the source had it 4px right). Each file has one job:
 
 | File | What it is | Use it for | Don't |
 |---|---|---|---|
-| `logo-lockup.svg` | Octagon + FIGHT / CLUB + red bar, white, transparent | Big brand moments: login, not-invited, install page, share posters | Use below 120px wide (CLUB stops reading) |
-| `icon-source.svg` | The lockup on full-bleed `#0A0A0B` | **The app icon.** T28 copies it to `public/icon.svg`; PWA PNGs + apple-touch icon are generated from it | Use inside the app UI |
-| `mark.svg` | Octagon + FC + red bar, white, transparent | **The permanent header** (28px, top-left), favicon, anywhere under 120px | Pair it with the lockup on the same screen |
-| `monogram.svg` | Black FC octagon on a red tile | Loud contexts: the link-preview image when someone pastes the app URL in a group chat; an alternate app icon if you ever want one | Use as a second header logo |
+| `logo-lockup.svg` | Traced octagon + FIGHT / CLUB + red bar, white, transparent | **The app header (32px tall)**, login, not-invited, install page, share posters — every in-app logo | Recolor it (use the dark file instead) |
+| `logo-lockup-dark.svg` | Same, black letters + red bar | Any light background (docs, a white share card) | Use on dark |
+| `icon-source.svg` | Lockup on a full-bleed `#0A0A0B` square | **The home-screen app icon.** Copied to `public/icon.svg`; PWA PNGs + apple-touch icon are generated from it | Use inside the UI |
+| `icon-light.svg` | Black lockup on `#EDEDED` | Spare light icon variant (not wired up) | — |
+| `mark.svg` | Octagon + FC + small red bar, white, transparent | Source for the tab icon only | Use in the header (v2.2: the lockup is the header logo) |
+| `favicon.svg` | `mark.svg` on a black rounded tile | **The browser-tab icon** (`<link rel="icon">`) — the tile keeps it visible on light browsers | — |
+| `coin.svg` | Token glyph (`currentColor`) | `<Coin/>` / TokenPill | — |
 
-Plus `coin.svg` — the token glyph (`currentColor`), used by `<Coin/>` / TokenPill. Never use UFC logos or marks.
+Never use UFC logos or marks.
 
 ## Components (shared UI kit, `src/components/ui/`)
 - **Button** — primary: `bg-red-fill` white Montserrat 700 uppercase 14px tracking 0.08em, radius 10, h-12.
@@ -83,16 +87,23 @@ Plus `coin.svg` — the token glyph (`currentColor`), used by `<Coin/>` / TokenP
   `FINAL` (muted outline) · `CANCELLED` (muted, strikethrough).
 
 ## App shell
-- **Header** (56px + safe area): left = `mark.svg` (28px) linking to `/`, then the section name in **label style**
-  (small, muted — not a big headline); right = TokenPill, help, admin gear (admins).
+- **Header** (56px + safe area): left = `logo-lockup.svg` at **32px tall** (`<Lockup/>`, links to `/`), then the section
+  name in **label style** (small, muted — not a big headline); right = TokenPill, help, admin gear (admins).
 - **TabBar**: `Fights · Live · Standings · Wallet · Me`. Active = `text` color + 3px red bar on the tab's top edge.
   Hidden while the pick deck is open (see Pick deck).
 - Toasts, not `alert()`. Skeletons, not spinners.
 
 ## Event header (Fights tab)
-`UFC 332` (label style) above the headline `SILVA / WANG` (display, from `subtitle`; never repeat the event name twice).
-Row: date · venue (muted) and a **StatusPill**. Countdown to lock: normal text when > 1h;
-under 1h it turns `red-text` and shows seconds ("LOCKS IN 42:07"). Locked+: Buy-in and Pot as Coin values.
+```
+UFC 332                                     ← label style
+SILVA / WANG                                ← headline, full width, wraps to 2 lines, never "…"
+Sat, Oct 17, 5:59 PM · Meta APEX            ← muted
+[PICKS OPEN]  Locks in 2d 3h                ← StatusPill + countdown on ONE row (locked+: pill + Buy-in + Pot)
+```
+- Headline (from `subtitle`; never repeat the event name twice) gets the full width — nothing beside it.
+- **Fit long titles:** 24px when ≤ 18 characters, 20px ≤ 26, 18px beyond; `text-wrap: balance`; at most 2 lines.
+  Never `truncate`. (Long example: "DELLA MADDALENA VS. PRATES".)
+- Countdown: normal text when > 1h; under 1h `red-text` with seconds ("LOCKS IN 42:07").
 
 ## Pick deck (replaces BoutCard pick mode + BudgetMeter)
 Full-height, **one fight per screen, swiped horizontally** (CSS scroll-snap, no library). Order = card order, main event first.
@@ -103,7 +114,7 @@ Last slide = **Review**. Tab bar hidden; a slim top strip replaces the old stick
 │ ✕   FIGHT 2 / 5     ▮▮▯▯▯ ▯  │  progress strip: one segment per fight (+review). filled = complete
 │ 300 / 1000 PTS               │  allocated / budget (white; at budget shows ✓)
 ├──────────────────────────────┤
-│ BANTAMWEIGHT / 3 RDS         │  label (MAIN EVENT gets a red-fill tag)
+│ BANTAMWEIGHT / 3 RDS         │  label line; main event: "MAIN EVENT / W. FLYWEIGHT / 5 RDS" (MAIN EVENT in red-text)
 │ ┌────────────┐┌────────────┐ │
 │ │  headshot  ││  headshot  │ │  two tall fighter panels, tap to pick
 │ │ FIGUEIREDO ││  TALBOTT   │ │  surname in display font, first name small
@@ -118,6 +129,8 @@ Last slide = **Review**. Tab bar hidden; a slim top strip replaces the old stick
 │            [ NEXT FIGHT → ]   │  appears when the fight is complete
 └──────────────────────────────┘
 ```
+- **Every slide has the same layout height above the fighters** — no extra tag row for the main event, so the fighter
+  panels never jump when you swipe.
 - **No default stake.** A fight is complete when winner + method + stake are set. Stake shows `—` until chosen.
 - Choosing the method on a fight that already has a stake auto-advances after 400ms (not under reduced motion).
 - **No validation errors before the first submit attempt.** After a failed attempt, incomplete fights get a `red-text`
@@ -132,6 +145,30 @@ Last slide = **Review**. Tab bar hidden; a slim top strip replaces the old stick
 - **Locked / read-only:** no deck. Card list rows show your pick, method, stake, 🔒, and score once final.
 - Draft autosave, validation, auto-balance and submit reuse `usePickDraft` / `shared/validation.ts` unchanged.
 
+## Everyone's picks (reveal, after lock)
+One card per main-card fight, in card order. Names, not initials — two friends can share an initial.
+```
+MAIN EVENT / W. FLYWEIGHT
+SILVA 4                          2 WANG     ← surname + count of pickers
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▮▮▮▮▮▮▮▮▮▮▮           ← split bar: white = A side, steel = B side
+┌ You        DEC·300 ┐  ┌ Kevin      DEC·250 ┐
+│ Tony 🩸    DEC·400 │  │ Jake 🔒     KO·200 │
+│ Andre 🔒   SUB·150 │  └────────────────────┘
+│ Sam 🩸 Wang KO·100 │
+Only Jake took Wang.                         ← contrarian line when one person is alone on a side
+```
+- A **PickerRow** per person in the column of the fighter they picked to win: display name, then markers, then
+  `METHOD · stake` right-aligned in `muted` tabular numbers.
+- Order in a column: you first, then by stake (high → low), then name. Your row is inverted (`text` bg, `bg` text).
+- Markers: 🔒 if this fight is their Lock of the Night. 🩸 if this fight is their First Blood pick (events with
+  `firstBloodEnabled` only); when their first-blood fighter is **not** the one they picked to win, add that fighter's
+  surname after the 🩸 (`🩸 Wang`). Each marker has an accessible label ("Lock of the night", "First blood: Wang").
+- Tapping a row opens the PlayerSheet. Long names truncate inside the row (the row never grows the column).
+- **By person** toggle at the top of the section (`Tabs`: `By fight` · `By person`): one row per friend (you first),
+  columns F1…F5 in card order, cell = picked surname (display font 11px) + 🔒/🩸. Horizontal scroll inside its own
+  container if it doesn't fit.
+- **In the Cage** (Live tab) uses the same PickerRow (compact: name + markers only) instead of initials avatars.
+
 ## Live tab
 Answers three questions in order: **What's happening now? Where do I stand? What happened?**
 Fight order on the night = descending `bout.order` (main event, order 1, is last). Jobs never set `bout.status = 'live'`;
@@ -143,7 +180,7 @@ Fight order on the night = descending `bout.order` (main event, order 1, is last
 ├──────────────────────────────┤
 │ IN THE CAGE                  │  "UP NEXT" while locked & no results yet; "IN THE CAGE" once live
 │  GREEN        vs   RIBOVICS  │  headshots, odds
-│  M  T              J  A  K  S│  who picked each side (avatars, 🔒 marks locks)
+│  You  Tony         Jake  Andre│  who picked each side (compact PickerRows, 🔒 / 🩸 markers)
 │  IF GREEN WINS: Tony → 1st, you → 3rd (+160)
 │  IF RIBOVICS WINS: you → 2nd (+285)       │  swing lines (your outcome first, then any lead change)
 ├──────────────────────────────┤
@@ -158,6 +195,9 @@ Fight order on the night = descending `bout.order` (main event, order 1, is last
 │ SOLDIĆ def. WILLIAMS · DEC R3│  "4 of 6 had Soldić · you +466"
 └──────────────────────────────┘
 ```
+- Swing lines speak to the viewer: when the new leader is you, say `you take 1st`, never your own name.
+- Rows never clip: name column `min-w-0 truncate`; the final payout column has a fixed width inside the card.
+- Floating Trash Talk button never covers content: the page reserves bottom padding equal to the button's height.
 - Swing math: for the current bout and each side, assume every entry that picked that side wins **base + lock** and
   ignore the unknown method bonus (label it "at least"). Re-rank with `rankEntries`. Show at most 2 lines.
 - **Result flash:** when a bout gets a result while the page is open, a 2.5s top overlay:
@@ -166,6 +206,11 @@ Fight order on the night = descending `bout.order` (main event, order 1, is last
 - **Final:** status strip shows `FINAL · POT PAID`; leaderboard adds a payout column (Coin); results list stays.
 - Tapping a leaderboard row opens the PlayerSheet (their full card + scoring breakdown, pending fights say `PENDING`)
   with a `VIEW PROFILE` link.
+
+## Simulator
+`npm run sim` rehearses a fight night against the local emulators using the real lifecycle code: seeds friends + entries,
+then each keypress (or `--auto <seconds>`) advances one step: lock → each result in fight order → finalize & pay out.
+Open the app on a phone (`npm run dev -- --host`) and watch. Never touches production (refuses without emulator env vars).
 
 ## Trash talk
 Open from the moment an event is **open** (picks open, typically a week out) through final. Entry points: a `TRASH TALK`

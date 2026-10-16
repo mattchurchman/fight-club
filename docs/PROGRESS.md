@@ -101,6 +101,31 @@ the passing championship belt.
 
 👤 = has a USER ACTION REQUIRED step (see the task file / docs/SETUP.md).
 
+## Milestone 7 — v2.2: traced brand, everyone's picks, live fixes, simulator
+Plan of record: `docs/DESIGN.md` (v2.2 sections). Same rules as Milestone 6: one task per session, clear context
+between tasks, kickoff `Run the next task. Model tier: <X>. Effort: <effort>`.
+
+**Run 1 — Brand** (Tier C): wire the traced logo and icons in. The SVGs are already in `public/brand/`.
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T44 | Brand wiring: app icon, tab icon, header lockup | C | low | — | todo | | |
+
+**Run 2 — Screens** (Tier B): Fights tab polish, everyone's picks, live fixes.
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T45 | Event header & fight slide layout fixes | B | medium | T44 | todo | | |
+| T46 | Everyone's picks: name rows, lock & first blood | B | high | T44 | todo | | |
+| T47 | By-person view & In the Cage names | B | medium | T46 | todo | | |
+| T48 | Live tab fixes: "you", clipping, Trash Talk overlap | B | medium | T47 | todo | | |
+
+**Run 3 — Rehearsal** (Tier B): the simulator, then a full QA pass using it.
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T49 | Fight-night simulator (`npm run sim`) | B | high | — | todo | | |
+| T50 | v2.2 QA pass with the simulator & e2e | B | medium | T44–T49 | todo | | |
+
+Deferred to a later revision (owner): profile photos & nicknames; winner takeover screen & championship belt.
+
 ## Backlog (follow-ups discovered along the way)
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on
   2026-09-29, and `odds.source` / `events.kind` now carry `'espn'` / `'special'`. See DECISIONS.md.
@@ -234,50 +259,3 @@ the passing championship belt.
   `entry.score?.byBout` into it yet — the final-event card list still shows no score. Whichever
   task next touches `EventPage.tsx` (T40 "Past events & final event view" looks like the fit)
   should wire it through.
-- Also noted: this file has two separate "Milestone 6" tables with disagreeing status rows (an apparent merge
-  artifact from the `facelift updates` commit, `4f3d727`) — worth a cleanup pass so there's one source of truth
-  per task row. (Both T26 rows are now updated to `done` with the real commit hash.)
-
-## Milestone 6 — v2.1: "The Minimal" facelift, pick deck, live tab, history
-
-### Run 1 — Brand base (Tier C)
-| ID | Task | Effort | Depends | Status | Date | Commit |
-|---|---|---|---|---|---|---|
-| T26 | Brand tokens, fonts & migration aliases | low | — | done | 2026-10-14 | 6644289 |
-| T27 | Restyle sweep: admin, auth, wallet, help, install, notifications | low | T26 | todo | | |
-
-### Run 2 — Brand kit (Tier B)
-| ID | Task | Effort | Depends | Status | Date | Commit |
-|---|---|---|---|---|---|---|
-| T28 | Logo, PWA icons & brand components | medium | T26 | todo | | |
-| T29 | UI kit restyle | medium | T28 | todo | | |
-| T30 | App shell & polish pass | medium | T29 | todo | | |
-
-### Run 3 — Pick deck (Tier B)
-| ID | Task | Effort | Depends | Status | Date | Commit |
-|---|---|---|---|---|---|---|
-| T31 | Fights tab card list & pick-deck route | medium | T30 | todo | | |
-| T32 | Fight slide | high | T31 | todo | | |
-| T33 | Review slide, submit & locked view | high | T32 | todo | | |
-| T34 | Pick flow tests & e2e update | low | T33 | todo | | |
-
-### Run 4 — Live tab (Tier B)
-| ID | Task | Effort | Depends | Status | Date | Commit |
-|---|---|---|---|---|---|---|
-| T35 | Live derivations: current fight, swings, rank moves | high | T29 | todo | | |
-| T36 | Live page v2: status strip, In the Cage, your row | medium | T35 | todo | | |
-| T37 | Leaderboard v2, results list & PlayerSheet | medium | T36 | todo | | |
-| T38 | Result flash | medium | T37 | todo | | |
-
-### Run 5 — Social & history (Tier B)
-| ID | Task | Effort | Depends | Status | Date | Commit |
-|---|---|---|---|---|---|---|
-| T39 | Trash talk opens with picks | medium | T31, T36 | done | 2026-10-15 | 8ab5c61 |
-| T40 | Past events & final event view | medium | T37 | done | 2026-10-15 | 9b78284 |
-| T41 | Profiles everywhere | medium | T40 | done | 2026-10-15 | 8b3d8f8 |
-
-### Run 6 — Finish (Tier B)
-| ID | Task | Effort | Depends | Status | Date | Commit |
-|---|---|---|---|---|---|---|
-| T42 | Share posters restyle | medium | T29 | done | 2026-10-15 | 35ed2cf |
-| T43 | Remove legacy aliases, help copy & final QA | medium | T27–T42 | todo | | |

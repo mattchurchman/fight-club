@@ -34,6 +34,9 @@ Stack: Vite + React + TypeScript SPA, Firebase (Auth, Firestore, Hosting, FCM) o
 9. Fill in the task file's **Completion notes** (≤10 lines: what was built, anything surprising,
    follow-ups). Update the `docs/PROGRESS.md` row: `done`, date, short commit hash.
    If you deviated from a spec, append a dated entry to `docs/DECISIONS.md`.
+   **Proof of work:** end your notes with the output of `git diff --stat` for your change (files and line counts).
+   A task whose code files didn't change is not done; say so instead. Never write notes for work you didn't do:
+   a reviewer checks the diff against them.
 10. Commit with message `Txx: <summary>`. Push only if the user said pushing is OK.
 11. End the session with this message (fill in the brackets):
 

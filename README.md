@@ -10,7 +10,7 @@ admin controls. It installs to your phone's home screen. It runs entirely on fre
 
 ## Building it with AI coding agents
 
-The work is split into tasks (`docs/tasks/`): T01–T25 built v2.0; T26–T43 are the v2.1 revision (see `docs/PROGRESS.md` Milestone 6). Each one is sized for **one fresh context window** and labeled with a
+The work is split into tasks (`docs/tasks/`): T01–T25 built v2.0; T26–T43 the v2.1 revision; T44–T50 the v2.2 revision (see `docs/PROGRESS.md` Milestones 6–7). Each one is sized for **one fresh context window** and labeled with a
 **model tier** (A strongest, C cheapest; see `docs/MODEL_TIERS.md`). Agents follow `AGENTS.md`.
 
 **The loop, once per task:**
