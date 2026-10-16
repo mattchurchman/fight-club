@@ -106,8 +106,8 @@ test('admin invites a player; they pick, lock, score and get paid', async ({ bro
 
     await playerPage.goto('/live');
     await expect(playerPage.getByText('Picks lock in')).toHaveCount(0);
-    // exact: the leaderboard row's name and the "<name>'s picks" section heading both contain it.
-    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME, { exact: true })).toBeVisible();
+    // exact + first(): In the Cage's PickerRow (T47) and the leaderboard row both show the name now.
+    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME, { exact: true }).first()).toBeVisible();
   });
 
   const { scoreboardPath, statusPath } = await writeAllCornerAWinsFixtures(seed.espnEventId, seed.mainCard);
@@ -116,7 +116,7 @@ test('admin invites a player; they pick, lock, score and get paid', async ({ bro
     runLifecycle(['--live', '--now', lockNowIso, '--fixture', scoreboardPath, '--fixture', statusPath]);
 
     await playerPage.goto('/live');
-    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME, { exact: true })).toBeVisible();
+    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME, { exact: true }).first()).toBeVisible();
     await expect(playerPage.getByText(/^\+\d+$/)).toBeVisible();
   });
 

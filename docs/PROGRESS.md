@@ -122,7 +122,7 @@ between tasks, kickoff `Run the next task. Model tier: <X>. Effort: <effort>`.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
 | T49 | Fight-night simulator (`npm run sim`) | B | high | — | done | 2026-10-15 | aa3ea18 |
-| T50 | v2.2 QA pass with the simulator & e2e | B | medium | T44–T49 | todo | | |
+| T50 | v2.2 QA pass with the simulator & e2e | B | medium | T44–T49 | in-progress | | |
 
 Deferred to a later revision (owner): profile photos & nicknames; winner takeover screen & championship belt.
 
@@ -254,3 +254,16 @@ Deferred to a later revision (owner): profile photos & nicknames; winner takeove
   `pwa-assets.config.ts`. T27's renamed classes now resolve correctly; nothing in T27 itself needed changing.
   20 files still carry pre-T27 `text-gold`/`bg-blue`/`text-loss` usages — those render fine through the
   legacy aliases and are unchanged, real migration is T27-style sweep work for later tasks.
+- T46/T50: `PickerRow`'s name span (`src/features/live/PickerRow.tsx`) truncates hard inside
+  `RevealGrid`'s 2-column grid — at 375px wide, the `shrink-0` method·stake text leaves the name
+  only ~65–75px, so names longer than ~6 characters (e.g. the simulator's "Player Five") truncate to
+  2–4 letters ("Play..."). Real friends' short first names (per DESIGN.md's mock: "Tony", "Kevin",
+  "Jake") mostly dodge this, but it's worth re-checking column widths against the actual friend-group
+  roster before relying on it looking right on fight night.
+- T38/T50: `useNewResults` (`src/features/live/useNewResults.ts`) is documented to never flash a bout
+  that was already final before first load, but a fresh `/live` load taken immediately after a result
+  just landed (simulator QA, T50) did show the flash once. Likely a two-part initial Firestore
+  snapshot (bouts arrive, then the just-written result arrives a moment later) racing the "first
+  load" baseline in the effect. Not reproduced as a `vitest` case; worth a closer look if it recurs.
+- T50: `npm run sim` writes `jobs/.generated/sim-no-results.json` but only `e2e/.generated/` is
+  gitignored — `jobs/.generated/` isn't. Add it to `.gitignore` (outside T50's allowed files).
