@@ -44,4 +44,19 @@ stake, 🔒 for their Lock of the Night and 🩸 for their First Blood pick. Rep
 By-person toggle and In the Cage (T47).
 
 ## Completion notes
-_(agent fills in: ≤10 lines, ending with `git diff --stat`)_
+Added `pickers.ts` (`pickersFor`, tested: split/order/lock/first-blood on-side/off-side/disabled/other-bout)
+and `PickerRow` (name, 🔒, 🩸+surname, `method · stake`, self row inverted `bg-text`/`text-bg`, radius 8).
+`RevealGrid` now renders the T45-style label line, a "SURNAME n / n SURNAME" header, a 2px-gap split bar
+(`bg-text`/`bg-steel`), and a two-column grid of `PickerRow`s per bout, dropping the old initials
+`PickerColumn`. `PicksSection` passes `selfUid` (via `useSession`) and `event.firstBloodEnabled` through,
+and its heading is now `<SectionLabel>Everyone's picks</SectionLabel>`.
+
+```
+ src/features/live/PicksSection.tsx | 13 ++++++-
+ src/features/live/RevealGrid.tsx   | 79 +++++++++++++++++---------------------
+ src/features/live/index.ts         |  2 +
+ 3 files changed, 48 insertions(+), 46 deletions(-)
+ create src/features/live/PickerRow.tsx
+ create src/features/live/pickers.test.ts
+ create src/features/live/pickers.ts
+```

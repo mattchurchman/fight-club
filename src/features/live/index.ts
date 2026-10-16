@@ -4,4 +4,6 @@ export { LiveLeaderboard } from './LiveLeaderboard.tsx';
 export { ResultsList } from './ResultsList.tsx';
 export { PicksSection } from './PicksSection.tsx';
 export { RevealGrid } from './RevealGrid.tsx';
+export { PickerRow } from './PickerRow.tsx';
+export { pickersFor, type PickerInfo, type PickersByCorner } from './pickers.ts';
 export { ReactionChips } from './ReactionChips.tsx';

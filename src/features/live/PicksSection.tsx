@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
+import { SectionLabel } from '../../components/ui/SectionLabel.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
+import { useSession } from '../auth/SessionProvider.tsx';
 import type { BoutWithId, EventWithId } from '../events/hooks.ts';
 import { isRevealed, useEntries, useComments } from './hooks.ts';
 import { RevealGrid } from './RevealGrid.tsx';
@@ -11,6 +13,7 @@ interface PicksSectionProps {
 
 /** Mounted by EventPage below the bout list once the event locks (docs/tasks/T15). */
 export function PicksSection({ event, bouts }: PicksSectionProps) {
+  const { user } = useSession();
   const revealed = isRevealed(event.status);
   const entries = useEntries(event.id, revealed);
   const comments = useComments(event.id);
@@ -20,11 +23,17 @@ export function PicksSection({ event, bouts }: PicksSectionProps) {
 
   return (
     <div className="flex flex-col gap-3 px-4 pb-4 pt-2">
-      <p className="font-display text-sm uppercase tracking-wide text-text">Picks</p>
+      <SectionLabel>Everyone's picks</SectionLabel>
       {entries === undefined ? (
         <Skeleton className="h-40 w-full" />
       ) : (
-        <RevealGrid bouts={mainCard} entries={entries} comments={comments} />
+        <RevealGrid
+          bouts={mainCard}
+          entries={entries}
+          selfUid={user?.uid ?? null}
+          firstBloodEnabled={event.firstBloodEnabled}
+          comments={comments}
+        />
       )}
     </div>
   );
