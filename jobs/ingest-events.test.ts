@@ -98,6 +98,14 @@ describe('planEventWrites', () => {
     expect(bout2 && 'data' in bout2 ? bout2.data.status : undefined).toBe('scheduled');
   });
 
+  it('opens an enabled event that is stuck on scheduled, and leaves a disabled one alone', () => {
+    const base: ExistingEvent = { status: 'scheduled', buyIn: 100, budget: 1000, enabled: true, firstBloodEnabled: false, boutIds: ['bout_1'] };
+    const parsed = parsedEvent([bout('1', 1)]);
+    expect(planEventWrites(base, parsed, CONFIG, NOW, identity).event.data.status).toBe('open');
+    expect(planEventWrites({ ...base, enabled: false }, parsed, CONFIG, NOW, identity).event.data).not.toHaveProperty('status');
+    expect(planEventWrites({ ...base, status: 'open' }, parsed, CONFIG, NOW, identity).event.data).not.toHaveProperty('status');
+  });
+
   it('cancels a bout that disappeared from the source before lock', () => {
     const existing: ExistingEvent = {
       status: 'open',

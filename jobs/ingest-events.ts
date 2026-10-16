@@ -86,6 +86,11 @@ export function planEventWrites<Ts>(
     eventData.venue = parsed.venue;
     eventData.mainCardBoutIds = parsed.bouts.map((b) => b.boutId);
   }
+  // Self-heal: an event an admin enabled while it was `scheduled` (before the Enable toggle learned to
+  // promote it, commit e617e43) is invisible to players and skipped by the odds job. Open it here.
+  if (existing !== null && existing.enabled && existing.status === 'scheduled') {
+    eventData.status = 'open';
+  }
   if (existing === null) {
     const enabled = config.autoEnableNumbered && parsed.kind === 'numbered';
     eventData.enabled = enabled;

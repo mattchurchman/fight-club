@@ -210,3 +210,12 @@ corner colors were removed, and initials collide) to name rows with 🔒 and �
 A `npm run sim` rehearsal tool is added. AGENTS.md gains a proof-of-work rule after T26's first run committed only
 docs with notes claiming the code was done.
 
+
+## 2026-10-15 — Honest admin health, self-healing event status, update prompt (owner request)
+The admin Jobs card showed "ok" whenever a job didn't crash, so "0 events in window" looked healthy while UFC 333 sat
+invisible and unpriced (enabled while `scheduled`; see e617e43). The card is now **Health**: it checks outcomes
+(enabled events that aren't open, upcoming fights in the 10-day odds window with no odds) and marks a job "late"
+when it hasn't run within its schedule plus slack (ingest/odds 30h, lifecycle 8h). The daily import opens any
+enabled event still stuck on `scheduled`. The PWA switches from silent `autoUpdate` to `prompt`: it re-checks for a
+new version whenever the app returns to the screen and shows "New version ready. Tap to update." Hosting now sends
+`no-cache` for the app shell on `/` and SPA routes (the old rule only matched `/index.html`) and for the service worker.
