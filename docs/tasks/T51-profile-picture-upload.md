@@ -72,4 +72,33 @@ Fighter headshots (already come from ESPN via `headshotUrl`). Cropping/zoom UI â
 `Entry.photoURL` on historical entries. Any change to `.octagon` or the `Avatar` layout.
 
 ## Completion notes
-_(fill in on completion)_
+Built `avatarUpload.ts` (pure `planAvatarEncode` centre-crop geometry + `encodeAvatar` canvas/WebP
+pipeline, `MAX_AVATAR_CHARS = 30000`); wired Me-tab upload/remove UI; raised the `photoURL` rules
+cap to 30000 with new rules tests (accept at cap, reject over, deny writing another player's).
+`buildLeaderboard` now takes an optional `usersById` map and prefers its `photoURL`;
+`LiveLeaderboard`/`PlayerSheet`/`TokensPage`/`ChatPanel` each call `useUsersById()` themselves
+(same pattern `StandingsPage`/`ProfileBody` already used) rather than needing it threaded down
+through `LivePage`/`EventPage`, which stayed out of the allowed-files list. `ResultsPoster` and
+`PeopleSection` needed no plumbing â€” they already read a live `photoURL`. `encodeAvatar`'s actual
+canvas work isn't covered by `vitest` (jsdom has no canvas, no approved dep adds one); only the
+pure geometry and the rules/component joins are tested.
+
+`git diff --stat`:
+```
+ docs/PROGRESS.md                           |  2 +-
+ firestore.rules                            |  2 +-
+ src/features/admin/TokensPage.tsx          | 13 +++++--
+ src/features/auth/MePage.tsx               | 58 +++++++++++++++++++++++++++++-
+ src/features/chat/ChatPanel.tsx            |  8 ++++-
+ src/features/live/LiveLeaderboard.test.tsx | 11 ++++++
+ src/features/live/LiveLeaderboard.tsx      |  4 ++-
+ src/features/live/PlayerSheet.test.tsx     | 25 ++++++++++++-
+ src/features/live/PlayerSheet.tsx          |  9 ++++-
+ src/features/live/leaderboard.test.ts      | 14 ++++++++
+ src/features/live/leaderboard.ts           | 14 ++++++--
+ src/features/share/ResultsPoster.tsx       |  5 +--
+ tests/rules/users.test.ts                  | 15 ++++++++
+ 13 files changed, 165 insertions(+), 15 deletions(-)
+ src/features/profile/avatarUpload.ts       | new file (62 lines)
+ src/features/profile/avatarUpload.test.ts  | new file (20 lines)
+```

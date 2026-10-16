@@ -48,4 +48,18 @@ describe('buildLeaderboard', () => {
     ]);
     expect(rows.map((r) => r.uid)).toEqual(['b']);
   });
+
+  it("prefers a live user's current photoURL over the entry's denormalized copy", () => {
+    const rows = buildLeaderboard(
+      [entry('a', { photoURL: 'stale.png' }), entry('b', { photoURL: null })],
+      { a: { photoURL: 'fresh.png' } },
+    );
+    expect(rows.find((r) => r.uid === 'a')?.photoURL).toBe('fresh.png');
+    expect(rows.find((r) => r.uid === 'b')?.photoURL).toBeNull();
+  });
+
+  it('falls back to the denormalized photoURL when no live user doc is given', () => {
+    const rows = buildLeaderboard([entry('a', { photoURL: 'stale.png' })]);
+    expect(rows[0]!.photoURL).toBe('stale.png');
+  });
 });

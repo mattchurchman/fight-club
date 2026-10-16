@@ -5,15 +5,17 @@ import { Card } from '../../components/ui/Card.tsx';
 import { EmptyState } from '../../components/ui/EmptyState.tsx';
 import { Skeleton } from '../../components/ui/Skeleton.tsx';
 import { useSession } from '../auth/SessionProvider.tsx';
+import { useUsersById } from '../profile/hooks.ts';
 import { useAllTokenRequests } from './hooks.ts';
 import type { TokenRequestWithId } from './hooks.ts';
 import { approveTokenRequest, denyTokenRequest } from './tokenRequests.ts';
 
 interface RequestRowProps {
   request: TokenRequestWithId;
+  photoURL: string | null;
 }
 
-function RequestRow({ request }: RequestRowProps) {
+function RequestRow({ request, photoURL }: RequestRowProps) {
   const { user } = useSession();
   const [busy, setBusy] = useState<'approve' | 'deny' | null>(null);
   const [error, setError] = useState('');
@@ -47,7 +49,7 @@ function RequestRow({ request }: RequestRowProps) {
   return (
     <div className="flex flex-col gap-2 py-3">
       <div className="flex items-center gap-3">
-        <Avatar name={request.displayName} size={36} />
+        <Avatar name={request.displayName} src={photoURL ?? undefined} size={36} />
         <div className="min-w-0 flex-1">
           <div className="truncate font-medium text-text">{request.displayName}</div>
           <div className="text-xs text-muted">
@@ -76,6 +78,7 @@ function RequestRow({ request }: RequestRowProps) {
 
 export function TokensPage() {
   const { requests, loading } = useAllTokenRequests();
+  const { byId: usersById } = useUsersById();
 
   if (loading) return <Skeleton className="m-4 h-40" />;
   if (requests.length === 0) return <EmptyState title="No requests yet" />;
@@ -90,7 +93,11 @@ export function TokensPage() {
     <div className="p-4">
       <Card className="divide-y divide-line">
         {sorted.map((request) => (
-          <RequestRow key={request.id} request={request} />
+          <RequestRow
+            key={request.id}
+            request={request}
+            photoURL={usersById[request.uid]?.photoURL ?? null}
+          />
         ))}
       </Card>
     </div>

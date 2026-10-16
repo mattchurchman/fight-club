@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Avatar } from '../../components/ui/Avatar.tsx';
 import { Coin } from '../../components/brand/Brand.tsx';
 import { useSession } from '../auth/SessionProvider.tsx';
+import { useUsersById } from '../profile/hooks.ts';
 import type { Bout } from '@shared/index.ts';
 import type { BoutWithId } from '../events/hooks.ts';
 import { fightOrder } from './derive.ts';
@@ -69,7 +70,8 @@ interface LiveLeaderboardProps {
  * outlined (docs/tasks/T37). Tap a row to see that player's full picks. */
 export function LiveLeaderboard({ entries, bouts, moves, final, onTap }: LiveLeaderboardProps) {
   const { user } = useSession();
-  const rows = buildLeaderboard(entries);
+  const { byId: usersById } = useUsersById();
+  const rows = buildLeaderboard(entries, usersById);
   const payoutByUid = new Map(entries.map((entry) => [entry.uid, entry.payout]));
   const boutsById: Record<string, Bout> = Object.fromEntries(bouts.map((bout) => [bout.id, bout]));
   const order = fightOrder(boutsById);

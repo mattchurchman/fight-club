@@ -2,10 +2,23 @@
 import type { Timestamp } from 'firebase/firestore';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PlayerSheet } from './PlayerSheet.tsx';
 import type { EntryWithId } from './hooks.ts';
 import type { BoutWithId } from '../events/hooks.ts';
+
+// `PlayerSheet` joins live `usersById` (docs/tasks/T51) via `useUsersById`, which mounts a
+// Firestore listener — stub it out rather than hitting the real SDK/IndexedDB in jsdom, and let
+// tests control what it "reads" via `mockUserDocs`.
+let mockUserDocs: Array<{ id: string; data: () => unknown }> = [];
+vi.mock('../../lib/firebase.ts', () => ({ db: {} }));
+vi.mock('firebase/firestore', () => ({
+  collection: () => ({}),
+  onSnapshot: (_ref: unknown, next: (snap: { docs: typeof mockUserDocs }) => void) => {
+    next({ docs: mockUserDocs });
+    return () => {};
+  },
+}));
 
 const ts = { toMillis: () => 0 } as unknown as Timestamp;
 
@@ -55,6 +68,10 @@ function renderSheet(props: Partial<Parameters<typeof PlayerSheet>[0]> = {}) {
 }
 
 describe('PlayerSheet', () => {
+  beforeEach(() => {
+    mockUserDocs = [];
+  });
+
   it('shows "Pending" for an unresolved pick, not "…"', () => {
     renderSheet();
     expect(screen.getByText('Pending')).toBeInTheDocument();
@@ -80,5 +97,11 @@ describe('PlayerSheet', () => {
   it('hides the link when no username is found', () => {
     renderSheet({ usernameByUid: {} });
     expect(screen.queryByText('View profile')).not.toBeInTheDocument();
+  });
+
+  it("prefers the live user doc's photoURL over the entry's denormalized copy", () => {
+    mockUserDocs = [{ id: 'u1', data: () => ({ photoURL: 'fresh.png' }) }];
+    renderSheet({ entry: entry({ photoURL: 'stale.png' }) });
+    expect(screen.getByRole('img')).toHaveAttribute('src', 'fresh.png');
   });
 });

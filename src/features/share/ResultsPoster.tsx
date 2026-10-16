@@ -15,7 +15,8 @@ export interface ResultsPosterProps {
 }
 
 /** Offscreen 1080×1350 poster: podium, call of the night, your rank (docs/tasks/T22, restyled T42).
- * Avatars render as initials only — remote headshots can be CORS-blocked inside the canvas capture. */
+ * Avatars render a player's `photoURL` when set — a data URI always rasterizes inside the canvas
+ * capture (unlike a remote headshot URL, which `html-to-image` can't read cross-origin). */
 export const ResultsPoster = forwardRef<HTMLDivElement, ResultsPosterProps>(function ResultsPoster(
   { eventLabel, headline, rows, callOfTheNight, selfUid },
   ref,
@@ -48,7 +49,7 @@ export const ResultsPoster = forwardRef<HTMLDivElement, ResultsPosterProps>(func
             >
               {row.rank}
             </span>
-            <Avatar name={row.displayName} size={96} />
+            <Avatar name={row.displayName} src={row.photoURL ?? undefined} size={96} />
             <p className="min-w-0 flex-1 truncate text-[44px] font-semibold">{row.displayName}</p>
             <p className="shrink-0 text-[48px] font-semibold tabular-nums text-text">
               {row.score.total >= 0 ? '+' : ''}

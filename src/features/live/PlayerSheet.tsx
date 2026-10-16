@@ -4,6 +4,7 @@ import type { BoutScore } from '@shared/index.ts';
 import { Avatar } from '../../components/ui/Avatar.tsx';
 import { Sheet } from '../../components/ui/Sheet.tsx';
 import type { BoutWithId } from '../events/hooks.ts';
+import { useUsersById } from '../profile/hooks.ts';
 import type { EntryWithId } from './hooks.ts';
 import { boutPickOutcome } from './reveal.ts';
 import type { PickOutcome } from './reveal.ts';
@@ -34,18 +35,24 @@ interface PlayerSheetProps {
 
 /** Tap-through detail sheet for one player's picks and scoring breakdown (docs/tasks/T15). */
 export function PlayerSheet({ entry, bouts, usernameByUid, open, onClose }: PlayerSheetProps) {
+  // Live user docs (docs/tasks/T51): a picture changed after picks locked should still show here,
+  // not the denormalized copy on the entry. Hook runs unconditionally per React's rules, even
+  // while `entry` is null below.
+  const { byId: usersById } = useUsersById();
+
   if (!entry) return null;
 
   const firstBloodBout = entry.firstBlood
     ? bouts.find((bout) => bout.id === entry.firstBlood?.boutId)
     : undefined;
   const username = usernameByUid?.[entry.uid];
+  const photoURL = usersById[entry.uid]?.photoURL ?? entry.photoURL;
 
   return (
     <Sheet open={open} onClose={onClose} title={entry.displayName}>
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-3">
-          <Avatar name={entry.displayName} src={entry.photoURL ?? undefined} size={48} />
+          <Avatar name={entry.displayName} src={photoURL ?? undefined} size={48} />
           {entry.score ? (
             <p
               className={clsx(

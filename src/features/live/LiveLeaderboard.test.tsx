@@ -11,6 +11,17 @@ vi.mock('../auth/SessionProvider.tsx', () => ({
   useSession: () => ({ user: { uid: 'me' } }),
 }));
 
+// `LiveLeaderboard` joins live `usersById` (docs/tasks/T51) via `useUsersById`, which mounts a
+// Firestore listener — stub it out rather than hitting the real SDK/IndexedDB in jsdom.
+vi.mock('../../lib/firebase.ts', () => ({ db: {} }));
+vi.mock('firebase/firestore', () => ({
+  collection: () => ({}),
+  onSnapshot: (_ref: unknown, next: (snap: { docs: never[] }) => void) => {
+    next({ docs: [] });
+    return () => {};
+  },
+}));
+
 const ts = { toMillis: () => 0 } as unknown as Timestamp;
 
 function bout(overrides: Partial<BoutWithId> = {}): BoutWithId {

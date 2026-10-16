@@ -9,6 +9,7 @@ import { SectionLabel } from '../../components/ui/SectionLabel.tsx';
 import { Sheet } from '../../components/ui/Sheet.tsx';
 import { db } from '../../lib/firebase.ts';
 import type { CommentWithId } from '../live/hooks.ts';
+import { useUsersById } from '../profile/hooks.ts';
 import { UserLink } from '../profile/UserLink.tsx';
 
 const QUICK_EMOJIS = ['🔥', '😂', '🩸', '💀', '🐐'] as const;
@@ -33,6 +34,7 @@ export function ChatPanel({
   picksSecret = false,
 }: ChatPanelProps) {
   const { user, profile } = useSession();
+  const { byId: usersById } = useUsersById();
   const { show: showToast } = useToast();
   const [text, setText] = useState('');
   const [selectedBoutId, setSelectedBoutId] = useState<string | null>(null);
@@ -136,7 +138,11 @@ export function ChatPanel({
           {comments?.map((comment) => (
             <div key={comment.id} className="flex gap-2">
               <UserLink uid={comment.uid} className="mt-0.5 flex-shrink-0">
-                <Avatar name={comment.displayName} size={32} />
+                <Avatar
+                  name={comment.displayName}
+                  src={usersById[comment.uid]?.photoURL ?? undefined}
+                  size={32}
+                />
               </UserLink>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">

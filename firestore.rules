@@ -139,7 +139,7 @@ service cloud.firestore {
         && d.displayName is string && d.displayName.size() > 0 && d.displayName.size() <= 40
         && d.username is string && d.username.size() > 0 && d.username.size() <= 20
         && d.usernameLower == d.username.lower()
-        && (d.photoURL == null || (d.photoURL is string && d.photoURL.size() <= 500))
+        && (d.photoURL == null || (d.photoURL is string && d.photoURL.size() <= 30000))
         // A rename must come with a `usernames` doc that is *yours*. `usernames` can never be
         // updated in place, so this is what stops a player renaming onto a name someone else holds.
         && (!changed.hasAny(['username', 'usernameLower'])

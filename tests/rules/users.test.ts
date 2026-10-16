@@ -135,6 +135,21 @@ describe('users update', () => {
     );
   });
 
+  it('accepts a 30000-char photoURL (a data URI avatar) and rejects one char over', async () => {
+    await assertSucceeds(
+      updateDoc(doc(asPlayer1(env), `users/${UID.p1}`), { photoURL: 'x'.repeat(30000) }),
+    );
+    await assertFails(
+      updateDoc(doc(asPlayer1(env), `users/${UID.p1}`), { photoURL: 'x'.repeat(30001) }),
+    );
+  });
+
+  it("denies a player writing another player's photoURL", async () => {
+    await assertFails(
+      updateDoc(doc(asPlayer1(env), `users/${UID.p2}`), { photoURL: 'x'.repeat(100) }),
+    );
+  });
+
   it('denies a player writing their own balance', async () => {
     await assertFails(updateDoc(doc(asPlayer1(env), `users/${UID.p1}`), { balance: 99999 }));
   });
