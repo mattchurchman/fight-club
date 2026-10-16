@@ -122,7 +122,7 @@ between tasks, kickoff `Run the next task. Model tier: <X>. Effort: <effort>`.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
 | T49 | Fight-night simulator (`npm run sim`) | B | high | — | done | 2026-10-15 | aa3ea18 |
-| T50 | v2.2 QA pass with the simulator & e2e | B | medium | T44–T49 | in-progress | | |
+| T50 | v2.2 QA pass with the simulator & e2e | B | medium | T44–T49 | done | 2026-10-15 | dc69eb1 |
 
 Deferred to a later revision (owner): profile photos & nicknames; winner takeover screen & championship belt.
 
