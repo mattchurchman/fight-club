@@ -22,6 +22,19 @@ export interface PickersByCorner {
   b: PickerInfo[];
 }
 
+export interface ByPersonCell {
+  surname: string | null;
+  isLock: boolean;
+  firstBlood: { sameAsWinner: boolean; surname: string } | null;
+}
+
+export interface ByPersonRow {
+  uid: string;
+  name: string;
+  isSelf: boolean;
+  cells: ByPersonCell[];
+}
+
 /** Sorts a column: self first, then stake desc, then name (docs/tasks/T46). */
 function sortColumn(pickers: PickerInfo[]): PickerInfo[] {
   return pickers.sort((x, y) => {
@@ -72,4 +85,45 @@ export function pickersFor(
   }
 
   return { a: sortColumn(a), b: sortColumn(b) };
+}
+
+/**
+ * One row per entrant across the whole card, for the "By person" toggle on Everyone's picks
+ * (docs/tasks/T47, docs/DESIGN.md "Everyone's picks"). Cells follow `bouts`' order; an entry with
+ * no pick for a bout gets a `null` surname cell.
+ */
+export function byPerson(
+  entries: readonly EntryWithId[],
+  bouts: readonly BoutWithId[],
+  selfUid: string | null,
+  firstBloodEnabled: boolean,
+): ByPersonRow[] {
+  const rows = entries.map((entry) => {
+    const cells: ByPersonCell[] = bouts.map((bout) => {
+      const pick = entry.picks[bout.id];
+      if (!pick) return { surname: null, isLock: false, firstBlood: null };
+
+      const firstBloodPick =
+        firstBloodEnabled && entry.firstBlood?.boutId === bout.id ? entry.firstBlood : null;
+      const firstBlood = firstBloodPick
+        ? {
+            sameAsWinner: firstBloodPick.fighter === pick.winner,
+            surname: surname(firstBloodPick.fighter === 'A' ? bout.a.name : bout.b.name),
+          }
+        : null;
+
+      return {
+        surname: surname(pick.winner === 'A' ? bout.a.name : bout.b.name),
+        isLock: entry.lockBoutId === bout.id,
+        firstBlood,
+      };
+    });
+
+    return { uid: entry.uid, name: entry.displayName, isSelf: entry.uid === selfUid, cells };
+  });
+
+  return rows.sort((x, y) => {
+    if (x.isSelf !== y.isSelf) return x.isSelf ? -1 : 1;
+    return x.name.localeCompare(y.name);
+  });
 }

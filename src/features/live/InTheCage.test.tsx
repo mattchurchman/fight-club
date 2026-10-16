@@ -7,6 +7,10 @@ import type { SwingLine } from './derive.ts';
 import type { EntryWithId } from './hooks.ts';
 import type { BoutWithId } from '../events/hooks.ts';
 
+vi.mock('../auth/SessionProvider.tsx', () => ({
+  useSession: () => ({ user: null }),
+}));
+
 const ts = { toMillis: () => 0 } as unknown as Timestamp;
 
 function bout(overrides: Partial<BoutWithId> = {}): BoutWithId {
@@ -65,10 +69,27 @@ describe('InTheCage', () => {
     expect(screen.getByText('Up next')).toBeInTheDocument();
     expect(screen.getByText('Green')).toBeInTheDocument();
     expect(screen.getByText('Ribovics')).toBeInTheDocument();
+    expect(screen.getByText('Tony')).toBeInTheDocument();
+    expect(screen.getByLabelText('Lock of the night')).toBeInTheDocument();
 
-    const tonyAvatar = screen.getByLabelText("View Tony's picks");
-    fireEvent.click(tonyAvatar);
+    fireEvent.click(screen.getByText('Tony'));
     expect(onTap).toHaveBeenCalledWith('u1');
+  });
+
+  it('shows at most 6 pickers per side, collapsing the rest into a "+N more" line', () => {
+    const entries = Array.from({ length: 8 }, (_, i) =>
+      entry({
+        uid: `u${i}`,
+        displayName: `Friend ${i}`,
+        picks: { bout_1: { winner: 'A', method: 'DEC', stake: 100 } },
+      }),
+    );
+    render(<InTheCage bout={bout()} entries={entries} swing={[]} hasResults={false} onTap={vi.fn()} />);
+
+    expect(screen.getByText('Friend 0')).toBeInTheDocument();
+    expect(screen.getByText('Friend 5')).toBeInTheDocument();
+    expect(screen.queryByText('Friend 6')).not.toBeInTheDocument();
+    expect(screen.getByText('+2 more')).toBeInTheDocument();
   });
 
   it('switches the heading to "In the cage" once results exist, and renders swing lines', () => {

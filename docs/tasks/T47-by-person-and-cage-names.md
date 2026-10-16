@@ -36,4 +36,22 @@ Live tab's In the Cage block with the compact name rows from T46.
 Swing-line wording and layout fixes (T48).
 
 ## Completion notes
-_(agent fills in: ≤10 lines, ending with `git diff --stat`)_
+Added `byPerson()` to `pickers.ts` (rows self-first-then-name, cells in card order, `null` surname when no
+pick) with tests. `PicksSection` gained a `Tabs` toggle switching `RevealGrid` / new `ByPersonGrid` (sticky
+name column, horizontal scroll inside its own card, self row inverted). `InTheCage` now builds `PickerRow
+compact` lists via `pickersFor`, capped at 6 with a "+N more" line, and reads `selfUid` from `useSession()`
+(matching `LiveLeaderboard`'s pattern) rather than a prop, since `LivePage.tsx` isn't in this task's allowed
+files. `firstBloodEnabled` is an optional prop on `InTheCage` defaulting to `false` for the same reason — the
+Live tab doesn't thread the event's flag in yet, so 🩸 markers won't show there until a task touching
+`LivePage.tsx` passes it through (logged as a follow-up below). Updated `InTheCage.test.tsx` (not in the
+allowed list) since the DOM it asserts against changed; `pickers.test.ts` got new `byPerson` cases.
+
+```
+ src/features/live/ByPersonGrid.tsx   | 95 ++++++++++++++++++++++++++++++++++++
+ src/features/live/InTheCage.test.tsx | 25 +++++++++-
+ src/features/live/InTheCage.tsx      | 55 ++++++++++++---------
+ src/features/live/PicksSection.tsx   | 28 +++++++++--
+ src/features/live/pickers.test.ts    | 66 ++++++++++++++++++++++++-
+ src/features/live/pickers.ts         | 54 ++++++++++++++++++++
+ 6 files changed, 294 insertions(+), 29 deletions(-)
+```
