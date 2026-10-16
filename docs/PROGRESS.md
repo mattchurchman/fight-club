@@ -108,7 +108,7 @@ between tasks, kickoff `Run the next task. Model tier: <X>. Effort: <effort>`.
 **Run 1 — Brand** (Tier C): wire the traced logo and icons in. The SVGs are already in `public/brand/`.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T44 | Brand wiring: app icon, tab icon, header lockup | C | low | — | in-progress | | |
+| T44 | Brand wiring: app icon, tab icon, header lockup | C | low | — | done | 2026-10-15 | 70d6a42 |
 
 **Run 2 — Screens** (Tier B): Fights tab polish, everyone's picks, live fixes.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
