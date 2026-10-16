@@ -116,7 +116,7 @@ between tasks, kickoff `Run the next task. Model tier: <X>. Effort: <effort>`.
 | T45 | Event header & fight slide layout fixes | B | medium | T44 | done | 2026-10-15 | 4d52e7b |
 | T46 | Everyone's picks: name rows, lock & first blood | B | high | T44 | done | 2026-10-15 | 651a140 |
 | T47 | By-person view & In the Cage names | B | medium | T46 | done | 2026-10-15 | 9c16781 |
-| T48 | Live tab fixes: "you", clipping, Trash Talk overlap | B | medium | T47 | done | 2026-10-15 | PENDING |
+| T48 | Live tab fixes: "you", clipping, Trash Talk overlap | B | medium | T47 | done | 2026-10-15 | 47b156c |
 
 **Run 3 — Rehearsal** (Tier B): the simulator, then a full QA pass using it.
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
