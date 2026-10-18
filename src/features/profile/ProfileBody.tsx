@@ -73,7 +73,12 @@ export function ProfileBody({ uid, isSelf, viewerUid }: ProfileBodyProps) {
             {h2hDocs === undefined ? (
               <Skeleton className="h-16 w-full" />
             ) : (
-              <H2HSection docs={h2hDocs} profileUid={uid} viewerUid={viewerUid} usersById={usersById} />
+              <H2HSection
+                docs={h2hDocs}
+                profileUid={uid}
+                viewerUid={viewerUid}
+                usersById={usersById}
+              />
             )}
           </div>
         </div>
@@ -85,6 +90,8 @@ export function ProfileBody({ uid, isSelf, viewerUid }: ProfileBodyProps) {
           <div className="px-4">
             <Skeleton className="h-16 w-full" />
           </div>
+        ) : history === null ? (
+          <p className="px-4 text-sm text-muted">Couldn't load history.</p>
         ) : seasonStats ? (
           <>
             <div className="grid grid-cols-4 gap-2 px-4">
@@ -147,6 +154,8 @@ export function ProfileBody({ uid, isSelf, viewerUid }: ProfileBodyProps) {
         <div className="px-4">
           {history === undefined ? (
             <Skeleton className="h-16 w-full" />
+          ) : history === null ? (
+            <p className="text-sm text-muted">Couldn't load history.</p>
           ) : (
             <EventHistoryList rows={history} />
           )}

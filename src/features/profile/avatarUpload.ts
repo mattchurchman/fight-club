@@ -9,6 +9,7 @@ export const MAX_AVATAR_CHARS = 30000;
 const MAX_SOURCE_BYTES = 10 * 1024 * 1024;
 
 const AVATAR_SIZE = 256;
+const AVATAR_RETRY_SIZE = 192;
 const QUALITIES = [0.8, 0.6, 0.45] as const;
 
 export class AvatarUploadError extends Error {}
@@ -53,16 +54,40 @@ export async function encodeAvatar(file: File): Promise<string> {
 
   const box = planAvatarEncode(bitmap.width, bitmap.height);
   const canvas = document.createElement('canvas');
-  canvas.width = AVATAR_SIZE;
-  canvas.height = AVATAR_SIZE;
   const ctx = canvas.getContext('2d');
-  if (!ctx) throw new AvatarUploadError("Couldn't process that image. Try a different file.");
-  ctx.drawImage(bitmap, box.sx, box.sy, box.sWidth, box.sHeight, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
-  bitmap.close();
+  if (!ctx) {
+    bitmap.close();
+    throw new AvatarUploadError("Couldn't process that image. Try a different file.");
+  }
 
-  for (const quality of QUALITIES) {
-    const dataUri = canvas.toDataURL('image/webp', quality);
-    if (dataUri.length <= MAX_AVATAR_CHARS) return dataUri;
+  const draw = (size: number) => {
+    canvas.width = size;
+    canvas.height = size;
+    ctx.drawImage(bitmap, box.sx, box.sy, box.sWidth, box.sHeight, 0, 0, size, size);
+  };
+
+  const tryEncode = (): string | null => {
+    const firstWebp = canvas.toDataURL('image/webp', QUALITIES[0]);
+    const mimeType = firstWebp.startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg';
+
+    for (const [index, quality] of QUALITIES.entries()) {
+      const dataUri =
+        mimeType === 'image/webp' && index === 0 ? firstWebp : canvas.toDataURL(mimeType, quality);
+      if (dataUri.length <= MAX_AVATAR_CHARS) return dataUri;
+    }
+    return null;
+  };
+
+  try {
+    draw(AVATAR_SIZE);
+    const fullSize = tryEncode();
+    if (fullSize) return fullSize;
+
+    draw(AVATAR_RETRY_SIZE);
+    const retry = tryEncode();
+    if (retry) return retry;
+  } finally {
+    bitmap.close();
   }
 
   throw new AvatarUploadError("That image won't shrink small enough — try a simpler photo.");

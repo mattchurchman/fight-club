@@ -4,9 +4,10 @@
 // below is safe to mount for someone else's profile, not just your own.
 import { useEffect, useMemo, useState } from 'react';
 import type { Timestamp } from 'firebase/firestore';
-import { collection, doc, getDoc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import type { Entry, Event, User } from '@shared/index.ts';
 import { db } from '../../lib/firebase.ts';
+import { sortNewestFirst } from '../events/hooks.ts';
 import type { H2HDocLike } from './h2h.ts';
 
 export interface UserWithId extends User<Timestamp> {
@@ -125,41 +126,49 @@ function seasonIdFor(startsAtMs: number): string {
  * This player's finalized events, most recent first. One `getDoc` per final event — fine at this
  * app's scale (a handful of events a year), and simpler than denormalizing a reverse index.
  */
-export function useEventHistory(uid: string | null): EventHistoryRow[] | undefined {
-  const [rows, setRows] = useState<EventHistoryRow[] | undefined>(undefined);
+export function useEventHistory(uid: string | null): EventHistoryRow[] | null | undefined {
+  const [rows, setRows] = useState<EventHistoryRow[] | null | undefined>(undefined);
 
   useEffect(() => {
     if (!uid) return undefined;
     let cancelled = false;
 
     void (async () => {
-      const eventsSnap = await getDocs(
-        query(collection(db, 'events'), where('status', '==', 'final'), orderBy('startsAt', 'desc')),
-      );
-      const events = eventsSnap.docs.map((d) => ({ id: d.id, ...(d.data() as Event<Timestamp>) }));
+      try {
+        const eventsSnap = await getDocs(
+          query(collection(db, 'events'), where('status', '==', 'final')),
+        );
+        const events = sortNewestFirst(
+          eventsSnap.docs.map((d) => ({ id: d.id, ...(d.data() as Event<Timestamp>) })),
+        );
 
-      const entrySnaps = await Promise.all(
-        events.map((event) => getDoc(doc(db, 'events', event.id, 'entries', uid))),
-      );
+        const entrySnaps = await Promise.all(
+          events.map((event) => getDoc(doc(db, 'events', event.id, 'entries', uid))),
+        );
 
-      if (cancelled) return;
-      const nextRows: EventHistoryRow[] = [];
-      entrySnaps.forEach((snap, i) => {
-        const event = events[i]!;
-        if (!snap.exists()) return;
-        const entry = snap.data() as Entry<Timestamp>;
-        if (entry.rank === null || entry.score === null || entry.payout === null) return;
-        nextRows.push({
-          eventId: event.id,
-          name: event.name,
-          startsAtMs: event.startsAt.toMillis(),
-          seasonId: seasonIdFor(event.startsAt.toMillis()),
-          rank: entry.rank,
-          points: entry.score.total,
-          payout: entry.payout,
+        if (cancelled) return;
+        const nextRows: EventHistoryRow[] = [];
+        entrySnaps.forEach((snap, i) => {
+          const event = events[i]!;
+          if (!snap.exists()) return;
+          const entry = snap.data() as Entry<Timestamp>;
+          if (entry.rank === null || entry.score === null || entry.payout === null) return;
+          nextRows.push({
+            eventId: event.id,
+            name: event.name,
+            startsAtMs: event.startsAt.toMillis(),
+            seasonId: seasonIdFor(event.startsAt.toMillis()),
+            rank: entry.rank,
+            points: entry.score.total,
+            payout: entry.payout,
+          });
         });
-      });
-      setRows(nextRows);
+        setRows(nextRows);
+      } catch (error) {
+        if (cancelled) return;
+        console.error('Failed to load event history', error);
+        setRows(null);
+      }
     })();
 
     return () => {

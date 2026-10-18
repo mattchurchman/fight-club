@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { EventStatus } from '@shared/index.ts';
-import { categorizeEvents, selectDefaultEventId } from './hooks.ts';
+import { categorizeEvents, selectDefaultEventId, sortNewestFirst } from './hooks.ts';
 
 function ts(ms: number) {
   return { toMillis: () => ms };
@@ -61,5 +61,17 @@ describe('selectDefaultEventId', () => {
 
   it('returns null when there are no events at all', () => {
     expect(selectDefaultEventId([], [])).toBeNull();
+  });
+});
+
+describe('sortNewestFirst', () => {
+  it('sorts by startsAt descending without mutating the input', () => {
+    const events = [
+      event({ id: 'old', startsAt: ts(100) }),
+      event({ id: 'new', startsAt: ts(300) }),
+    ];
+
+    expect(sortNewestFirst(events).map((item) => item.id)).toEqual(['new', 'old']);
+    expect(events.map((item) => item.id)).toEqual(['old', 'new']);
   });
 });

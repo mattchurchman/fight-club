@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { EventsArchivePage } from './EventsArchivePage.tsx';
 import type { PastEventRow } from './hooks.ts';
 
-const mockUsePastEvents = vi.fn<(uid: string | null) => PastEventRow[] | undefined>();
+const mockUsePastEvents = vi.fn<(uid: string | null) => PastEventRow[] | null | undefined>();
 
 vi.mock('../auth/SessionProvider.tsx', () => ({
   useSession: () => ({ user: { uid: 'me' } }),
@@ -51,7 +51,13 @@ describe('EventsArchivePage', () => {
     expect(screen.getByText('No past events')).toBeInTheDocument();
   });
 
-  it('shows the event, its winner, pot and the viewer\'s rank', () => {
+  it('shows an inline error when past events fail to load', () => {
+    mockUsePastEvents.mockReturnValue(null);
+    renderPage();
+    expect(screen.getByText("Couldn't load past events.")).toBeInTheDocument();
+  });
+
+  it("shows the event, its winner, pot and the viewer's rank", () => {
     mockUsePastEvents.mockReturnValue([row({ winnerNames: ['Tony'], selfRank: 3, pot: 500 })]);
     renderPage();
     expect(screen.getByText('UFC 300')).toBeInTheDocument();

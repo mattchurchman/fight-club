@@ -58,4 +58,23 @@ model change.
 Capping/paginating the archive (backlog), any layout or styling change.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- Removed the composite-index query shape and sort final events newest-first in shared client logic.
+- Both history hooks now expose failed loads; the archive and both profile sections render inline errors.
+- Avatar encoding detects Safari's PNG response, falls back to JPEG, then retries once at 192×192.
+- Added ordering, archive-error, and PNG→JPEG fallback coverage.
+- Verified lint, typecheck, 566 unit tests, production build, and the emulator-backed e2e test.
+
+Proof of work (`git diff --stat`):
+```
+docs/PROGRESS.md                               |   2 +-
+docs/tasks/T52-history-query-iphone-avatar.md  |  21 ++++-
+src/features/events/EventsArchivePage.test.tsx |  10 ++-
+src/features/events/EventsArchivePage.tsx      |   2 +
+src/features/events/hooks.test.ts              |  14 +++-
+src/features/events/hooks.ts                   | 102 ++++++++++++++++---------
+src/features/profile/ProfileBody.tsx           |  11 ++-
+src/features/profile/avatarUpload.test.ts      |  36 ++++++++-
+src/features/profile/avatarUpload.ts           |  41 ++++++++--
+src/features/profile/hooks.ts                  |  63 ++++++++-------
+10 files changed, 223 insertions(+), 79 deletions(-)
+```

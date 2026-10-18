@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Timestamp } from 'firebase/firestore';
-import { collection, doc, getDoc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore';
 import type { Bout, Entry, Event, EventStatus } from '@shared/index.ts';
 import { db } from '../../lib/firebase.ts';
 
@@ -21,6 +30,15 @@ interface EventLike {
   startsAt: { toMillis(): number };
 }
 
+interface StartsAtLike {
+  startsAt: { toMillis(): number };
+}
+
+/** Returns a newest-first copy without relying on a Firestore composite index. */
+export function sortNewestFirst<E extends StartsAtLike>(events: E[]): E[] {
+  return [...events].sort((a, b) => b.startsAt.toMillis() - a.startsAt.toMillis());
+}
+
 /**
  * Pure split of enabled events into the upcoming chip list (open/locked/live, soonest lock
  * first) and the recent one (final, most recently held first). Kept apart from the Firestore
@@ -37,7 +55,10 @@ export function categorizeEvents<E extends EventLike>(events: E[]): { upcoming: 
 }
 
 /** The soonest open/locked/live event, else the most recent final one, else none. */
-export function selectDefaultEventId<E extends { id: string }>(upcoming: E[], recent: E[]): string | null {
+export function selectDefaultEventId<E extends { id: string }>(
+  upcoming: E[],
+  recent: E[],
+): string | null {
   return upcoming[0]?.id ?? recent[0]?.id ?? null;
 }
 
@@ -123,50 +144,59 @@ export interface PastEventRow {
 }
 
 /**
- * Every final event, newest first (docs/tasks/T40). Reuses the query shape `useEventHistory`
- * already runs (status == 'final' + orderBy startsAt desc) so no new index is needed, then
- * one-shot reads each event's rank-1 entries and the viewer's own entry. Fine at this app's
- * event-count scale (same note as T21's `useEventHistory`).
+ * Every final event, newest first (docs/tasks/T40). Uses a single-field status query, then sorts
+ * in memory so no composite index is needed. One-shot reads each event's rank-1 entries and the
+ * viewer's own entry. Fine at this app's event-count scale (same note as T21's `useEventHistory`).
  */
-export function usePastEvents(uid: string | null): PastEventRow[] | undefined {
-  const [rows, setRows] = useState<PastEventRow[] | undefined>(undefined);
+export function usePastEvents(uid: string | null): PastEventRow[] | null | undefined {
+  const [rows, setRows] = useState<PastEventRow[] | null | undefined>(undefined);
 
   useEffect(() => {
     if (!uid) return undefined;
     let cancelled = false;
 
     void (async () => {
-      const eventsSnap = await getDocs(
-        query(collection(db, 'events'), where('status', '==', 'final'), orderBy('startsAt', 'desc')),
-      );
-      const events = eventsSnap.docs.map((d) => ({ id: d.id, ...(d.data() as Event<Timestamp>) }));
+      try {
+        const eventsSnap = await getDocs(
+          query(collection(db, 'events'), where('status', '==', 'final')),
+        );
+        const events = sortNewestFirst(
+          eventsSnap.docs.map((d) => ({ id: d.id, ...(d.data() as Event<Timestamp>) })),
+        );
 
-      const [winnerSnaps, selfSnaps] = await Promise.all([
-        Promise.all(
-          events.map((event) =>
-            getDocs(query(collection(db, 'events', event.id, 'entries'), where('rank', '==', 1))),
+        const [winnerSnaps, selfSnaps] = await Promise.all([
+          Promise.all(
+            events.map((event) =>
+              getDocs(query(collection(db, 'events', event.id, 'entries'), where('rank', '==', 1))),
+            ),
           ),
-        ),
-        Promise.all(events.map((event) => getDoc(doc(db, 'events', event.id, 'entries', uid)))),
-      ]);
+          Promise.all(events.map((event) => getDoc(doc(db, 'events', event.id, 'entries', uid)))),
+        ]);
 
-      if (cancelled) return;
-      setRows(
-        events.map((event, i) => {
-          const selfSnap = selfSnaps[i]!;
-          const selfEntry = selfSnap.exists() ? (selfSnap.data() as Entry<Timestamp>) : null;
-          return {
-            id: event.id,
-            name: event.name,
-            subtitle: event.subtitle,
-            number: event.number,
-            startsAtMs: event.startsAt.toMillis(),
-            pot: event.pot,
-            winnerNames: winnerSnaps[i]!.docs.map((d) => (d.data() as Entry<Timestamp>).displayName),
-            selfRank: selfEntry?.rank ?? null,
-          };
-        }),
-      );
+        if (cancelled) return;
+        setRows(
+          events.map((event, i) => {
+            const selfSnap = selfSnaps[i]!;
+            const selfEntry = selfSnap.exists() ? (selfSnap.data() as Entry<Timestamp>) : null;
+            return {
+              id: event.id,
+              name: event.name,
+              subtitle: event.subtitle,
+              number: event.number,
+              startsAtMs: event.startsAt.toMillis(),
+              pot: event.pot,
+              winnerNames: winnerSnaps[i]!.docs.map(
+                (d) => (d.data() as Entry<Timestamp>).displayName,
+              ),
+              selfRank: selfEntry?.rank ?? null,
+            };
+          }),
+        );
+      } catch (error) {
+        if (cancelled) return;
+        console.error('Failed to load past events', error);
+        setRows(null);
+      }
     })();
 
     return () => {

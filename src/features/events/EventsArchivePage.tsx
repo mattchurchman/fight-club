@@ -28,6 +28,8 @@ export function EventsArchivePage() {
           <Skeleton className="h-16 w-full" />
           <Skeleton className="h-16 w-full" />
         </div>
+      ) : rows === null ? (
+        <p className="text-sm text-muted">Couldn't load past events.</p>
       ) : rows.length === 0 ? (
         <EmptyState title="No past events" description="Finished fight nights show up here." />
       ) : (
