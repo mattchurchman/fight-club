@@ -133,6 +133,7 @@ describe('LiveLeaderboard', () => {
     );
     expect(screen.getByText('150')).toBeInTheDocument();
     expect(screen.getByText('—')).toBeInTheDocument();
+    expect(screen.queryByTestId('rank-move')).not.toBeInTheDocument();
   });
 
   it('calls onTap with the uid when a row is clicked', () => {

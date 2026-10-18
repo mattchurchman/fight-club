@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, PLAYER_EMAIL, PLAYER_PASSWORD } from './testUsers.ts';
+import { expectFitsWidth } from './fitWidth.ts';
 import { writeAllCornerAWinsFixtures, writeNoResultsFixture } from './resultFixtures.ts';
 import { runLifecycle } from './runJob.ts';
 
@@ -127,5 +128,33 @@ test('admin invites a player; they pick, lock, score and get paid', async ({ bro
 
     await playerPage.goto('/wallet');
     await expect(playerPage.getByText(/Payout|Refund/)).toBeVisible();
+  });
+
+  await test.step('every player screen fits phone widths', async () => {
+    const routes = [
+      '/',
+      `/event/${seed.eventId}`,
+      '/live',
+      '/standings',
+      '/events',
+      '/wallet',
+      '/me',
+      `/u/${PLAYER_USERNAME}`,
+    ];
+
+    for (const width of [320, 375, 430]) {
+      await playerPage.setViewportSize({ width, height: 844 });
+      for (const route of routes) {
+        await playerPage.goto(route);
+        await expectFitsWidth(playerPage);
+        if (route === `/event/${seed.eventId}`) {
+          await expect(playerPage.getByLabel(/^Payout /)).toBeVisible();
+        }
+      }
+
+      await playerPage.goto(`/event/${seed.eventId}`);
+      await playerPage.getByText('By person', { exact: true }).click();
+      await expectFitsWidth(playerPage);
+    }
   });
 });

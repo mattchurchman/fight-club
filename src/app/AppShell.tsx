@@ -24,7 +24,7 @@ export function AppShell() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-[640px] flex-col bg-bg">
       <Header section={titleFor(location.pathname)} />
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-clip">
         <Outlet />
       </main>
       <TabBar />

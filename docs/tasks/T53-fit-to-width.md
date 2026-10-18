@@ -56,4 +56,12 @@ passes `moves={}`), so that column is empty there — hiding it in final mode re
 Everyone's picks layout (T54), new data or columns, desktop layout.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Moved fight marks beneath names, removed final-mode movement cells, and verified every audited route at 320/375/430px.
+docs/PROGRESS.md                           |   2 +-
+docs/tasks/T53-fit-to-width.md             |  10 ++-
+e2e/fitWidth.ts                            |  37 +++++++++
+e2e/happy-path.spec.ts                     |  29 +++++++
+src/app/AppShell.tsx                       |   2 +-
+src/features/live/LiveLeaderboard.test.tsx |   1 +
+src/features/live/LiveLeaderboard.tsx      | 127 +++++++++++++++--------------
+7 files changed, 146 insertions(+), 62 deletions(-)
