@@ -135,6 +135,18 @@ Same rules as Milestone 7: one task per session, clear context between tasks, ki
 |---|---|---|---|---|---|---|---|
 | T51 | Profile picture upload (octagon avatars) | B | high | — | done | 2026-10-15 | 5a62044 |
 
+## Milestone 9 — v2.4: trial-event fixes (2026-10-17 trial)
+Same rules as Milestone 7: one task per session, clear context between tasks, kickoff
+`Run the next task. Model tier: <X>. Effort: <effort>`. Works with any agent (Claude Code, Codex, …) — see the
+vendor column in `docs/MODEL_TIERS.md`.
+
+**Run 1 — Fixes & fit** (Tier B throughout: only clear the context between tasks, never switch model).
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T52 | Fix past-events/profile history query & iPhone avatar upload | B | medium | — | todo | | |
+| T53 | Fit-to-width: final leaderboard + overflow check on every screen | B | medium | T52 | todo | | |
+| T54 | Avatars + first names in Everyone's picks; current photo everywhere | B | medium | T53 | todo | | |
+
 ## Backlog (follow-ups discovered along the way)
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on
   2026-09-29, and `odds.source` / `events.kind` now carry `'espn'` / `'special'`. See DECISIONS.md.
@@ -293,3 +305,5 @@ Same rules as Milestone 7: one task per session, clear context between tasks, ki
   `600061267` (`401911632`–`635`, `401929495`) while ESPN's scoreboard now lists 11 competitions for it.
   `ingest-events.ts` re-runs daily and should add bouts as ESPN posts them — worth confirming the next
   ingest actually backfills the other 6 rather than only ever writing the set it first saw.
+- **Trial 2026-10-17 (owner):** archive reads ~2 docs per final event per visit (`usePastEvents`). Fine for
+  years at this scale; if it ever matters, cap `/events` at the latest 20 with "Show more". No FIFO/deletion needed.

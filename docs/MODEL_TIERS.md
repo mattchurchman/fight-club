@@ -2,19 +2,19 @@
 
 Tasks are labeled with a **tier** (which model) and, from T26 on, an **effort** (how hard the model should think).
 Matching both to the task is how we keep cost down: most UI tasks don't need the strongest model at max effort.
-Labels are vendor-neutral; fill in the right-hand column with what you actually use.
+Labels are vendor-neutral; the vendor columns are the current picks (Codex names as of 2026-10 — verify in `/model` if they have changed).
 
-| Tier | Use it for | Traits needed | Your model(s) — edit me |
+| Tier | Use it for | Traits needed | Claude (Claude Code) | Codex (OpenAI) |
+|---|---|---|---|---|
+| **A** | Correctness-critical code: security rules, scoring/payout engine, lifecycle jobs, data-source investigation, security review | Deep reasoning, careful edge cases, reads specs precisely | Opus | `gpt-5.5`, reasoning high/xhigh |
+| **B** | Most feature work: React screens, integrations, jobs with a clear spec, tests | Strong everyday coder, good with frameworks | Sonnet | `gpt-5.5`, reasoning medium |
+| **C** | Boilerplate, config, token/class sweeps, copy tweaks, simple CRUD screens | Fast and cheap, follows explicit steps | Haiku | smallest current Codex model, reasoning low/minimal |
+
+| Effort | Use it when | Claude Code setting | Codex setting (`model_reasoning_effort`) |
 |---|---|---|---|
-| **A** | Correctness-critical code: security rules, scoring/payout engine, lifecycle jobs, data-source investigation, security review | Deep reasoning, careful edge cases, reads specs precisely | Claude Opus (or your vendor's flagship) |
-| **B** | Most feature work: React screens, integrations, jobs with a clear spec, tests | Strong everyday coder, good with frameworks | Claude Sonnet (or the vendor's standard model) |
-| **C** | Boilerplate, config, token/class sweeps, copy tweaks, simple CRUD screens | Fast and cheap, follows explicit steps | Claude Haiku (or the vendor's small/fast model) |
-
-| Effort | Use it when | Claude Code / API setting |
-|---|---|---|
-| **low** | Mechanical edits with an exact spec (find/replace maps, config, copy) | effort `low` (or thinking off) |
-| **medium** | Normal feature work with a clear spec | effort `medium` (default) |
-| **high** | New logic with tests, tricky state, anything a wrong answer would show players | effort `high` |
+| **low** | Mechanical edits with an exact spec (find/replace maps, config, copy) | effort `low` | `minimal` or `low` |
+| **medium** | Normal feature work with a clear spec | effort `medium` (default) | `medium` (default) |
+| **high** | New logic with tests, tricky state, anything a wrong answer would show players | effort `high` | `high` |
 
 Rules of thumb
 - A higher tier or effort always works; it just costs more. Lower than listed is at your own risk.
