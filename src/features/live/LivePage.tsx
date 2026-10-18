@@ -39,6 +39,7 @@ export function LivePage() {
   const comments = useComments(activeId);
   const [chatOpen, setChatOpen] = useState(false);
   const [openUid, setOpenUid] = useState<string | null>(null);
+  const { byId: usersById } = useUsersById();
   const openEntry = entries?.find((entry) => entry.uid === openUid) ?? null;
 
   const boutsMap = useMemo(() => boutsById(bouts), [bouts]);
@@ -59,7 +60,10 @@ export function LivePage() {
     [entries, boutsMap, user?.uid],
   );
   const lastResultKey = feed[0]?.boutId ?? null;
-  const leaderboardRows = useMemo(() => (entries ? buildLeaderboard(entries) : []), [entries]);
+  const leaderboardRows = useMemo(
+    () => (entries ? buildLeaderboard(entries, usersById) : []),
+    [entries, usersById],
+  );
   const rankMovesByUid = useRankMoves(
     useMemo(() => leaderboardRows.map((row) => ({ uid: row.uid, rank: row.rank })), [leaderboardRows]),
     lastResultKey,
@@ -67,7 +71,6 @@ export function LivePage() {
   const selfRow = user ? leaderboardRows.find((row) => row.uid === user.uid) ?? null : null;
   const { newResultBoutId, dismiss: dismissFlash } = useNewResults(revealed ? boutsMap : undefined);
   const flashRow = feed.find((row) => row.boutId === newResultBoutId) ?? null;
-  const { byId: usersById } = useUsersById();
   const usernameByUid = useMemo(
     () => Object.fromEntries(Object.entries(usersById).map(([uid, u]) => [uid, u.username])),
     [usersById],
@@ -127,6 +130,7 @@ export function LivePage() {
           swing={swing}
           hasResults={hasResults}
           onTap={setOpenUid}
+          usersById={usersById}
         />
       ) : null}
       {selfRow ? (
@@ -146,7 +150,13 @@ export function LivePage() {
             onTap={setOpenUid}
           />
           <ResultsList feed={feed} />
-          <ShareButton event={event} bouts={bouts} entries={entries} selfUid={user?.uid ?? null} />
+          <ShareButton
+            event={event}
+            bouts={bouts}
+            entries={entries}
+            selfUid={user?.uid ?? null}
+            usersById={usersById}
+          />
         </>
       )}
       <div className="safe-bottom fixed bottom-16 left-0 right-0 z-30 flex justify-center px-4">

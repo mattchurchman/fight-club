@@ -15,6 +15,7 @@ interface ShareButtonProps {
   bouts: BoutWithId[];
   entries: EntryWithId[];
   selfUid: string | null;
+  usersById: Readonly<Record<string, { photoURL: string | null }>>;
 }
 
 /**
@@ -22,7 +23,7 @@ interface ShareButtonProps {
  * Once final: "Share results" (podium + call of the night). Offscreen posters stay mounted
  * so the capture has real layout to read (docs/tasks/T22).
  */
-export function ShareButton({ event, bouts, entries, selfUid }: ShareButtonProps) {
+export function ShareButton({ event, bouts, entries, selfUid, usersById }: ShareButtonProps) {
   const { show } = useToast();
   const resultsRef = useRef<HTMLDivElement>(null);
   const picksRef = useRef<HTMLDivElement>(null);
@@ -36,7 +37,7 @@ export function ShareButton({ event, bouts, entries, selfUid }: ShareButtonProps
 
   if (!isFinal && !self) return null;
 
-  const rows = isFinal ? buildLeaderboard(entries) : [];
+  const rows = isFinal ? buildLeaderboard(entries, usersById) : [];
   const callOfTheNight = isFinal ? findCallOfTheNight(entries, mainCard) : null;
 
   async function handleShare() {

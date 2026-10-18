@@ -49,6 +49,7 @@ interface InTheCageProps {
   /** Defaults false: the Live tab doesn't thread the active event's flag in yet (docs/tasks/T47). */
   firstBloodEnabled?: boolean;
   onTap: (uid: string) => void;
+  usersById?: Readonly<Record<string, { photoURL: string | null }>>;
 }
 
 /** The current fight: fighters, who picked each side, and what's at stake (docs/tasks/T36, T47). */
@@ -59,11 +60,12 @@ export function InTheCage({
   hasResults,
   firstBloodEnabled = false,
   onTap,
+  usersById = {},
 }: InTheCageProps) {
   const { user } = useSession();
   if (!bout) return null;
 
-  const pickers = pickersFor(entries, bout, user?.uid ?? null, firstBloodEnabled);
+  const pickers = pickersFor(entries, bout, user?.uid ?? null, firstBloodEnabled, usersById);
   const sides: {
     corner: Corner;
     name: string;

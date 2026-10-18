@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import { Avatar } from '../../components/ui/Avatar.tsx';
 import { Card } from '../../components/ui/Card.tsx';
 import type { BoutWithId } from '../events/hooks.ts';
 import type { EntryWithId } from './hooks.ts';
@@ -11,13 +12,14 @@ interface ByPersonGridProps {
   entries: EntryWithId[];
   selfUid: string | null;
   firstBloodEnabled: boolean;
+  usersById: Readonly<Record<string, { photoURL: string | null }>>;
 }
 
 /** "By person" toggle on Everyone's picks: one row per friend, F1…Fn across the card (docs/tasks/T47). */
-export function ByPersonGrid({ bouts, entries, selfUid, firstBloodEnabled }: ByPersonGridProps) {
+export function ByPersonGrid({ bouts, entries, selfUid, firstBloodEnabled, usersById }: ByPersonGridProps) {
   const [openUid, setOpenUid] = useState<string | null>(null);
   const openEntry = entries.find((entry) => entry.uid === openUid) ?? null;
-  const rows = byPerson(entries, bouts, selfUid, firstBloodEnabled);
+  const rows = byPerson(entries, bouts, selfUid, firstBloodEnabled, usersById);
 
   return (
     <>
@@ -25,7 +27,7 @@ export function ByPersonGrid({ bouts, entries, selfUid, firstBloodEnabled }: ByP
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr>
-              <th className="sticky left-0 z-10 bg-surface p-2" />
+              <th className="sticky left-0 z-10 w-16 max-w-16 bg-surface p-2" />
               {bouts.map((bout, i) => (
                 <th key={bout.id} className="label min-w-11 px-2 py-2 text-center">
                   F{i + 1}
@@ -42,11 +44,17 @@ export function ByPersonGrid({ bouts, entries, selfUid, firstBloodEnabled }: ByP
                     onClick={() => setOpenUid(row.uid)}
                     aria-label={`View ${row.name}'s picks`}
                     className={clsx(
-                      'min-h-11 w-full max-w-28 truncate px-2 py-2 text-left font-medium',
+                      'flex min-h-11 w-16 max-w-16 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-center',
                       row.isSelf ? 'bg-text text-bg' : 'bg-surface text-text',
                     )}
                   >
-                    {row.name}
+                    <Avatar
+                      name={row.name}
+                      src={row.photoURL ?? undefined}
+                      size={28}
+                      className={row.isSelf ? 'bg-bg text-text' : undefined}
+                    />
+                    <span className="w-full truncate text-[10px] font-medium leading-none">{row.firstName}</span>
                   </button>
                 </td>
                 {row.cells.map((cell, i) => (

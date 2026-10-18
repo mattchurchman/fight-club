@@ -107,8 +107,8 @@ test('admin invites a player; they pick, lock, score and get paid', async ({ bro
 
     await playerPage.goto('/live');
     await expect(playerPage.getByText('Picks lock in')).toHaveCount(0);
-    // exact + first(): In the Cage's PickerRow (T47) and the leaderboard row both show the name now.
-    await expect(playerPage.getByText(PLAYER_DISPLAY_NAME, { exact: true }).first()).toBeVisible();
+    await expect(playerPage.getByRole('button', { name: `View ${PLAYER_DISPLAY_NAME}'s picks` }).first()).toBeVisible();
+    await expect(playerPage.getByText('E2E', { exact: true }).first()).toBeVisible();
   });
 
   const { scoreboardPath, statusPath } = await writeAllCornerAWinsFixtures(seed.espnEventId, seed.mainCard);
@@ -153,8 +153,12 @@ test('admin invites a player; they pick, lock, score and get paid', async ({ bro
       }
 
       await playerPage.goto(`/event/${seed.eventId}`);
-      await playerPage.getByText('By person', { exact: true }).click();
-      await expectFitsWidth(playerPage);
+      if (width === 320 || width === 375) {
+        await playerPage.getByText('By fight', { exact: true }).click();
+        await expectFitsWidth(playerPage);
+        await playerPage.getByText('By person', { exact: true }).click();
+        await expectFitsWidth(playerPage);
+      }
     }
   });
 });

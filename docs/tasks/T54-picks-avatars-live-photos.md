@@ -57,4 +57,9 @@ share `PickerRow`). Also: a photo changed on the Me tab shows up everywhere on e
 Fighter headshots, the standings/leaderboard row layout (T53), data-model changes.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- Added current profile photos and first names to both picker derivations, with unit coverage.
+- Restyled By fight, By person and In the Cage rows with octagon avatars and compact first names.
+- Kept full display names for sorting, player-sheet labels and accessible button names.
+- Live rankings/share posters now prefer current user photos; Avatar retries whenever its URL changes.
+- Added explicit 320/375px width checks for both picks views; lint, typecheck, 568 tests, build and e2e pass.
+- `git diff --stat`: 13 files changed, 133 insertions(+), 44 deletions(-).

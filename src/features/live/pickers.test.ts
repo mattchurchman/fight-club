@@ -54,6 +54,20 @@ describe('pickersFor', () => {
     expect(result.b.map((p) => p.uid)).toEqual(['bob']);
   });
 
+  it('includes the first name and prefers the current user photo', () => {
+    const entries = [
+      entry('alice', {
+        displayName: 'Alice Example',
+        photoURL: 'submitted.jpg',
+        picks: { bout1: { winner: 'A', method: 'DEC', stake: 100 } },
+      }),
+    ];
+    const result = pickersFor(entries, bout(), null, false, {
+      alice: { photoURL: 'current.jpg' },
+    });
+    expect(result.a[0]).toMatchObject({ firstName: 'Alice', photoURL: 'current.jpg' });
+  });
+
   it('excludes entries with no pick for this bout', () => {
     const entries = [
       entry('alice', { picks: { bout1: { winner: 'A', method: 'DEC', stake: 100 } } }),
@@ -155,6 +169,17 @@ describe('byPerson', () => {
     expect(result.map((row) => row.uid)).toEqual(['me', 'alice', 'zoe']);
     expect(result[0]!.isSelf).toBe(true);
     expect(result[1]!.isSelf).toBe(false);
+  });
+
+  it('includes the first name and falls back to the submitted photo', () => {
+    const entries = [
+      entry('alice', {
+        displayName: 'Alice Example',
+        photoURL: 'submitted.jpg',
+      }),
+    ];
+    const result = byPerson(entries, [bout()], null, false);
+    expect(result[0]).toMatchObject({ firstName: 'Alice', photoURL: 'submitted.jpg' });
   });
 
   it('cells carry the picked surname, in card order, null when no pick for that bout', () => {

@@ -19,10 +19,11 @@ interface RevealGridProps {
   selfUid: string | null;
   firstBloodEnabled: boolean;
   comments?: CommentWithId[] | undefined;
+  usersById: Readonly<Record<string, { photoURL: string | null }>>;
 }
 
 /** Everyone's picks, one card per main-card bout, once the event locks (docs/tasks/T15, T46). */
-export function RevealGrid({ bouts, entries, selfUid, firstBloodEnabled, comments }: RevealGridProps) {
+export function RevealGrid({ bouts, entries, selfUid, firstBloodEnabled, comments, usersById }: RevealGridProps) {
   const [openUid, setOpenUid] = useState<string | null>(null);
   const openEntry = entries.find((entry) => entry.uid === openUid) ?? null;
 
@@ -32,7 +33,7 @@ export function RevealGrid({ bouts, entries, selfUid, firstBloodEnabled, comment
         {bouts.map((bout) => {
           const consensus = computeConsensus(entries, bout.id);
           const contrarian = findContrarian(entries, bout.id);
-          const pickers = pickersFor(entries, bout, selfUid, firstBloodEnabled);
+          const pickers = pickersFor(entries, bout, selfUid, firstBloodEnabled, usersById);
 
           return (
             <Card key={bout.id} className="flex flex-col gap-2">

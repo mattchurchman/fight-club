@@ -17,8 +17,8 @@ function getInitials(name: string): string {
 }
 
 export function Avatar({ name, src, size = 40, className }: AvatarProps) {
-  const [failed, setFailed] = useState(false);
-  const showImage = Boolean(src) && !failed;
+  const [failedSrc, setFailedSrc] = useState<string | undefined>();
+  const showImage = Boolean(src) && failedSrc !== src;
 
   return (
     <span
@@ -34,7 +34,7 @@ export function Avatar({ name, src, size = 40, className }: AvatarProps) {
           src={src}
           alt={name}
           className="octagon size-full object-cover"
-          onError={() => setFailed(true)}
+          onError={() => setFailedSrc(src)}
         />
       ) : (
         <span aria-label={name} className="font-display">

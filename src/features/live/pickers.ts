@@ -10,6 +10,8 @@ function surname(name: string): string {
 export interface PickerInfo {
   uid: string;
   name: string;
+  firstName: string;
+  photoURL: string | null;
   isSelf: boolean;
   method: Method;
   stake: number;
@@ -31,6 +33,8 @@ export interface ByPersonCell {
 export interface ByPersonRow {
   uid: string;
   name: string;
+  firstName: string;
+  photoURL: string | null;
   isSelf: boolean;
   cells: ByPersonCell[];
 }
@@ -54,6 +58,7 @@ export function pickersFor(
   bout: BoutWithId,
   selfUid: string | null,
   firstBloodEnabled: boolean,
+  usersById: Readonly<Record<string, { photoURL: string | null }>> = {},
 ): PickersByCorner {
   const a: PickerInfo[] = [];
   const b: PickerInfo[] = [];
@@ -74,6 +79,8 @@ export function pickersFor(
     const info: PickerInfo = {
       uid: entry.uid,
       name: entry.displayName,
+      firstName: entry.displayName.trim().split(/\s+/)[0] ?? entry.displayName,
+      photoURL: usersById[entry.uid]?.photoURL ?? entry.photoURL,
       isSelf: entry.uid === selfUid,
       method: pick.method,
       stake: pick.stake,
@@ -97,6 +104,7 @@ export function byPerson(
   bouts: readonly BoutWithId[],
   selfUid: string | null,
   firstBloodEnabled: boolean,
+  usersById: Readonly<Record<string, { photoURL: string | null }>> = {},
 ): ByPersonRow[] {
   const rows = entries.map((entry) => {
     const cells: ByPersonCell[] = bouts.map((bout) => {
@@ -119,7 +127,14 @@ export function byPerson(
       };
     });
 
-    return { uid: entry.uid, name: entry.displayName, isSelf: entry.uid === selfUid, cells };
+    return {
+      uid: entry.uid,
+      name: entry.displayName,
+      firstName: entry.displayName.trim().split(/\s+/)[0] ?? entry.displayName,
+      photoURL: usersById[entry.uid]?.photoURL ?? entry.photoURL,
+      isSelf: entry.uid === selfUid,
+      cells,
+    };
   });
 
   return rows.sort((x, y) => {
