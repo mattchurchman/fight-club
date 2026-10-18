@@ -145,7 +145,7 @@ vendor column in `docs/MODEL_TIERS.md`.
 |---|---|---|---|---|---|---|---|
 | T52 | Fix past-events/profile history query & iPhone avatar upload | B | medium | — | done | 2026-10-18 | 7f1e7c1 |
 | T53 | Fit-to-width: final leaderboard + overflow check on every screen | B | medium | T52 | done | 2026-10-18 | 30f4628 |
-| T54 | Avatars + first names in Everyone's picks; current photo everywhere | B | medium | T53 | todo | | |
+| T54 | Avatars + first names in Everyone's picks; current photo everywhere | B | medium | T53 | done | 2026-10-18 | 82e4c2a |
 
 ## Backlog (follow-ups discovered along the way)
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on
