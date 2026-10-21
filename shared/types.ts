@@ -200,6 +200,17 @@ export interface Entry<Ts = Timestamp> {
   payout: number | null;
 }
 
+/**
+ * Public "who's in" marker written alongside an entry (DATA_MODEL `events/{evt}/entrants/{uid}`).
+ * Carries no picks, so it is readable before lock while the entry itself stays hidden.
+ */
+export interface Entrant<Ts = Timestamp> {
+  uid: string;
+  displayName: string;
+  photoURL: string | null;
+  submittedAt: Ts;
+}
+
 export interface Comment<Ts = Timestamp> {
   uid: string;
   displayName: string;

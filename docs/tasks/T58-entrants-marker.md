@@ -47,4 +47,24 @@ The Live tab UI (T60). Removing entrant docs for entries voided at lock (the lis
 Notifications about new entrants.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+- `shared/types.ts`: `Entrant<Ts>`. `firestore.rules`: `match /entrants/{uid}` — members read; owner
+  create/update only while `entryWindowOpen` **and** `existsAfter(entries/$(uid))`, exact key set, and
+  displayName/photoURL must equal `userDoc(uid)`'s; delete admin-only.
+- `usePickDraft.submit` is now one `writeBatch`: entry (`set` on first submit, `update` on edit) plus a
+  `set` of the entrant doc every time, so an edit also backfills markers for pre-T58 entries. Edits reuse
+  the entry's `submittedAt`; the rule leaves `submittedAt` unconstrained because of that (no `request.time`).
+- `entrants.test.ts`: 15 cases (all of step 5, plus admin backfill and a non-member read). 131 rules tests green.
+- Drift: step 4 was a no-op — `jobs/seed-emulator.ts` seeds no entries at all, so there was nothing to put a
+  marker beside; noted on the existing `Tooling: npm run seed seeds no entries` backlog item (`jobs/simulate-night.ts`
+  does create entries and should seed markers too, but it is outside this task's files).
+- Checks: lint, typecheck, `npm test` (587), `npm run test:rules` (131), `npm run build` — all green.
+
+```
+ docs/BACKLOG.md                    |   2 +-
+ docs/PROGRESS.md                   |   2 +-
+ firestore.rules                    |  27 +++++++
+ shared/types.ts                    |  11 +++
+ src/features/picks/usePickDraft.ts |  19 ++++-
+ tests/rules/entrants.test.ts       | 183 +++++++++++++++++++++++++++++++
+ 6 files changed, 239 insertions(+), 5 deletions(-)
+```

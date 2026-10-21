@@ -297,6 +297,33 @@ service cloud.firestore {
         allow delete: if isAdmin();
       }
 
+      // ------------------------------------------------------------ entrants
+
+      // The public "who's in" marker (DATA_MODEL `events/{evt}/entrants/{uid}`). It carries no
+      // picks, so unlike `entries` it is readable by every member before lock — that is the whole
+      // point of it. A player may only write their own, only while their entry window is open, and
+      // only if their entry exists after the write: `existsAfter` makes the marker inseparable from
+      // the entry it advertises, whether the entry is created in the same batch or already there.
+      match /entrants/{uid} {
+        allow get, list: if canRead();
+
+        allow create, update: if isAdmin()
+          || (isOwner(uid)
+              && entryWindowOpen(eventId, uid)
+              && existsAfter(/databases/$(database)/documents/events/$(eventId)/entries/$(uid))
+              && request.resource.data.keys().hasOnly(['uid', 'displayName', 'photoURL', 'submittedAt'])
+              && request.resource.data.keys().hasAll(['uid', 'displayName', 'photoURL', 'submittedAt'])
+              && request.resource.data.uid == uid
+              // Same reason as the entry rule: the Live tab renders these, so they have to be the
+              // player's real profile rather than free text they can point at someone else.
+              && request.resource.data.displayName == userDoc(uid).displayName
+              && request.resource.data.photoURL == userDoc(uid).photoURL);
+
+        // Entrants outlive the entry window (the list is only shown before lock, and a voided
+        // entry's marker is harmless); only an admin ever removes one.
+        allow delete: if isAdmin();
+      }
+
       // -------------------------------------------------------- comments (T25)
 
       match /comments/{commentId} {

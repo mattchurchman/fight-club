@@ -98,7 +98,7 @@ Admin UI cannot reopen a resolved request or edit its amount.
 
 ## Tooling: `npm run seed` seeds no entries
 
-So T09's emulator smoke needed a throwaway script to create them. Seeding 3–4 entries (and one player too broke to pay) would make the lifecycle path runnable from `npm run seed` alone (`jobs/seed-emulator.ts` was outside T09's allowed files).
+So T09's emulator smoke needed a throwaway script to create them. Seeding 3–4 entries (and one player too broke to pay) would make the lifecycle path runnable from `npm run seed` alone (`jobs/seed-emulator.ts` was outside T09's allowed files). T58 found the same gap: it was to seed `entrants/{uid}` next to each seeded entry, but there are none, so the pre-lock "who's in" list is empty in local dev until you submit a pick. Whoever seeds entries should seed a marker per entry (and `jobs/simulate-night.ts`, which does create entries, should too).
 
 ## T18: nothing writes `bout.result.firstBlood`
 

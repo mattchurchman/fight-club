@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import type { Timestamp } from 'firebase/firestore';
-import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, onSnapshot, serverTimestamp, writeBatch } from 'firebase/firestore';
 import type { Corner, Entry, Method, ValidationResult } from '@shared/index.ts';
 import { activeBoutIds, computeBudget, DEFAULTS, validateEntry } from '@shared/index.ts';
 import { useSession } from '../auth/SessionProvider.tsx';
@@ -145,8 +145,12 @@ export function usePickDraft(
     setSubmitting(true);
     try {
       const ref = doc(db, 'events', eventId, 'entries', uid);
+      const entrantRef = doc(db, 'events', eventId, 'entrants', uid);
+      // The entry and its public "who's in" marker go up together: the rules only accept an
+      // entrant doc whose entry exists after the write (firestore.rules, `match /entrants`).
+      const batch = writeBatch(db);
       if (!entry) {
-        await setDoc(ref, {
+        batch.set(ref, {
           uid,
           displayName: profile.displayName,
           photoURL: profile.photoURL,
@@ -162,13 +166,22 @@ export function usePickDraft(
           payout: null,
         });
       } else {
-        await updateDoc(ref, {
+        batch.update(ref, {
           picks: draft.picks,
           lockBoutId: draft.lockBoutId,
           firstBlood: draft.firstBlood,
           updatedAt: serverTimestamp(),
         });
       }
+      // Set (not create) on every submit, so editing picks also backfills the marker for anyone
+      // who entered before entrants shipped. An edit keeps the entry's original submittedAt.
+      batch.set(entrantRef, {
+        uid,
+        displayName: profile.displayName,
+        photoURL: profile.photoURL,
+        submittedAt: entry ? entry.submittedAt : serverTimestamp(),
+      });
+      await batch.commit();
       clearDraft(eventId, uid);
     } catch (error) {
       // The window can close between our last render and the write reaching Firestore
