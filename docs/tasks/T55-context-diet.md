@@ -54,4 +54,21 @@ automatically instead of spending a tool call to open it.
 Rewriting DECISIONS.md, editing old task files, any app code.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+
+Created PROGRESS_ARCHIVE.md with all completed Milestones 1–9 (T01–T54). Created BACKLOG.md with 50 follow-up items, each linked in an `## Open` summary. Reduced PROGRESS.md from 24,567 to 782 bytes. Updated CLAUDE.md to `@AGENTS.md` so Claude Code loads it automatically. Updated AGENTS.md §1–3 with new references and Claude Code note. Added `jobs/.generated/` to .gitignore. Removed dead files: T26-brand-tokens-fonts.md, DESIGN_v2.0.md, jobs/hello.ts, and updated references in README.md, package.json, DESIGN.md.
+
+```
+ .gitignore                           |  1 +
+ AGENTS.md                            |  6 +-
+ CLAUDE.md                            |  1 -
+ README.md                            |  1 -
+ docs/BACKLOG.md                      |302 ++++++++++++++++++++++++++++++++++++
+ docs/DESIGN.md                       |  2 +-
+ docs/DESIGN_v2.0.md                  |500 -------------------------------------------------------
+ docs/PROGRESS.md                     |262 +---------------------------------------------
+ docs/PROGRESS_ARCHIVE.md             |320 ++++++++++++++++++++++++++++++++++++
+ docs/tasks/T26-brand-tokens-fonts.md | 95 ----------
+ jobs/hello.ts                        |  3 -
+ package.json                         |  1 -
+ 12 files changed, 627 insertions(+), 864 deletions(-)
+```

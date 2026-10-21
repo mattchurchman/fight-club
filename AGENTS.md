@@ -14,7 +14,7 @@ Stack: Vite + React + TypeScript SPA, Firebase (Auth, Firestore, Hosting, FCM) o
 **One task per session. Never start a second task in the same context window.**
 
 1. Read `docs/PROGRESS.md`. Your task is the one the user names, or else the **first row with
-   status `todo` whose dependencies are all `done`**.
+   status `todo` whose dependencies are all `done`**. Claude Code users: this file is already loaded via CLAUDE.md; don't re-read it.
 2. Open **only** that task file: `docs/tasks/Txx-*.md`.
 3. **Model-tier & effort check.** Each task declares a required tier (A, B or C, where A is the strongest) and,
    from T26 on, an effort (low, medium, high). See `docs/MODEL_TIERS.md`.
@@ -32,7 +32,7 @@ Stack: Vite + React + TypeScript SPA, Firebase (Auth, Firestore, Hosting, FCM) o
    write it as a follow-up in your handoff. Do not do it.
 8. Run the Definition of Done (section 4). Fix until green.
 9. Fill in the task file's **Completion notes** (≤10 lines: what was built, anything surprising,
-   follow-ups). Update the `docs/PROGRESS.md` row: `done`, date, short commit hash.
+   follow-ups). Update the `docs/PROGRESS.md` row: `done`, date, short commit hash. Follow-ups go to `docs/BACKLOG.md` (append under `## Open`), not PROGRESS.md.
    If you deviated from a spec, append a dated entry to `docs/DECISIONS.md`.
    **Proof of work:** end your notes with the output of `git diff --stat` for your change (files and line counts).
    A task whose code files didn't change is not done; say so instead. Never write notes for work you didn't do:
@@ -84,7 +84,7 @@ note to the PROGRESS row, ask the user one precise question, and stop.
 - Tests use `fixtures/` and never hit live APIs. Only jobs run with `--live` touch the network.
 - Summarize failing output (test names and first error line). Don't paste full logs.
 - Keep completion notes ≤10 lines and the final message to the template above.
-- `docs/DESIGN.md` is long: load only the `##` sections your task names. Never open `docs/DESIGN_v2.0.md` (history).
+- `docs/DESIGN.md` is long: load only the `##` sections your task names. Never open `docs/PROGRESS_ARCHIVE.md`; open `docs/BACKLOG.md` only when your task lists it.
 - Task files list exact paths. If a path no longer exists, grep for the symbol once, then note the drift in your completion notes.
 
 ## 4. Definition of Done (every task)

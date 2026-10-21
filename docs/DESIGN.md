@@ -1,6 +1,6 @@
 # Design direction — v2.1 "The Minimal"
 
-Replaces the v2.0 gold/red/blue look (archived in `docs/DESIGN_v2.0.md`, history only — don't load it).
+Replaces the v2.0 gold/red/blue look.
 **Feel:** clean / bold / timeless. Serious competition, simple, focused. Black and charcoal surfaces,
 white type, **one** red accent. Used on iPhones, in bars and on couches, one-handed. Thumb-first.
 Tasks load only the `##` sections they name.

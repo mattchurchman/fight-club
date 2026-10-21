@@ -33,6 +33,7 @@ firebase-export-*/
 playwright-report/
 test-results/
 e2e/.generated/
+jobs/.generated/
 
 # Editor directories and files
 .vscode/*

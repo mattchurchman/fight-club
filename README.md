@@ -41,7 +41,6 @@ and add rows to PROGRESS.md. Don't run two tasks in one session.
   terminal after `npm run emulators` is up.
 - `npm run deploy:rules` — deploy `firestore.rules` and `firestore.indexes.json` to the real project
 - `npm run job -- <path>` — run a job script with `tsx`, loading `.env.local` if present
-- `npm run jobs:hello` — run the sample `jobs/hello.ts` script
 
 ## Deploy & jobs
 
