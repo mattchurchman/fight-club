@@ -147,6 +147,13 @@ vendor column in `docs/MODEL_TIERS.md`.
 | T53 | Fit-to-width: final leaderboard + overflow check on every screen | B | medium | T52 | done | 2026-10-18 | 30f4628 |
 | T54 | Avatars + first names in Everyone's picks; current photo everywhere | B | medium | T53 | done | 2026-10-18 | 82e4c2a |
 
+## Milestone 10 — v2.5: housekeeping
+Kickoff `Run the next task. Model tier: <X>. Effort: <effort>`. One task per session; clear context between tasks.
+
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T55 | Context diet: archive progress, split backlog, prune dead files | C | low | T54 | todo | | |
+
 ## Backlog (follow-ups discovered along the way)
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on
   2026-09-29, and `odds.source` / `events.kind` now carry `'espn'` / `'special'`. See DECISIONS.md.
