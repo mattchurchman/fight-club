@@ -20,7 +20,7 @@ Spec changes for T56–T60 are already in GAME_RULES §6.1/§9, DATA_MODEL and D
 |---|---|---|---|---|---|---|---|
 | T56 | Finalize: solo nights don’t count; both paths write badges + counts | A | high | T55 | done | 2026-10-21 | 871337b |
 | T57 | Rebuild player records job (solo-night scrub + badge backfill) 👤 | A | high | T56 | done | 2026-10-21 | 179e5ad |
-| T58 | "Who's in" data: entrant marker + rules | A | medium | T55 | done | 2026-10-21 | |
+| T58 | "Who's in" data: entrant marker + rules | A | medium | T55 | done | 2026-10-21 | 1ab3131 |
 
 **Run 3 — Screens** (Tier B throughout)
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
