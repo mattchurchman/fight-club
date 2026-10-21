@@ -20,8 +20,9 @@ import { StatusStrip } from './StatusStrip.tsx';
 import { InTheCage } from './InTheCage.tsx';
 import { YourRow } from './YourRow.tsx';
 import { buildLeaderboard } from './leaderboard.ts';
-import { isRevealed, useEntries, useComments, useRankMoves } from './hooks.ts';
+import { isRevealed, useEntrants, useEntries, useComments, useRankMoves } from './hooks.ts';
 import { useNewResults } from './useNewResults.ts';
+import { WhosIn } from './WhosIn.tsx';
 
 function boutsById(bouts: BoutWithId[] | undefined): Record<string, Bout> {
   return Object.fromEntries((bouts ?? []).map((bout) => [bout.id, bout]));
@@ -36,6 +37,7 @@ export function LivePage() {
   const bouts = useBouts(activeId);
   const revealed = isRevealed(event?.status);
   const entries = useEntries(activeId, revealed);
+  const entrants = useEntrants(revealed ? null : activeId);
   const comments = useComments(activeId);
   const [chatOpen, setChatOpen] = useState(false);
   const [openUid, setOpenUid] = useState<string | null>(null);
@@ -97,6 +99,11 @@ export function LivePage() {
           <Countdown target={event.lockAt.toMillis()} prefix="" className="font-display text-3xl text-red" />
           <p className="text-sm text-muted">Reveal happens the moment picks lock. No peeking.</p>
         </div>
+        {entrants ? (
+          <WhosIn entrants={entrants} selfUid={user?.uid ?? null} usernameByUid={usernameByUid} />
+        ) : (
+          <Skeleton className="mx-4 h-20" />
+        )}
         {bouts ? <FightCardList bouts={bouts} readOnly /> : <Skeleton className="mx-4 h-40" />}
         <div className="safe-bottom fixed bottom-16 left-0 right-0 z-30 flex justify-center px-4">
           <TrashTalkButton count={comments?.length ?? 0} onClick={() => setChatOpen(true)} />

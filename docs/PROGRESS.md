@@ -26,7 +26,7 @@ Spec changes for T56–T60 are already in GAME_RULES §6.1/§9, DATA_MODEL and D
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
 | T59 | Badge counter on profiles + solo-night display | B | medium | T56 | done | 2026-10-21 | 3802796 |
-| T60 | Live tab before lock: "Who's in" | B | medium | T58 | todo | | |
+| T60 | Live tab before lock: "Who's in" | B | medium | T58 | in-progress | | |
 
 ## Backlog
 

@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Timestamp } from 'firebase/firestore';
 import { collection, onSnapshot, orderBy, query, limit } from 'firebase/firestore';
-import type { Comment, Entry, EventStatus } from '@shared/index.ts';
+import type { Comment, Entrant, Entry, EventStatus } from '@shared/index.ts';
 import { db } from '../../lib/firebase.ts';
 import { rankMoves } from './derive.ts';
 
 export interface EntryWithId extends Entry<Timestamp> {
+  id: string;
+}
+
+export interface EntrantWithId extends Entrant<Timestamp> {
   id: string;
 }
 
@@ -36,6 +40,27 @@ export function useEntries(eventId: string | null, revealed: boolean): EntryWith
   }, [eventId, revealed]);
 
   return entries;
+}
+
+/** `events/{id}/entrants`, sorted by `submittedAt` ascending. A pending server timestamp (not yet
+ * acked for a local write) has no millis yet, so it sorts last rather than crashing. */
+export function useEntrants(eventId: string | null): EntrantWithId[] | undefined {
+  const [entrants, setEntrants] = useState<EntrantWithId[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (!eventId) return undefined;
+    const unsubscribe = onSnapshot(collection(db, 'events', eventId, 'entrants'), (snap) => {
+      const docs = snap.docs.map((d) => ({ id: d.id, ...(d.data() as Entrant<Timestamp>) }));
+      docs.sort((a, b) => (a.submittedAt?.toMillis() ?? Infinity) - (b.submittedAt?.toMillis() ?? Infinity));
+      setEntrants(docs);
+    });
+    return () => {
+      unsubscribe();
+      setEntrants(undefined);
+    };
+  }, [eventId]);
+
+  return entrants;
 }
 
 /** Load the last 100 comments for an event, ordered by createdAt. */

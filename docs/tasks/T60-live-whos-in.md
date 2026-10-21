@@ -42,4 +42,18 @@ names, under the countdown, live-updating as people submit. Data comes from `eve
 Rules/data (T58). Showing who's in anywhere besides the pre-lock Live tab. Push notifications for new entrants.
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Added `useEntrants(eventId)` (`events/{id}/entrants`, sorted by `submittedAt` asc, pending timestamps last) and
+`WhosIn` (new), wired into `LivePage`'s `!revealed` branch between the countdown and `FightCardList`, with a
+skeleton while loading. Avatar+first-name grid links each entrant to `/u/:username` (viewer's own avatar gets
+`ring-2 ring-text`); empty state shows `MAKE PICKS` → `/` only when the viewer isn't in `entrants` yet (which,
+since an empty list means nobody has entered, is the only reachable case — noted for the reviewer).
+Tests: count/order, self marker, profile link, empty-state link shown/hidden.
+
+```
+ docs/PROGRESS.md                  |  2 +-
+ src/features/live/LivePage.tsx    |  9 ++++-
+ src/features/live/WhosIn.test.tsx | 75 ++++++++++++++++++++++++++++++++++
+ src/features/live/WhosIn.tsx      | 84 +++++++++++++++++++++++++++++++++++++++
+ src/features/live/hooks.ts        | 27 ++++++++++++-
+ 5 files changed, 194 insertions(+), 3 deletions(-)
+```
