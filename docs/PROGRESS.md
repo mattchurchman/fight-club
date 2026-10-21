@@ -11,7 +11,7 @@ Kickoff `Run the next task. Model tier: <X>. Effort: <effort>`. One task per ses
 
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T55 | Context diet: archive progress, split backlog, prune dead files | C | low | T54 | done | 2026-10-21 | 3cc3b1b |
+| T55 | Context diet: archive progress, split backlog, prune dead files | C | low | T54 | done | 2026-10-21 | 01722d1 |
 
 ## Backlog
 
