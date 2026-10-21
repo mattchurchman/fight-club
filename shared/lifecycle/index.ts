@@ -6,3 +6,4 @@ export * from './results.ts';
 export * from './scores.ts';
 export * from './finalize.ts';
 export * from './cancel.ts';
+export * from './rebuild.ts';

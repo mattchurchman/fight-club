@@ -194,7 +194,7 @@ So `/me` now renders it composed with the new `ProfileBody` from `MyProfilePage.
 
 ## T21: `jobs/backfill-standings.ts` has no `npm run jobs:backfill-standings` script
 
-`package.json` wasn't in T21's allowed files and isn't in the admin Jobs card's `JOB_NAMES` list (`src/features/admin/hooks.ts`) — it only runs via `npm run job -- jobs/backfill-standings.ts [--live]`.
+`package.json` wasn't in T21's allowed files and isn't in the admin Jobs card's `JOB_NAMES` list (`src/features/admin/hooks.ts`) — it only runs via `npm run job -- jobs/backfill-standings.ts [--live]`. (resolved T57: that job is replaced by `jobs/rebuild-records.ts`, which has `npm run jobs:rebuild` and `rebuild-dry`/`rebuild-live` in the Jobs workflow. Still not in the admin Jobs card.)
 
 ## T21: `useSeasonIds` (Standings tab) and `useEventHistory` (profile) both one-shot-scan the whole `events` collection
 

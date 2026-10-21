@@ -19,6 +19,9 @@ on:
           - lifecycle
           - notify
           - all
+          # Manual repair tools (docs/tasks/T57). Never scheduled, never part of `all`.
+          - rebuild-dry
+          - rebuild-live
 
 permissions:
   contents: read
@@ -86,3 +89,15 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: npm run job -- jobs/notify.ts --live
+      # Manual-only repair (docs/tasks/T57): replays every final event and overwrites standings,
+      # h2h, stats and badges. Always read the `rebuild-dry` log before running `rebuild-live`.
+      - name: Rebuild player records (dry run)
+        if: steps.jobs.outputs.job == 'rebuild-dry'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: npm run job -- jobs/rebuild-records.ts
+      - name: Rebuild player records (live)
+        if: steps.jobs.outputs.job == 'rebuild-live'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: npm run job -- jobs/rebuild-records.ts --live

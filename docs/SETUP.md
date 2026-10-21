@@ -82,3 +82,11 @@ lifecycle code, so you can see the app during and after an event before a real o
 
 `npm run sim -- --auto 1` steps itself (1 second between steps) instead of waiting for Enter — good for a
 quick end-to-end check. `npm run sim -- --reset` wipes the sim event and its ledger rows first, to start over.
+
+## S12. Rebuild player records (T57)
+Everything a finished event leaves behind — season standings, head-to-heads, `users.stats`, badges and lock
+streaks — can be recomputed from the final events themselves. Run it after a rules change (e.g. the one that
+made solo nights count for nothing) or a bad finalize; it never touches tokens, so balances and the ledger are
+safe. GitHub repo → Actions → **Jobs** → *Run workflow* → `rebuild-dry` first, read the log (it lists the solo
+nights it found and every player's points, wins, events and badge counts), then run it again as `rebuild-live`
+to write. Locally against the emulators it's `npm run jobs:rebuild` (add `-- --live` to write).

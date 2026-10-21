@@ -23,6 +23,7 @@
     "jobs:ingest": "npm run job -- jobs/ingest-events.ts",
     "jobs:odds": "npm run job -- jobs/ingest-odds.ts",
     "jobs:lifecycle": "npm run job -- jobs/lifecycle.ts",
+    "jobs:rebuild": "npm run job -- jobs/rebuild-records.ts",
     "bootstrap:admin": "npm run job -- jobs/bootstrap-admin.ts"
   },
   "dependencies": {
