@@ -45,13 +45,15 @@ export function EventsArchivePage() {
                   {row.number ? `UFC ${row.number}` : row.name}
                 </p>
                 <p className="truncate text-xs text-muted">{formatEventDateTime(row.startsAtMs)}</p>
-                {row.winnerNames.length > 0 ? (
+                {row.solo ? (
+                  <p className="truncate text-xs text-muted">SOLO NIGHT · BUY-IN REFUNDED</p>
+                ) : row.winnerNames.length > 0 ? (
                   <p className="truncate text-xs text-muted">🏆 {joinNames(row.winnerNames)}</p>
                 ) : null}
               </div>
               <TokenPill balance={row.pot} className="shrink-0" />
               <p className="w-20 shrink-0 text-right text-sm font-medium text-muted">
-                {row.selfRank != null ? `You #${row.selfRank}` : "Didn't play"}
+                {row.solo ? '' : row.selfRank != null ? `You #${row.selfRank}` : "Didn't play"}
               </p>
             </Link>
           ))}

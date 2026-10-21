@@ -136,6 +136,20 @@ describe('LiveLeaderboard', () => {
     expect(screen.queryByTestId('rank-move')).not.toBeInTheDocument();
   });
 
+  it('shows — for rank and no payout on a solo night (rank: null)', () => {
+    render(
+      <LiveLeaderboard
+        entries={[entry('me', { score: score({ total: 10 }), payout: 0, rank: null })]}
+        bouts={[]}
+        moves={{}}
+        final
+        onTap={vi.fn()}
+      />,
+    );
+    const dashes = screen.getAllByText('—');
+    expect(dashes.length).toBeGreaterThanOrEqual(2);
+  });
+
   it('calls onTap with the uid when a row is clicked', () => {
     const onTap = vi.fn();
     render(

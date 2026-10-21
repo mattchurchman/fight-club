@@ -150,13 +150,15 @@ export function LivePage() {
             onTap={setOpenUid}
           />
           <ResultsList feed={feed} />
-          <ShareButton
-            event={event}
-            bouts={bouts}
-            entries={entries}
-            selfUid={user?.uid ?? null}
-            usersById={usersById}
-          />
+          {event.status === 'final' && event.paidEntrants === 1 ? null : (
+            <ShareButton
+              event={event}
+              bouts={bouts}
+              entries={entries}
+              selfUid={user?.uid ?? null}
+              usersById={usersById}
+            />
+          )}
         </>
       )}
       <div className="safe-bottom fixed bottom-16 left-0 right-0 z-30 flex justify-center px-4">

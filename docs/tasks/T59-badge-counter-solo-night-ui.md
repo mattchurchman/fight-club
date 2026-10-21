@@ -51,4 +51,26 @@ final leaderboard shows `—` for rank instead of crowning a winner.
 Changing what finalize writes (T56) or repairing data (T57). New badges or badge art. The Live "who's in" list (T60).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Badge chip, earned-first sort, and accessible label added to `BadgesRow` (counts from
+`user.badgeCounts`, falling back to 1 for ids in `badges`). `ProfileBody` passes `counts`. Archive rows
+and `events/hooks.ts` carry a `solo` flag (`paidEntrants === 1`) showing the SOLO NIGHT label and
+hiding rank/winner. `LiveLeaderboard` now takes the stored `entry.rank` (not the live-computed one)
+to show `—` and hide the payout coin only when `final && rank === null`; live ranking is untouched.
+`LivePage` hides `ShareButton` for a final solo-night event. Verified layout at 375px with a static
+HTML snapshot built from the project's compiled CSS + the same Tailwind classes as the component
+(6 tiles, two with chips `×3`/`×99`) — wraps to two rows, no clipping, chip doesn't cover the emoji.
+
+Proof of work:
+```
+ docs/PROGRESS.md                                 |  2 +-
+ src/features/events/EventsArchivePage.test.tsx   |  8 ++++++
+ src/features/events/EventsArchivePage.tsx        |  6 ++--
+ src/features/events/hooks.ts                     |  3 ++
+ src/features/live/LiveLeaderboard.test.tsx       | 14 +++++++++
+ src/features/live/LiveLeaderboard.tsx            | 12 ++++++--
+ src/features/live/LivePage.tsx                   | 16 ++++++-----
+ src/features/profile/BadgesRow.test.tsx          | 36 ++++++++++++++++++++++ (new)
+ src/features/profile/BadgesRow.tsx               | 40 ++++++++++++++++++++++----
+ src/features/profile/ProfileBody.tsx             |  2 +-
+ 10 files changed, 119 insertions(+), 20 deletions(-)
+```

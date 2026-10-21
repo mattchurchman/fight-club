@@ -141,6 +141,8 @@ export interface PastEventRow {
   winnerNames: string[];
   /** The viewer's rank in this event, or null if they didn't play it. */
   selfRank: number | null;
+  /** A no-contest with exactly one paid entrant (GAME_RULES §6.1). */
+  solo: boolean;
 }
 
 /**
@@ -189,6 +191,7 @@ export function usePastEvents(uid: string | null): PastEventRow[] | null | undef
                 (d) => (d.data() as Entry<Timestamp>).displayName,
               ),
               selfRank: selfEntry?.rank ?? null,
+              solo: event.paidEntrants === 1,
             };
           }),
         );

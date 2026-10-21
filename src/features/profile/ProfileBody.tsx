@@ -122,7 +122,7 @@ export function ProfileBody({ uid, isSelf, viewerUid }: ProfileBodyProps) {
 
       <div className="flex flex-col gap-2">
         <SectionLabel>Badges</SectionLabel>
-        <BadgesRow earned={user.badges ?? []} />
+        <BadgesRow earned={user.badges ?? []} counts={user.badgeCounts} />
       </div>
 
       <div className="flex flex-col gap-2">

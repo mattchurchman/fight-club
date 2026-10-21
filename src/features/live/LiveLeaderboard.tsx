@@ -51,9 +51,11 @@ function useFlip(orderKey: string) {
   return rowRefs;
 }
 
-/** `LeaderboardEntryLike` plus the payout field needed for a final event's extra column. */
+/** `LeaderboardEntryLike` plus the payout and stored rank needed for a final event's extra column. */
 export interface LiveLeaderboardEntry extends LeaderboardEntryLike {
   payout: number | null;
+  /** The rank written at finalize; `null` for a solo night (GAME_RULES §6.1) — never computed live. */
+  rank?: number | null;
 }
 
 interface LiveLeaderboardProps {
@@ -73,6 +75,7 @@ export function LiveLeaderboard({ entries, bouts, moves, final, onTap }: LiveLea
   const { byId: usersById } = useUsersById();
   const rows = buildLeaderboard(entries, usersById);
   const payoutByUid = new Map(entries.map((entry) => [entry.uid, entry.payout]));
+  const storedRankByUid = new Map(entries.map((entry) => [entry.uid, entry.rank]));
   const boutsById: Record<string, Bout> = Object.fromEntries(bouts.map((bout) => [bout.id, bout]));
   const order = fightOrder(boutsById);
   const rowRefs = useFlip(rows.map((row) => row.uid).join(','));
@@ -98,7 +101,8 @@ export function LiveLeaderboard({ entries, bouts, moves, final, onTap }: LiveLea
       {rows.map((row) => {
         const isMe = row.uid === user?.uid;
         const move = moves[row.uid] ?? 0;
-        const payout = payoutByUid.get(row.uid) ?? null;
+        const isSoloNight = final && storedRankByUid.get(row.uid) === null;
+        const payout = isSoloNight ? null : (payoutByUid.get(row.uid) ?? null);
         const correct = order.filter(
           (boutId) => boutPickOutcome(row.picks[boutId], boutsById[boutId]!) === 'correct',
         ).length;
@@ -117,7 +121,9 @@ export function LiveLeaderboard({ entries, bouts, moves, final, onTap }: LiveLea
               isMe ? 'sticky top-0 z-10 border-text bg-surface ring-2 ring-text' : 'border-line bg-surface',
             )}
           >
-            <p className="w-6 shrink-0 text-center font-display text-sm text-muted">{row.rank}</p>
+            <p className="w-6 shrink-0 text-center font-display text-sm text-muted">
+              {isSoloNight ? '—' : row.rank}
+            </p>
             {!final ? (
               <p
                 data-testid="rank-move"

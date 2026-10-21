@@ -25,6 +25,7 @@ function row(overrides: Partial<PastEventRow> = {}): PastEventRow {
     pot: 500,
     winnerNames: ['Tony'],
     selfRank: null,
+    solo: false,
     ...overrides,
   };
 }
@@ -71,6 +72,13 @@ describe('EventsArchivePage', () => {
     renderPage();
     expect(screen.getByText('🏆 Tony & Sam')).toBeInTheDocument();
     expect(screen.getByText("Didn't play")).toBeInTheDocument();
+  });
+
+  it('shows the solo-night label instead of a winner or rank', () => {
+    mockUsePastEvents.mockReturnValue([row({ solo: true, winnerNames: [], selfRank: null })]);
+    renderPage();
+    expect(screen.getByText('SOLO NIGHT · BUY-IN REFUNDED')).toBeInTheDocument();
+    expect(screen.queryByText("Didn't play")).not.toBeInTheDocument();
   });
 
   it('links each row to its event', () => {

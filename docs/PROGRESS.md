@@ -25,7 +25,7 @@ Spec changes for T56–T60 are already in GAME_RULES §6.1/§9, DATA_MODEL and D
 **Run 3 — Screens** (Tier B throughout)
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
-| T59 | Badge counter on profiles + solo-night display | B | medium | T56 | todo | | |
+| T59 | Badge counter on profiles + solo-night display | B | medium | T56 | in-progress | | |
 | T60 | Live tab before lock: "Who's in" | B | medium | T58 | todo | | |
 
 ## Backlog
