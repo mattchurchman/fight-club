@@ -219,3 +219,16 @@ when it hasn't run within its schedule plus slack (ingest/odds 30h, lifecycle 8h
 enabled event still stuck on `scheduled`. The PWA switches from silent `autoUpdate` to `prompt`: it re-checks for a
 new version whenever the app returns to the screen and shows "New version ready. Tap to update." Hosting now sends
 `no-cache` for the app shell on `/` and SPA routes (the old rule only matched `/index.html`) and for the service worker.
+
+## 2026-10-21 — v2.5 revision: solo nights don't count, badge counts, "who's in" (planning)
+Owner request after being the only entrant on the last event. GAME_RULES §6 already refunded a lone entrant, but
+`planFinalize` still ranked them 1st, so they got a win, points in standings and (via the jobs path) a Champion badge.
+**Rule (new §6.1):** a solo night is a no-contest: entry scored but `rank: null`, and nothing counts (standings, stats,
+badges, h2h, lockStreak). The owner said an earlier event was handled the same way; that cleanup isn't recorded in the
+repo, so T57's rebuild treats every final event with one paid entrant as a solo night, which brings both in line.
+**Badges looked broken** because the admin console's Finalize (`src/features/admin/events/actions.ts#applyFinalize`,
+used whenever the cron runs late) writes `stats` but never `badges` or `lockStreak`. Fixed in T56; T57 replays every
+final event to rebuild stats, standings, h2h, badges and the new `users.badgeCounts`, so past badges appear with counts.
+`badgeCounts` is written as a computed value (current + earned), like `stats`, not `FieldValue.increment`, so both
+finalize paths behave the same. **Who's in:** entries stay unreadable before lock (T15's backlog note), so a new public
+`events/{id}/entrants/{uid}` marker (no picks) is written in the same batch as the entry and shown on the pre-lock Live tab.

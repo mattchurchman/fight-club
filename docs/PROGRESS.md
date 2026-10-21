@@ -147,12 +147,27 @@ vendor column in `docs/MODEL_TIERS.md`.
 | T53 | Fit-to-width: final leaderboard + overflow check on every screen | B | medium | T52 | done | 2026-10-18 | 30f4628 |
 | T54 | Avatars + first names in Everyone's picks; current photo everywhere | B | medium | T53 | done | 2026-10-18 | 82e4c2a |
 
-## Milestone 10 — v2.5: housekeeping
+## Milestone 10 — v2.5: housekeeping, solo nights, badges, who's in
 Kickoff `Run the next task. Model tier: <X>. Effort: <effort>`. One task per session; clear context between tasks.
+Spec changes for T56–T60 are already in GAME_RULES §6.1/§9, DATA_MODEL and DESIGN (DECISIONS 2026-10-21).
 
+**Run 1 — Housekeeping** (Tier C)
 | ID | Task | Tier | Effort | Depends | Status | Date | Commit |
 |---|---|---|---|---|---|---|---|
 | T55 | Context diet: archive progress, split backlog, prune dead files | C | low | T54 | todo | | |
+
+**Run 2 — Correctness & data** (Tier A throughout: only clear the context between tasks)
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T56 | Finalize: solo nights don't count; both paths write badges + counts | A | high | T55 | todo | | |
+| T57 | Rebuild player records job (solo-night scrub + badge backfill) 👤 | A | high | T56 | todo | | |
+| T58 | "Who's in" data: entrant marker + rules | A | medium | T55 | todo | | |
+
+**Run 3 — Screens** (Tier B throughout)
+| ID | Task | Tier | Effort | Depends | Status | Date | Commit |
+|---|---|---|---|---|---|---|---|
+| T59 | Badge counter on profiles + solo-night display | B | medium | T56 | todo | | |
+| T60 | Live tab before lock: "Who's in" | B | medium | T58 | todo | | |
 
 ## Backlog (follow-ups discovered along the way)
 - T08: rescope to ESPN odds (no key, no quota, matched by athlete id) — the owner approved this on

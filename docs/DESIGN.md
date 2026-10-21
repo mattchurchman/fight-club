@@ -202,7 +202,11 @@ Fight order on the night = descending `bout.order` (main event, order 1, is last
   ignore the unknown method bonus (label it "at least"). Re-rank with `rankEntries`. Show at most 2 lines.
 - **Result flash:** when a bout gets a result while the page is open, a 2.5s top overlay:
   `SOLDIĆ def. WILLIAMS — DEC R3` + your delta (`+466 ✓` or `0 ✗`) + rank change. Tap to dismiss. Static under reduced motion.
-- **Before lock:** `PICKS LOCK IN` countdown + the card list (no picks) + Trash Talk.
+- **Before lock:** `PICKS LOCK IN` countdown, then **WHO'S IN** (from `entrants`), then the card list (no picks) + Trash Talk.
+  WHO'S IN: section label with the count (`WHO'S IN · 4`), then a wrapping row of 40px octagon avatars with first
+  names under them (same component and first-name rule as Everyone's picks), ordered by `submittedAt` ascending. Your own
+  avatar gets the `ring-text` treatment. Tapping one opens their profile. Empty: `Nobody's in yet. Be first.` with a
+  `MAKE PICKS` link to the Fights tab when you haven't entered.
 - **Final:** status strip shows `FINAL · POT PAID`; leaderboard adds a payout column (Coin); results list stays.
 - Tapping a leaderboard row opens the PlayerSheet (their full card + scoring breakdown, pending fights say `PENDING`)
   with a `VIEW PROFILE` link.
@@ -224,6 +228,14 @@ button on the Fights tab (open/locked) and on the Live tab. Same `ChatPanel` she
 - **Profiles** (`/u/:username`): reachable from every name/avatar (leaderboard, reveal, chat, standings, PlayerSheet).
   Shows octagon avatar, @username, season + lifetime stats, badges (octagon tiles; locked badges dimmed), event history
   (rows link to that event) and, on someone else's profile, **your head-to-head vs them** at the top.
+- **Badge counter:** an earned badge with `badgeCounts[id] ≥ 2` carries a small count chip on its top-right corner,
+  overlapping the octagon's edge: `×3` in `font-display` 11px, `text-text` on `bg-red-fill`, height 18px, min-width 18px,
+  `px-1`, fully rounded, with a 2px `bg`-colored ring so it reads as cut out of the tile. Count 1 shows no chip; 99+ caps
+  at `×99`. The tile's accessible name includes the count ("Champion, earned 3 times"); the toast adds `· ×3`.
+  Earned badges sort before locked ones, keeping `BADGE_DEFINITIONS` order within each group.
+- **Solo night:** a final event with one paid entrant shows `SOLO NIGHT · BUY-IN REFUNDED` in place of the winner on
+  `/events`, and the final leaderboard shows the lone row with `—` for rank and no payout. It never appears in profile
+  event history.
 
 ## Voice
 Short, playful, a little trash-talky. Buttons and labels *look* uppercase, but **author all copy in sentence case and

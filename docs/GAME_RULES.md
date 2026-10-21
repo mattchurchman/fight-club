@@ -55,12 +55,17 @@ Still tied means the same rank (shared).
 
 ## 6. Payouts (`shared/payouts.ts`)
 - `pot = buyIn × paidEntrants` (entries charged at lock, not void).
-- Split table by number of paid entrants: **1 → refund** (ledger `refund`, no winner); **2–3 → [100%]**;
+- Split table by number of paid entrants: **1 → refund** (ledger `refund`, no winner — see §6.1); **2–3 → [100%]**;
   **4–6 → [70%, 30%]**; **7+ → [60%, 30%, 10%]**.
 - Each place gets `floor(pot × pct)`. The leftover from flooring goes to 1st place.
 - **Ties:** players sharing a rank pool the prizes for every place they occupy and split evenly (floor).
   The leftover goes to the tied player with the earliest `submittedAt`.
 - **Event cancelled:** everyone charged gets a full `refund`.
+
+### 6.1 Solo night (exactly 1 paid entrant)
+A solo night is a no-contest. The lone entry is scored (so the player can see how they did), but it gets
+`rank: null` and `payout: 0`, and the event **does not count anywhere**: no season standings, no `users.stats`,
+no badges, no h2h, and `lockStreak` is left unchanged. The archive shows it as `SOLO NIGHT · BUY-IN REFUNDED`.
 - Payouts are written once, at finalize, as ledger `payout` rows. After that, corrections are manual `adjust` rows.
 
 ## 7. Worked examples (these MUST be unit tests)
@@ -75,13 +80,14 @@ Still tied means the same rank (shared).
 | E7 | pot 5 players × 100 = 500 | [350, 150] |
 | E8 | 8 players × 100 = 800, 2nd place tied by two | 1st 480; the two tied split 240+80=320 → 160 each |
 | E9 | 7 players × 100 = 700 | 420/210/70 |
-| E10 | 1 paid entrant | refund 100, no payout |
+| E10 | 1 paid entrant | refund 100, no payout, rank `null`, no stats/standings/badges (§6.1) |
 
 ## 8. Season standings (Fun phase)
 Season = calendar year (`seasonId = "2026"`). Per player: `points` (Σ entryTotal), `events`, `wins`
 (rank 1, ties count), `podiums` (rank ≤3), `netTokens` (Σ payouts − Σ buy-ins), `correctWinners`, `upsets`.
-Ordered by `points`.
+Ordered by `points`. Solo nights (§6.1) are excluded.
 
 ## 9. Badges (Fun phase)
 `champion` (won an event) · `perfect-card` (all winners correct, ≥4 bouts) · `upset-artist` (correct pick at
 +200 or longer) · `lock-smith` (3 locks correct in a row) · `bleeder` (first blood correct) · `busted` (balance hit 0).
+Badges can be earned again: each finalize that earns a badge adds 1 to `users.badgeCounts[id]`. No badges on a solo night (§6.1).

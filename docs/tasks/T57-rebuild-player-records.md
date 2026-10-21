@@ -1,0 +1,72 @@
+# T57 — Rebuild player records from final events (solo-night scrub + badge backfill)
+
+**Tier:** A · **Effort:** high · **Size:** M · **Depends on:** T56
+**USER ACTION REQUIRED:** after this task is merged and deployed:
+1. GitHub → repo → **Actions** → **Jobs** → **Run workflow** → job `rebuild-dry` → Run.
+2. Open the run log. Check: the solo night(s) are listed under `solo nights`, your wins/points no longer include
+   them, and the badge counts look right. Paste the summary into the planning chat if anything looks off.
+3. If it looks right: **Run workflow** again with job `rebuild-live`.
+
+## Goal
+Firestore still holds the effects of the old finalize: a solo-night win (and points, and possibly a Champion badge)
+for the owner on the last event and on one earlier event, and no badges at all for events finalized from the admin
+console. Build a re-runnable repair job that replays every `final` event, oldest first, through the T56 rules and
+**overwrites** each player's derived records. Tokens/ledger are never touched (solo buy-ins were already refunded).
+
+## Context to load (only these)
+- `AGENTS.md` (always)
+- `docs/GAME_RULES.md` §6.1, §8, §9
+- `jobs/backfill-standings.ts` (this task replaces it)
+- `shared/lifecycle/finalize.ts` (grep `isSoloNight`, the `userStats` block), `shared/badges.ts` (`computeBadges`)
+- `shared/standings.ts` (signature of `applyEventToStandings` only)
+- `jobs/lib/admin.ts`, `jobs/lib/log.ts`
+- `.github/workflows/jobs.yml`
+- `package.json` (`scripts` only)
+
+## Files you may touch
+`shared/lifecycle/rebuild.ts` (new), `shared/lifecycle/rebuild.test.ts` (new), `shared/lifecycle/index.ts`,
+`jobs/rebuild-records.ts` (new), `jobs/backfill-standings.ts` (delete), `package.json` (scripts only),
+`.github/workflows/jobs.yml`, `docs/SETUP.md` (one short paragraph), `docs/tasks/T57-rebuild-player-records.md`,
+`docs/PROGRESS.md`
+
+## Steps
+1. **Pure core** `shared/lifecycle/rebuild.ts`: `rebuildRecords(events, users)` where `events` is final events oldest
+   first, each with its bouts, stored entries (`score`, `rank`, `payout`, `picks`, `lockBoutId`, `charged`, `status`,
+   `submittedAt`) and, per uid, `balanceAfterFinalize` (step 3). For each event:
+   - paid = `charged && status !== 'void'`. If `isSoloNight(paid.length)`: record it in `soloNights` and an entry fix
+     `{ eventId, uid, rank: null, payout: 0 }`; skip everything else for that event.
+   - Otherwise fold it in: season standings and h2h via `applyEventToStandings` (season = UTC year of `startsAt`);
+     `stats` (events/wins/podiums/points/correctWinners as finalize does); `computeBadges` with the running
+     `lockStreak` and `balanceAfterFinalize`, adding to `badgeCounts`.
+   - Returns `{ standings: Map<seasonId, SeasonTotals[]>, h2h, users: { uid, stats, badges, badgeCounts, lockStreak }[],
+     entryFixes, soloNights }`. Users with no counted events get zeroed `stats`, empty badges/counts, `lockStreak: 0`.
+2. Unit tests: a solo night contributes nothing and yields an entry fix; two events where the same player wins both →
+   `champion: 2`; lock streak carries across events; result is identical when run twice (pure).
+3. **Job** `jobs/rebuild-records.ts` (dry-run by default, `--live` writes; same arg style as the old backfill):
+   loads final events ordered by `startsAt`, their bouts and entries; computes `balanceAfterFinalize` per paid uid as
+   the `balanceAfter` of that uid's latest `ledger` row with `createdAt <= event.finalizedAt` (query ledger by uid,
+   index `uid asc, createdAt desc` exists); runs `rebuildRecords`; prints `solo nights: <names>`, then per player
+   `name: pts / wins / events · badges ×counts`. With `--live`: write entry fixes (merge `rank`, `payout`), **replace**
+   every `seasons/{id}/standings` doc (delete docs for players no longer present), replace every `h2h` doc,
+   and set `stats`, `badges`, `badgeCounts`, `lockStreak` on each user (merge). Batches ≤ 400 writes.
+   Never read or write `ledger` except the read above, and never touch `balance`.
+4. Delete `jobs/backfill-standings.ts`; add script `"jobs:rebuild": "npm run job -- jobs/rebuild-records.ts"`.
+   `grep -rn backfill-standings` outside `docs/tasks/` and `docs/PROGRESS_ARCHIVE.md` and fix any live reference.
+5. `.github/workflows/jobs.yml`: add `rebuild-dry` and `rebuild-live` to the dispatch `options` and a step running
+   the job (without/with `--live`) only for those inputs; never on a schedule, never under `all`.
+6. `docs/SETUP.md`: one paragraph on when to run the rebuild (after a rules change or a bad finalize) and how.
+
+## Acceptance criteria
+- [ ] Definition of Done passes (AGENTS.md §4)
+- [ ] `rebuild.test.ts` covers step 2 and passes
+- [ ] `npm run jobs:rebuild` against the emulator seed (`jobs/seed-emulator.ts`) runs in dry-run and prints the summary
+      without writing (state that you ran it, and paste the summary's first 10 lines in completion notes)
+- [ ] `jobs.yml`: schedules unchanged; `all` does not include rebuild
+- [ ] No code path in the new job writes `balance` or `ledger`
+
+## Out of scope
+Changing finalize itself (T56). UI for solo nights or badge counts (T59). Re-scoring bouts: the job trusts stored
+entry scores, as the old backfill did.
+
+## Completion notes
+_(agent fills in: ≤10 lines)_
