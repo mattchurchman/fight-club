@@ -27,6 +27,7 @@ Spec changes for T56–T60 are already in GAME_RULES §6.1/§9, DATA_MODEL and D
 |---|---|---|---|---|---|---|---|
 | T59 | Badge counter on profiles + solo-night display | B | medium | T56 | done | 2026-10-21 | 3802796 |
 | T60 | Live tab before lock: "Who's in" | B | medium | T58 | done | 2026-10-21 | f3d1c35 |
+| T61 | Deploy Firestore rules + indexes in CI, before Hosting 👤 | B | medium | T60 | todo | | |
 
 ## Backlog
 
