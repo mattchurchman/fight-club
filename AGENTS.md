@@ -95,6 +95,7 @@ npm run lint && npm run typecheck && npm test
 Also run these when relevant: `npm run test:rules` (anything touching `firestore.rules` or data shape),
 `npm run build` (anything touching `src/`), and the task-specific checks in the task file.
 Before T01 exists, the task file defines its own checks.
+Rules and indexes deploy with the app on push to `main`; you don't need to ask the user to deploy them.
 
 ## 5. Approved dependencies
 

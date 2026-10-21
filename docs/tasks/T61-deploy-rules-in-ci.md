@@ -60,4 +60,22 @@ Changing the Hosting action, CI, or `jobs.yml`. Splitting the service account in
 Investigating the earlier Hosting failure (re-running it is a user step).
 
 ## Completion notes
-_(agent fills in: ≤10 lines)_
+Added a "Deploy Firestore rules + indexes" step to `deploy.yml` between `npm run build` and the
+Hosting action, writing the service account to `$RUNNER_TEMP/sa.json` (step-scoped env, no shell
+interpolation) and running `firebase deploy --only firestore:rules,firestore:indexes --force
+--non-interactive`, with an `if: always()` cleanup step removing the key file. No workflow-level
+env added. `deploy:rules` in `package.json` now deploys the same two targets. Updated
+`docs/SETUP.md` S6 and added the one-line note to `AGENTS.md` §4. `npx firebase deploy --help`
+confirms `--only`, `--force`, `--non-interactive`, `--project` all exist in the installed
+firebase-tools. Lint/typecheck/test all green.
+
+```
+ .github/workflows/deploy.yml | 12 ++++++++++++
+ AGENTS.md                    |  1 +
+ docs/SETUP.md                | 10 ++++++++--
+ package.json                 |  2 +-
+ 4 files changed, 21 insertions(+), 2 deletions(-)
+```
+
+Watch the next **Deploy** run on GitHub Actions. If the rules step fails with a 403/
+`PERMISSION_DENIED`, follow the USER ACTION REQUIRED steps in this task file / `docs/SETUP.md` S6.

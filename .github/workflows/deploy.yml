@@ -29,6 +29,18 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Deploy Firestore rules + indexes
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        run: |
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" \
+            npx firebase deploy --only firestore:rules,firestore:indexes \
+            --project "$FIREBASE_PROJECT_ID" --non-interactive --force
+      - name: Clean up service account key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/sa.json"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           # No `repoToken`: it exists only so the action can comment a preview URL on a PR, which a

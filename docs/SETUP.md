@@ -44,8 +44,14 @@ GitHub repo → **Settings → Secrets and variables → Actions → New reposit
 | `ODDS_API_KEY` | from S5 |
 
 Hosting deploy auth: run `npx firebase init hosting:github` **only if the T10 agent asks**. It creates its own
-deploy secret automatically. Firestore rules and indexes are deployed from your laptop with
-`npm run deploy:rules`. Agents remind you when rules change.
+deploy secret automatically. Firestore rules and indexes deploy automatically on every push to `main`,
+before Hosting (T61) — `npm run deploy:rules` remains for emergencies.
+
+**If the rules step fails with a permission error (403 / `PERMISSION_DENIED`):**
+1. Google Cloud console → **IAM & Admin → IAM**, for the project in `FIREBASE_PROJECT_ID`.
+2. Find the service account whose email matches `client_email` in the `FIREBASE_SERVICE_ACCOUNT` JSON → **Edit**.
+3. **Add role** `Firebase Rules Admin` and **Add role** `Cloud Datastore Index Admin` → Save.
+4. GitHub → Actions → **Deploy** → the failed run → **Re-run failed jobs**.
 
 ## S7. Make yourself admin (T12)
 After T12 is deployed (or with emulators), run: `npm run bootstrap:admin -- you@example.com`
