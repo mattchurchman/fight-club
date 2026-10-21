@@ -73,6 +73,8 @@ export interface User<Ts = Timestamp> {
   lastSeenAt: Ts;
   stats?: UserStats;
   badges?: string[];
+  /** How many times each badge has been earned (docs/GAME_RULES.md §9); set at finalize. */
+  badgeCounts?: Record<string, number>;
   lockStreak?: number;
 }
 

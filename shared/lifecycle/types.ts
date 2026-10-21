@@ -34,6 +34,7 @@ export interface LifecycleUser {
   stats?: UserStats;
   lockStreak?: number;
   badges?: string[];
+  badgeCounts?: Record<string, number>;
 }
 
 /**

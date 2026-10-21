@@ -11,7 +11,7 @@
 // `status` (which carries `status.result`). Results need both halves, so a full offline run passes
 // one of each; see `fetchJson` callers below for the live URLs they stand in for.
 import { readFile } from 'node:fs/promises';
-import { FieldValue, Timestamp } from 'firebase-admin/firestore';
+import { Timestamp } from 'firebase-admin/firestore';
 import {
   planCancel,
   planFinalize,
@@ -143,6 +143,9 @@ async function loadCandidate(id: string, data: Event<Timestamp>): Promise<Candid
           displayName: user.displayName,
           balance: user.balance,
           ...(user.stats ? { stats: user.stats } : {}),
+          ...(user.badges ? { badges: user.badges } : {}),
+          ...(user.badgeCounts ? { badgeCounts: user.badgeCounts } : {}),
+          ...(user.lockStreak !== undefined ? { lockStreak: user.lockStreak } : {}),
         };
       }
     }),
@@ -434,7 +437,7 @@ async function applyFinalize(args: Args, candidate: Candidate, seasonId: string)
 
   const eventRef = db.collection('events').doc(candidate.event.id);
   for (const write of plan.entries) {
-    await commit(args, `final ${write.uid}: ${write.score.total} rank ${write.rank} payout ${write.payout}`, () =>
+    await commit(args, `final ${write.uid}: ${write.score.total} rank ${write.rank ?? '— (solo night)'} payout ${write.payout}`, () =>
       eventRef
         .collection('entries')
         .doc(write.uid)
@@ -470,16 +473,19 @@ async function applyFinalize(args: Args, candidate: Candidate, seasonId: string)
     });
   }
 
+  // `badges` is the full distinct list the plan accumulated, so a plain merge replaces it outright
+  // instead of appending to it — `badgeCounts` has to be computed from the old value anyway.
   for (const user of plan.users) {
-    const update: Record<string, unknown> = { stats: user.stats };
-    if (user.badges && user.badges.length > 0) {
-      update.badges = FieldValue.arrayUnion(...user.badges);
-    }
-    if (user.lockStreak !== undefined) {
-      update.lockStreak = user.lockStreak;
-    }
     await commit(args, `stats ${user.uid}: ${user.stats.points} pts`, () =>
-      db.collection('users').doc(user.uid).set(update, { merge: true }),
+      db.collection('users').doc(user.uid).set(
+        {
+          stats: user.stats,
+          badges: user.badges,
+          badgeCounts: user.badgeCounts,
+          lockStreak: user.lockStreak,
+        },
+        { merge: true },
+      ),
     );
   }
 
@@ -491,8 +497,12 @@ async function applyFinalize(args: Args, candidate: Candidate, seasonId: string)
   );
   candidate.event = { ...candidate.event, status: 'final' };
 
-  await commit(args, `notify ${plan.entries.length} finalize summar${plan.entries.length === 1 ? 'y' : 'ies'}`, () =>
-    sendFinalizeSummaries(candidate.event.id, candidate.name, plan.entries, true),
+  // §6.1: "you finished 1st" is a lie on a solo night, and there is no placing to put in its place.
+  const placed = plan.entries.filter(
+    (write): write is typeof write & { rank: number } => write.rank !== null,
+  );
+  await commit(args, `notify ${placed.length} finalize summar${placed.length === 1 ? 'y' : 'ies'}`, () =>
+    sendFinalizeSummaries(candidate.event.id, candidate.name, placed, true),
   );
   return true;
 }

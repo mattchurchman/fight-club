@@ -152,3 +152,31 @@ function hasUpsetWin(entry: Ranked<ScoredLifecycleEntry>, bouts: Record<string, 
 
   return false;
 }
+
+/**
+ * Folds the badges earned at this finalize into the player's lifetime tallies (docs/GAME_RULES.md §9).
+ *
+ * `badgeCounts` is the source of truth when it is there. A legacy player who only has the distinct
+ * `badges` array counts as one of each, so their first win after this ships reads `champion: 2`
+ * rather than resetting them to 1. `badges` comes back as the full distinct list, oldest first, so
+ * a plain `set` can replace what `arrayUnion` used to append to.
+ */
+export function accumulateBadges(
+  earned: readonly string[],
+  user: { badges?: readonly string[]; badgeCounts?: Record<string, number> } = {},
+): { badges: string[]; badgeCounts: Record<string, number> } {
+  const badgeCounts: Record<string, number> = {};
+  const badges: string[] = [];
+  const put = (id: string, count: number): void => {
+    if (!(id in badgeCounts)) {
+      badges.push(id);
+    }
+    badgeCounts[id] = count;
+  };
+
+  for (const id of user.badges ?? []) put(id, 1);
+  for (const [id, count] of Object.entries(user.badgeCounts ?? {})) put(id, count);
+  for (const id of earned) put(id, (badgeCounts[id] ?? 0) + 1);
+
+  return { badges, badgeCounts };
+}

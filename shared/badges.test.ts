@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { computeBadges } from './badges.ts';
+import { accumulateBadges, computeBadges } from './badges.ts';
 import type { BoutOdds, Pick } from './types.ts';
 import type { LifecycleBout, Millis } from './lifecycle/types.ts';
 import type { Ranked } from './scoring.ts';
@@ -433,5 +433,41 @@ describe('computeBadges', () => {
       expect(badges).toContain('upset-artist');
       expect(badges).toContain('bleeder');
     });
+  });
+});
+
+describe('accumulateBadges', () => {
+  it('adds 1 per badge earned to the counts already there', () => {
+    expect(accumulateBadges(['champion', 'bleeder'], { badgeCounts: { champion: 2 } })).toEqual({
+      badges: ['champion', 'bleeder'],
+      badgeCounts: { champion: 3, bleeder: 1 },
+    });
+  });
+
+  it('reads a legacy badges array as one of each when badgeCounts is missing', () => {
+    expect(accumulateBadges(['champion'], { badges: ['champion', 'busted'] })).toEqual({
+      badges: ['champion', 'busted'],
+      badgeCounts: { champion: 2, busted: 1 },
+    });
+  });
+
+  it('lets badgeCounts win over the legacy array, and fills in what it is missing', () => {
+    // A half-migrated player: counts for the badge they have earned twice, nothing for the other.
+    expect(
+      accumulateBadges([], { badges: ['champion', 'bleeder'], badgeCounts: { champion: 4 } }),
+    ).toEqual({ badges: ['champion', 'bleeder'], badgeCounts: { champion: 4, bleeder: 1 } });
+  });
+
+  it('starts from nothing for a player with no history', () => {
+    expect(accumulateBadges(['lock-smith'])).toEqual({
+      badges: ['lock-smith'],
+      badgeCounts: { 'lock-smith': 1 },
+    });
+    expect(accumulateBadges([])).toEqual({ badges: [], badgeCounts: {} });
+  });
+
+  it('never repeats a badge in the distinct list', () => {
+    const { badges } = accumulateBadges(['champion', 'champion'], { badges: ['champion'] });
+    expect(badges).toEqual(['champion']);
   });
 });

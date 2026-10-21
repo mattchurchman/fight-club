@@ -52,6 +52,7 @@ Follow-ups discovered along the way. Read this file only when a task lists it.
 - [[Jobs cron drift]]
 - [[UFC 333 bouts backfill]]
 - [[Trial 2026-10-17 event archive pagination]]
+- [[T56 solo-night admin preview and notification]]
 
 ---
 
@@ -242,3 +243,11 @@ The odds job saw only 5 bouts for event `600061267` (`401911632`–`635`, `40192
 ## Trial 2026-10-17: event archive pagination
 
 Archive reads ~2 docs per final event per visit (`usePastEvents`). Fine for years at this scale; if it ever matters, cap `/events` at the latest 20 with "Show more". No FIFO/deletion needed.
+
+## T56: a solo night tells the admin and the player nothing
+
+The Finalize sheet renders "Pays out 0 of 1 entries, totalling 0 tokens" — true, but it never says the night
+is a no-contest with the buy-in refunded. And `sendFinalizeSummaries` now skips the lone entrant entirely,
+because "you finished 1st" would be a lie and `rank` is `null`, so they get no push at all. Both want a
+solo-night line ("Solo night — buy-in refunded, nothing counted"); the player-facing copy belongs with T59's
+display work.

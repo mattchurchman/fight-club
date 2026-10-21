@@ -116,7 +116,15 @@ async function loadUsers(uids: readonly string[]): Promise<Record<string, Lifecy
     if (!snap.exists()) return;
     const data = snap.data() as User<Timestamp>;
     const uid = uids[i]!;
-    users[uid] = { uid, displayName: data.displayName, balance: data.balance, stats: data.stats };
+    users[uid] = {
+      uid,
+      displayName: data.displayName,
+      balance: data.balance,
+      stats: data.stats,
+      lockStreak: data.lockStreak,
+      badges: data.badges,
+      badgeCounts: data.badgeCounts,
+    };
   });
   return users;
 }
@@ -198,7 +206,16 @@ export async function applyFinalize(eventId: string, preview: FinalizePreview, a
     standingsBatch.set(doc(standingsCol, row.uid), { ...row, updatedAt: serverTimestamp() }, { merge: true });
   }
   for (const user of plan.users) {
-    standingsBatch.set(doc(db, 'users', user.uid), { stats: user.stats }, { merge: true });
+    standingsBatch.set(
+      doc(db, 'users', user.uid),
+      {
+        stats: user.stats,
+        badges: user.badges,
+        badgeCounts: user.badgeCounts,
+        lockStreak: user.lockStreak,
+      },
+      { merge: true },
+    );
   }
   await standingsBatch.commit();
 

@@ -236,7 +236,9 @@ function applyFinalize(w: World, now: Millis): ReturnType<typeof planFinalize> {
   }
   post(w, plan.ledger);
   w.standings = plan.standings;
-  for (const { uid, stats } of plan.users) w.users[uid] = { ...w.users[uid]!, stats };
+  for (const { uid, stats, badges, badgeCounts, lockStreak } of plan.users) {
+    w.users[uid] = { ...w.users[uid]!, stats, badges, badgeCounts, lockStreak };
+  }
   w.event = { ...w.event, status: 'final', finalizedAt: plan.event.finalizedAt ?? null };
   return plan;
 }
@@ -444,6 +446,95 @@ describe('entries that cannot be charged', () => {
     ]);
     expect(w.users.u1!.balance).toBe(STARTING_BALANCE);
     expect(byUid(w).u1!.payout).toBe(0);
+  });
+
+  it('counts a solo night for nothing at all (§6.1, E10)', () => {
+    const w = world({
+      users: {
+        ...users({ u2: 0, u3: 0, u4: 0 }),
+        u1: {
+          uid: 'u1',
+          displayName: 'U1',
+          balance: STARTING_BALANCE,
+          stats: { events: 3, wins: 1, podiums: 2, points: 5000, correctWinners: 7 },
+          badges: ['champion'],
+          badgeCounts: { champion: 1 },
+          lockStreak: 2,
+        },
+      },
+    });
+    applyLock(w, LOCK_AT);
+    applyResults(w, RESULTS, LOCK_AT + 3 * HOUR);
+    const plan = applyFinalize(w, LOCK_AT + 4 * HOUR);
+
+    // The entry is still scored, so the player can see how they did...
+    expect(plan.entries).toHaveLength(1);
+    expect(plan.entries[0]!.score.total).toBe(2913);
+    // ...but it placed nowhere and won nothing.
+    expect(plan.entries[0]!.rank).toBeNull();
+    expect(plan.entries[0]!.payout).toBe(0);
+    expect(byUid(w).u1!.rank).toBeNull();
+    // Nothing else moved: no season, no h2h, no lifetime stats, no badges, no lock streak.
+    expect(plan.standings).toEqual([]);
+    expect(plan.h2h).toEqual([]);
+    expect(plan.users).toEqual([]);
+    expect(w.users.u1!.stats).toEqual({ events: 3, wins: 1, podiums: 2, points: 5000, correctWinners: 7 });
+    expect(w.users.u1!.badgeCounts).toEqual({ champion: 1 });
+    expect(w.users.u1!.lockStreak).toBe(2);
+    // The event is still closed out, and the refund is the only ledger row.
+    expect(w.event.status).toBe('final');
+    expect(plan.ledger).toHaveLength(1);
+    expect(plan.ledger[0]!.type).toBe('refund');
+  });
+});
+
+describe('badges and counts at finalize (§9)', () => {
+  /** Two paid entrants (u3 and u4 cannot cover the buy-in), with u1 starting from `was`. */
+  function twoPlayerFinalize(was: Partial<LifecycleUser>): ReturnType<typeof planFinalize> {
+    const w = world({
+      users: {
+        ...users({ u3: 0, u4: 0 }),
+        u1: { uid: 'u1', displayName: 'U1', balance: STARTING_BALANCE, ...was },
+      },
+    });
+    applyLock(w, LOCK_AT);
+    applyResults(w, RESULTS, LOCK_AT + 3 * HOUR);
+    return applyFinalize(w, LOCK_AT + 4 * HOUR);
+  }
+
+  it('adds 1 to each badge earned and keeps the counts already there', () => {
+    const plan = twoPlayerFinalize({
+      badges: ['champion', 'perfect-card'],
+      badgeCounts: { champion: 2, 'perfect-card': 1 },
+    });
+    const u1 = plan.users.find((u) => u.uid === 'u1')!;
+
+    // u1 wins the event, hits first blood and had b4's +250 underdog right.
+    expect(u1.badgeCounts).toEqual({ champion: 3, 'perfect-card': 1, 'upset-artist': 1, bleeder: 1 });
+    // The full distinct list, not just the new ones — the writers `set` it, they don't union it.
+    expect(u1.badges).toEqual(['champion', 'perfect-card', 'upset-artist', 'bleeder']);
+    expect(u1.lockStreak).toBe(1);
+  });
+
+  it('counts a legacy badges array as one each when badgeCounts is missing', () => {
+    const plan = twoPlayerFinalize({ badges: ['champion'] });
+    const u1 = plan.users.find((u) => u.uid === 'u1')!;
+
+    expect(u1.badgeCounts).toEqual({ champion: 2, 'upset-artist': 1, bleeder: 1 });
+    expect(u1.badges).toEqual(['champion', 'upset-artist', 'bleeder']);
+  });
+
+  it('starts a player with no history at 1 each, and gives every row all four fields', () => {
+    const plan = twoPlayerFinalize({});
+    const u1 = plan.users.find((u) => u.uid === 'u1')!;
+
+    expect(u1.badgeCounts).toEqual({ champion: 1, 'upset-artist': 1, bleeder: 1 });
+    // u2 earned nothing and lost their lock: empty, but still written.
+    const u2 = plan.users.find((u) => u.uid === 'u2')!;
+    expect(u2).toMatchObject({ badges: [], badgeCounts: {}, lockStreak: 0 });
+    for (const row of plan.users) {
+      expect(Object.keys(row).sort()).toEqual(['badgeCounts', 'badges', 'lockStreak', 'stats', 'uid']);
+    }
   });
 });
 

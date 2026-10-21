@@ -164,6 +164,12 @@ describe('users update', () => {
     await assertFails(updateDoc(doc(db, `users/${UID.p1}`), { badges: ['goat'] }));
   });
 
+  it('denies a player writing their own badgeCounts or lockStreak (T56)', async () => {
+    const db = asPlayer1(env);
+    await assertFails(updateDoc(doc(db, `users/${UID.p1}`), { badgeCounts: { champion: 99 } }));
+    await assertFails(updateDoc(doc(db, `users/${UID.p1}`), { lockStreak: 99 }));
+  });
+
   it("denies editing another player's profile", async () => {
     await assertFails(updateDoc(doc(asPlayer1(env), `users/${UID.p2}`), { displayName: 'Pwned' }));
   });
@@ -218,6 +224,17 @@ describe('users update', () => {
   it('lets an admin write balance and role', async () => {
     await assertSucceeds(
       updateDoc(doc(asAdmin(env), `users/${UID.p1}`), { balance: 900, role: 'admin' }),
+    );
+  });
+
+  it('lets an admin write the four fields finalize sets (T56)', async () => {
+    await assertSucceeds(
+      updateDoc(doc(asAdmin(env), `users/${UID.p1}`), {
+        stats: { events: 1, wins: 1, podiums: 1, points: 100, correctWinners: 2 },
+        badges: ['champion'],
+        badgeCounts: { champion: 2 },
+        lockStreak: 3,
+      }),
     );
   });
 
